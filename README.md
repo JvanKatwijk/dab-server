@@ -5,8 +5,11 @@
 
 ![java client for example 7](/java-client.png?raw=true)
 
-A simple Java Client for the server implemented in example 8,
-using bluetooth connection. Definitely work in progress.
+A simple DAB server, for use with a bluetooth client
+
+-------------------------------------------------------------------------
+ Definitely work in progress.
+ ------------------------------------------------------------------------
 
 Note that the server is expected to run on an RPI 2/3 (Stretch)
 
