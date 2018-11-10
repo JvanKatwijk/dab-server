@@ -3,20 +3,32 @@
 
 ---------------------------------------------------------------------
 
-![java client for example 7](/java-client.png?raw=true)
+![java client for dab server](/java-client.png?raw=true)
 
-A simple DAB server, for use with a bluetooth client
+A simple DAB server, for use with a bluetooth client.
+The project I am working on aims at creating a simple remote control for
+a DAB server. The latter then will run on e.g. a RPI 2/3 and a bluetooth
+device - currently my laptop - will connect using bluetooth, show the
+services within reach and controls the radio.
+Currently ONLY the sdrplay device is supported. It is not difficult though
+to chgange that, although that will most likely lead to changes in the client's
+GUI
+
 
 -------------------------------------------------------------------------
  Definitely work in progress.
- ------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
-Note that the server is expected to run on an RPI 2/3 (Stretch)
+Current status is that a java client is able to connect - using bluetooth -,
+The client might set/change the ifgain and lna state of the device.
+The client might set/change the audio loudness setting of the server
+(current set using an alsa setting). Of course the client might select
+a service. On selecting a service, the server might have to change the
+selected channel.
+Finally, the client can dorce a rescan over all channels in band III.
 
-
----------------------------------------------------------------------
-Introduction
----------------------------------------------------------------------
+One of the major issues is setting up something useful over bluetooth,
+while it works, it needs additional attention.
 
 For proper installing bluetooth see 
 	https://askubuntu.com/questions/775303/unified-remote-bluetooth-could-not-connect-to-sdp
