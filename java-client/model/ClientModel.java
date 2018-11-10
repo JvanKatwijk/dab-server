@@ -76,7 +76,7 @@ public class ClientModel extends Thread {
 //	         System. out. println ("Key " + (int) (header [0]));
                  Dispatcher (header [0], header [2], inBuffer);
 	      } catch (Exception e) {
-	      System. out. println ("we zijn uitgelezen");
+	      System. out. println ("Exception thrown " + e);
 	      }
            }
 	}
