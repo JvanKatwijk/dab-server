@@ -10,7 +10,7 @@ public:
 	config	(const std::string filename);
 	~config	(void);
 
-	std::string get_value	(const std::string& keyname);
+	std::string getValue	(const std::string& keyname);
 	void	update		(const std::string &keyName,
 	                         const std::string &keyvalue);
 

@@ -37,13 +37,11 @@
   *	will extract the Tu samples, do an FFT and extract the
   *	carriers and map them on (soft) bits
   */
-	ofdmDecoder::ofdmDecoder	(uint8_t	dabMode,
-                                         RingBuffer<std::complex<float>> *iqBuffer):
+	ofdmDecoder::ofdmDecoder	(uint8_t	dabMode):
 	                                     params (dabMode),
 	                                     my_fftHandler (dabMode),
 	                                     myMapper    (dabMode) {
 
-        this    -> iqBuffer             = iqBuffer;
 	this	-> T_s			= params. get_T_s ();
 	this	-> T_u			= params. get_T_u ();
 	this	-> nrBlocks		= params. get_L ();
@@ -121,19 +119,6 @@ toBitsLabel:
 
 	memcpy (phaseReference. data (),
 	          fft_buffer, T_u * sizeof (std::complex<float>));
-//	From time to time we show the constellation of block 2.
-//	Note that we do it in two steps since the
-//	fftbuffer contained low and high at the ends
-//	and we maintain that format
-	if ((blkno == 2) && (iqBuffer != nullptr)) {
-	   if (++cnt > 7) {
-	      iqBuffer	-> putDataIntoBuffer (&conjVector [0],
-	                                      carriers / 2);
-	      iqBuffer	-> putDataIntoBuffer (&conjVector [T_u - 1 - carriers / 2],
-	                                      carriers / 2);
-	      cnt = 0;
-	   }
-	}
 }
 //
 /**

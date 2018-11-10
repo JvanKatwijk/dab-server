@@ -30,10 +30,10 @@ std::string env	= getenv ("HOME");
 	this	-> fileName	= env. append (filename);
 	fprintf (stderr, "config is stored as %s\n", fileName. c_str ());
 	configMap. clear ();
-	parse (filename);
+	parse (this -> fileName);
 }
 
-std::string config::get_value (const std::string&keyName) {
+std::string config::getValue (const std::string&keyName) {
 	for (std::map<std::string, std::string>
                                      ::iterator it = configMap. begin ();
                      it != configMap. end (); it ++)
@@ -62,9 +62,12 @@ void config::parse (const std::string& filename) {
 std::ifstream ifstrm;
 
 	ifstrm. open (filename);
-	if (!ifstrm)
+	if (!ifstrm) {
+	   fprintf (stderr, "Opening %s lukte niet\n",  filename. c_str ());
 	   return;
+	}
 
+	fprintf (stderr, "Opening %s lukte\n", filename. c_str ());
 	for (std::string line; std::getline (ifstrm, line);) {
 //	if a comment
 	   if (!line.empty() && (line[0] == ';' || line[0] == '#')) { }
@@ -79,6 +82,8 @@ std::ifstream ifstrm;
 	         ltrim (rtrim (name));
 	         ltrim (rtrim(value));
 		 configMap. insert (mapElement (name, value));
+	         fprintf (stderr, "inserted (%s, %s)\n",
+	                              name. c_str (), value. c_str ());
 	      }
 	      else { }
                 // no key value delimiter

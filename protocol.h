@@ -30,9 +30,9 @@
 //	The radio will react on commands
 //	The commands consist of a package with two components
 //	the command identifier and a value.
-//	Value is either a null-terminated string or an char value
-//
+//	Value is either a null-terminated string or a char value
 //	e.g. Q_GAIN 70 or Q_CHANNEL "11C"
+
 #define Q_QUIT		0100
 #define Q_IF_GAIN_REDUCTION	0101
 #define Q_SOUND_LEVEL	0102

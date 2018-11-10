@@ -109,7 +109,7 @@ static
 std::atomic<bool>ensembleRecognized;
 
 static
-std::atomic<bool> newEnsemble;
+std::string	ensembleName;
 
 static void sighandler (int signum) {
         fprintf (stderr, "Signal caught, terminating!\n");
@@ -135,6 +135,7 @@ void	ensemblenameHandler (std::string name, int Id, void *userData) {
 	fprintf (stderr, "ensemble %s is (%X) recognized\n",
 	                          name. c_str (), (uint32_t)Id);
 	ensembleRecognized. store (true);
+	ensembleName	= name;
 }
 
 static
@@ -246,7 +247,7 @@ int	optie;
 
 	theBandHandler	= new bandHandler ();
 
-	my_config	= new config (std::string ("/dab-server.ini"));
+	my_config	= new config (std::string ("/.dab-server.ini"));
 	handleSettings (my_config, &my_radioData);
 
 	while ((optie = getopt (argc, argv, "G:L:AS:D:W:")) != -1) {
@@ -336,8 +337,6 @@ int	optie;
 	                                    programdataHandler,
 	                                    mscQuality,
 	                                    nullptr,	// no mot slides
-	                                    nullptr,	// no spectrum shown
-	                                    nullptr,	// no constellations
 	                                    nullptr	// ctx
 	                                   );
 	if (theRadio == nullptr) {
@@ -348,7 +347,7 @@ int	optie;
 //	on program startup, we create a servicelist based on
 //	previous experiences
 	scanning	= true;
-	buildServiceList (true);
+	buildServiceList (false);
 	scanning	= false;
 //
 //	The eternal server loop
@@ -418,19 +417,19 @@ std::string value;
 	rd	-> latency		= 10;
 	rd	-> waitingTime		= 10;
 
-	value	= my_config -> get_value ("Mode");
+	value	= my_config -> getValue ("Mode");
 	if (value != std::string (""))
 	   rd	-> theMode	= stoi (value);
-	value	= my_config	-> get_value ("Band");
+	value	= my_config	-> getValue ("Band");
 	if (value != std::string (""))
 	   rd	-> theBand	= stoi (value);
-	value	= my_config	-> get_value ("lnaState");
+	value	= my_config	-> getValue ("lnaState");
 	if (value != std::string (""))
 	   rd	-> lnaState	= stoi (value);
-	value	= my_config	-> get_value  ("GRdB");
+	value	= my_config	-> getValue  ("GRdB");
 	if (value != std::string (""))
 	   rd	-> GRdB		= stoi (value);
-	value	= my_config	-> get_value ("autoGain");
+	value	= my_config	-> getValue ("autoGain");
 	if (value != std::string (""))
 	   rd	-> autoGain	= stoi (value) != 0;
 }
@@ -547,6 +546,7 @@ int	starter	= 0;
 	               else {
 	                  theRadio	-> reset ();
 	                  theRadio	-> set_audioChannel (&ad);
+	                  string_Writer (Q_ENSEMBLE, ensembleName);
 	               }
 	            }
 	         }
@@ -662,7 +662,7 @@ char	command [255];
 
 static
 bool	searchable (std::string channel) {
-	return true;
+	return (my_config -> getValue (channel) == "on");
 }
 
 static
@@ -683,7 +683,6 @@ std::string	startChannel	= "5A";
 	   if (fresh || searchable (theChannel)) {
 	      theDevice		-> stopReader ();
 	      theRadio		-> stop ();
-	      theBandHandler	-> setChannel (theChannel);
               theDevice		-> restartReader
 	                                (theBandHandler -> Frequency ());
 	      timesyncSet.	store (false);
@@ -709,11 +708,12 @@ std::string	startChannel	= "5A";
 	            sleep (1);
 	      }
 	      markChannels (ensembleRecognized. load (), theChannel);
+	      theDevice -> stopReader ();
 	   }
-	   theDevice -> stopReader ();
            theChannel = theBandHandler -> nextChannel ();
            if (theChannel == startChannel)
               break;
+	   theBandHandler	-> setChannel (theChannel);
 	}
 	theRadio	-> stop ();
 }

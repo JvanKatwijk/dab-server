@@ -33,16 +33,10 @@ int16_t res     = 1;
 }
 
 	sampleReader::sampleReader (dabProcessor *parent,
-	                            deviceHandler	*theRig,
-	                            RingBuffer<std::complex<float>> *spectrumBuffer
-	                           ) {
+	                            deviceHandler	*theRig) {
 int	i;
 	theParent		= parent;
 	this	-> theRig	= theRig;
-        bufferSize		= 32768;
-        this    -> spectrumBuffer       = spectrumBuffer;
-        localBuffer. resize (bufferSize);
-        localCounter		= 0;
 	currentPhase		= 0;
 	sLevel			= 0;
 	sampleCount		= 0;
@@ -83,9 +77,6 @@ std::complex<float> temp;
 //	so here, bufferContent > 0
 	theRig -> getSamples (&temp, 1);
 
-	if (localCounter < bufferSize)
-	   localBuffer [localCounter ++]        = temp;
-//
 //	OK, we have a sample!!
 //	first: adjust frequency. We need Hz accuracy
 	currentPhase	-= phaseOffset;
@@ -97,11 +88,7 @@ std::complex<float> temp;
 	sampleCount	++;
 	if (++ sampleCount > INPUT_RATE / N) {
 	   sampleCount = 0;
-	   if (spectrumBuffer != nullptr)
-              spectrumBuffer -> putDataIntoBuffer (localBuffer. data (),
-	                                                    localCounter);
 	   theParent -> show_Corrector (phaseOffset);
-           localCounter = 0;
 	}
 	return temp;
 }
@@ -125,19 +112,13 @@ int32_t		i;
 //
 //	Note that "phase" itself might be negative
 	   currentPhase	= (currentPhase + INPUT_RATE) % INPUT_RATE;
-	   if (localCounter < bufferSize)
-	      localBuffer [localCounter ++]     = v [i];
 	   v [i]	*= oscillatorTable [currentPhase];
 	   sLevel	= 0.00001 * jan_abs (v [i]) + (1 - 0.00001) * sLevel;
 	}
 
 	sampleCount	+= n;
 	if (sampleCount > INPUT_RATE / N) {
-	   if (spectrumBuffer != nullptr)
-	      spectrumBuffer -> putDataIntoBuffer (localBuffer. data (),
-	                                                         bufferSize);
 	   theParent -> show_Corrector (phaseOffset);
-	   localCounter = 0;
 	   sampleCount = 0;
 	}
 }

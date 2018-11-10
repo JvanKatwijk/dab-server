@@ -39,9 +39,7 @@ class	dabProcessor;
 class	sampleReader {
 public:
 			sampleReader	(dabProcessor *,
-                                         deviceHandler *theRig,
-	                       RingBuffer<std::complex<float>> *spectrumBuffer);
-
+                                         deviceHandler *theRig);
 			~sampleReader		(void);
 		void	setRunning	(bool b);
 		float	get_sLevel	(void);
@@ -49,19 +47,15 @@ public:
 	        void	getSamples	(std::complex<float> *v,
 	                                 int32_t n, int32_t phase);
 private:
-	      dabProcessor	*theParent;
-		deviceHandler	*theRig;
-		RingBuffer<std::complex<float>> *spectrumBuffer;
-		std::vector<std::complex<float>> localBuffer;
-		int32_t		localCounter;
-		int32_t		bufferSize;
-		int32_t		currentPhase;
-		std::complex<float>	*oscillatorTable;
-		std::atomic<bool>	running;
-		int32_t		bufferContent;
-		float		sLevel;
-		int32_t		sampleCount;
-	        int32_t		corrector;
+	dabProcessor	*theParent;
+	deviceHandler	*theRig;
+	int32_t		currentPhase;
+	std::complex<float>	*oscillatorTable;
+	std::atomic<bool>	running;
+	int32_t		bufferContent;
+	float		sLevel;
+	int32_t		sampleCount;
+	int32_t		corrector;
 };
 
 #endif

@@ -35,18 +35,17 @@ class	dabParams;
 
 class	ofdmDecoder {
 public:
-		ofdmDecoder		(uint8_t	dabMode,
-                                         RingBuffer<std::complex<float>> *);
+		ofdmDecoder		(uint8_t	dabMode);
 		~ofdmDecoder		(void);
 	void	processBlock_0		(std::complex<float> *);
-	void	decode		(std::complex<float> *, int32_t n, int16_t *);
+	void	decode			(std::complex<float> *,
+	                                       int32_t n, int16_t *);
 	int16_t	get_snr			(void);
 private:
 	dabParams	params;
 	fft_handler	my_fftHandler;
 	interLeaver	myMapper;
 	int16_t		get_snr		(std::complex<float> *);
-        RingBuffer<std::complex<float>> *iqBuffer;
 	int		cnt;
 	int32_t		T_s;
 	int32_t		T_u;

@@ -55,8 +55,6 @@ public:
 	                         programdata_t,
 	                         programQuality_t,
 	                         motdata_t,
-	                         RingBuffer<std::complex<float>> *,
-                                 RingBuffer<std::complex<float>> *,
 	                         void	*);
 	virtual ~dabProcessor	(void);
 	void	reset		(void);
