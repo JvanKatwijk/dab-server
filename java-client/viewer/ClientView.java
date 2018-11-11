@@ -173,6 +173,7 @@ public class ClientView extends JFrame {
 	               m_autogainButton. setText ("autogain off");
 	            else
 	               m_autogainButton. setText ("autogain on");
+	            autogainState = !autogainState;
 	            listeners. forEach ((hl) -> {
                        hl. autogainButton ();
                      });
