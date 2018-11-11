@@ -24,6 +24,7 @@ public class ClientView extends JFrame {
 	private final	JSpinner m_lnaState	=
 	                     new JSpinner (new SpinnerNumberModel (2, 0, 8, 1));
 	private	final	JButton	m_autogainButton	= new JButton ("auto");
+	private		boolean	autogainState		= false;
 	private	final	JLabel	m_gainLabel	= new JLabel ("30");
 	private final	JLabel	m_qualityLabel	= new JLabel ("0");
 	private	final	JLabel	m_syncedLabel	= new JLabel ("sync");
@@ -46,7 +47,8 @@ public class ClientView extends JFrame {
 	   m_resetButton. 	setBackground (Color. red);
 	   m_resetButton. 	setOpaque (true);
 	   m_autogainButton.	setBackground	(Color. green);
-	   m_autogainButton.	setOpaque (true);
+	   m_autogainButton.	setOpaque (true);	
+	   m_autogainButton.	setText ("autogain off");
 	   m_selectedService.	setBackground (Color. red);
 	   m_selectedService.	setOpaque (true);
 	   m_gainSlider.	setPreferredSize (new Dimension (150, 30));
@@ -167,6 +169,10 @@ public class ClientView extends JFrame {
 	      addActionListener (new ActionListener () {
 	         @Override
 	         public void actionPerformed (ActionEvent evt) {
+	            if (autogainState)
+	               m_autogainButton. setText ("autogain off");
+	            else
+	               m_autogainButton. setText ("autogain on");
 	            listeners. forEach ((hl) -> {
                        hl. autogainButton ();
                      });
