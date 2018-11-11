@@ -37,6 +37,8 @@ public class ClientModel extends Thread {
 	private	final int	Q_SYNCED		= 0107;
 	private	final int	Q_INITIAL_LNA		= 0110;
 	private	final int	Q_INITIAL_GRdB		= 0111;
+	private	final int	Q_SOUND			= 0112;
+	private final int	Q_SIGNAL_STEREO		= 0113;
 //
 //	For the connection we need
 	private final StreamConnection thePlug;
@@ -90,6 +92,11 @@ public class ClientModel extends Thread {
 	      buffer [i] = inBuffer [i];
 
 	   switch (key) {
+	      case Q_SOUND:
+	         break;
+
+	      case Q_SIGNAL_STEREO:
+	
 	      case Q_ENSEMBLE:
 	         { buffer [segSize]	= 0;
 	           final String ensembleLabel = String. valueOf (buffer);

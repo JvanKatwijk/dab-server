@@ -83,6 +83,23 @@ char	message [len + 3 + 1];
 //	locker. unlock ();
 }
 //
+//
+static
+void    sound_Writer (int16_t *buffer, int size) {
+int     i;
+char	message [2 * size + 3 + 1];
+        message [0]     = Q_SOUND;
+        message [1]     = (2 * size >> 8 + 3) & 0xFF;
+        message [2]     = (2 * size + 3) & 0xFF;
+        for (i = 0; i < size; i ++) {
+           message [3 + 2 * i + 0] = (buffer [i] >> 8) & 0xFF;
+	   message [3 + 2 * i + 1] = (buffer [i] & 0xFF);
+	}
+//	locker. lock ();
+        write (client, message, 2 * size + 3);
+//	locker. unlock ();
+}
+//
 //	for some keys we only send a small integer value
 static
 void	int_Writer (uint8_t code, int8_t v) {
@@ -183,11 +200,23 @@ void	bytesOut_Handler (uint8_t *data, int16_t amount,
 static
 audioBase	*soundOut	= NULL;
 static
+bool		signalStereo	= false;
+
+static
 void	pcmHandler (int16_t *buffer, int size, int rate,
 	                              bool isStereo, void *ctx) {
 static bool isStarted	= false;
+//
+//	we have to think here what to do if the rate has to be changed
+	if (soundOut) {
+	   sound_Writer (buffer, size);
+	   return;
+	}
 
-	(void)isStereo;
+	if (isStereo != signalStereo) {
+	   int_Writer (Q_SIGNAL_STEREO, 0);
+	   signalStereo	= isStereo;
+	}
 	if (!isStarted) {
 	   soundOut	-> restart ();
 	   isStarted	= true;
@@ -254,8 +283,12 @@ int	optie;
 	my_config	= new config (std::string ("/.dab-server.ini"));
 	handleSettings (my_config, &my_radioData);
 
-	while ((optie = getopt (argc, argv, "G:L:AS:D:W:")) != -1) {
+	my_radioData. soundOut	= false;
+	while ((optie = getopt (argc, argv, "G:L:AS:D:W:S:B")) != -1) {
 	   switch (optie) {
+	      case 'B':
+	         my_radioData. soundOut	= true;
+	         break;
 	      case 'G':
 	         my_radioData. GRdB	= atoi (optarg);
 	         my_config	-> update ("GRdB", std::string (optarg));

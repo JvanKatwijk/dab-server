@@ -52,6 +52,8 @@
 #define	Q_SYNCED	0107
 #define	Q_INITIAL_LNA	0110
 #define	Q_INITIAL_GRdB	0111
+#define	Q_SOUND		0112
+#define	Q_SIGNAL_STEREO	0113
 //
 //	packetstructure
 //	byte 0	key
