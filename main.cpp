@@ -205,20 +205,14 @@ void	systemData (bool flag, int16_t snr, int32_t freqOff, void *ctx) {
 	   return;
 	if (flag != syncFlag) {
 	   int_Writer (Q_SYNCED, flag);
-	   syncFlag = flag);
+	   syncFlag = flag;
 	}
+	int_Writer (Q_SIGNAL_QUALITY, (uint8_t)(snr));
 }
 
 static
-int	fibValue	= -10;
-static
 void	fibQuality	(int16_t q, void *ctx) {
-	if (scanning)
-	   return;
-	if (q != fibValue) {
-	   int_Writer (Q_SIGNAL_QUALITY, (char)q);
-	   fibValue = q;
-	}
+	(void)q; (void)ctx;
 }
 
 static
@@ -683,11 +677,12 @@ static
 void	buildServiceList (bool fresh) {
 std::string	theChannel	= "5A";
 std::string	startChannel	= "5A";
-//
+
 //	be sure that the serviceList is empty
         serviceMap. clear ();
 	fprintf (stderr, "map is cleared\n");
-//
+
+	theBandHandler	-> setChannel (theChannel);
 //	here we really start
 	while (true) {
 	   if (fresh || searchable (theChannel)) {

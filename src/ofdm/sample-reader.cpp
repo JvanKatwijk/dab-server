@@ -84,12 +84,6 @@ std::complex<float> temp;
 
 	temp		*= oscillatorTable [currentPhase];
 	sLevel		= 0.00001 * jan_abs (temp) + (1 - 0.00001) * sLevel;
-#define	N	5
-	sampleCount	++;
-	if (++ sampleCount > INPUT_RATE / N) {
-	   sampleCount = 0;
-	   theParent -> show_Corrector (phaseOffset);
-	}
 	return temp;
 }
 
@@ -114,12 +108,6 @@ int32_t		i;
 	   currentPhase	= (currentPhase + INPUT_RATE) % INPUT_RATE;
 	   v [i]	*= oscillatorTable [currentPhase];
 	   sLevel	= 0.00001 * jan_abs (v [i]) + (1 - 0.00001) * sLevel;
-	}
-
-	sampleCount	+= n;
-	if (sampleCount > INPUT_RATE / N) {
-	   theParent -> show_Corrector (phaseOffset);
-	   sampleCount = 0;
 	}
 }
 

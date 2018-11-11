@@ -119,7 +119,7 @@ void	sdrplayHandler::set_autogain (bool b) {
 	autoGain	= b;
 	mir_sdr_AgcControl (b ?
 	                 mir_sdr_AGC_100HZ :
-	                 mir_sdr_AGC_DISABLE, - GRdB, 0, 0, 0, 0, 0);
+	                 mir_sdr_AGC_DISABLE, - GRdB, 0, 0, 0, 0, lnaState);
 	if (!b)
 	   (void)mir_sdr_RSP_SetGr (GRdB, lnaState, 1, 0);
 }

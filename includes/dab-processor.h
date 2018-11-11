@@ -61,8 +61,6 @@ public:
 	void	stop			(void);
 	void	setOffset		(int32_t);
 	void	start			(void);
-	bool	signalSeemsGood		(void);
-	void	show_Corrector		(int);
 //      inheriting from our delegates
 	void		setSelectedService	(std::string);
 	uint8_t		kindofService           (std::string);
@@ -90,7 +88,6 @@ private:
 	mscHandler	my_mscHandler;
 	syncsignal_t	syncsignalHandler;
 	systemdata_t	systemdataHandler;
-	void		call_systemData (bool, int16_t, int32_t);
 	std::thread	threadHandle;
 	void		*userData;
 	std::atomic<bool>	running;
@@ -106,6 +103,7 @@ private:
 
 	float		nullLevel;
 	float		signalLevel;
+	float		signalStrength;
 	float		compute_signalLevel	(std::complex<float> *, int32_t);
 virtual	void		run		(void);
 };

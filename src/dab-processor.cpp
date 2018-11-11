@@ -74,7 +74,6 @@
 	this	-> nrBlocks		= params. get_L ();
 	this	-> carriers		= params. get_carriers ();
 	this	-> carrierDiff		= params. get_carrierDiff ();
-	isSynced	= false;
 	running. store (false);
 }
 
@@ -106,8 +105,12 @@ bool		correctionNeeded	= true;
 std::vector<complex<float>>	ofdmBuffer (T_null);
 int		dip_attempts		= 0;
 int		index_attempts		= 0;
+int		count		= 0;
+float		nullLevel	= 0;
+float		signalLevel	= 0;
+bool		isSynced	= false;
 
-	isSynced	= false;
+	signalStrength	= 0;
 	running. store (true);
 	my_ficHandler. reset ();
 	myReader. setRunning (true);
@@ -225,11 +228,6 @@ SyncOnPhase:
 	   myReader. getSamples (ofdmBuffer. data (),
 	                         T_null, coarseOffset + fineOffset);
 	   nullLevel	= compute_signalLevel (ofdmBuffer. data (), T_null);
-	static	int count	= 0;
-	if (++count > 10) {
-	   count = 0;
-	   fprintf (stderr, "snr = %f\n", 20 * log10 (signalLevel / nullLevel));
-	}
 	   if (fineOffset > carrierDiff / 2) {
 	      coarseOffset += carrierDiff;
 	      fineOffset -= carrierDiff;
@@ -238,6 +236,13 @@ SyncOnPhase:
 	   if (fineOffset < - carrierDiff / 2) {
 	      coarseOffset -= carrierDiff;
 	      fineOffset += carrierDiff;
+	   }
+	   if ((systemdataHandler != nullptr) && (++count > 10)) {
+	      count = 0;
+	      signalStrength	= 20 * log10 (signalLevel / nullLevel);
+	      systemdataHandler (isSynced,
+	                         signalStrength,
+	                         fineOffset + coarseOffset, userData);
 	   }
 	   goto SyncOnPhase;
 	}
@@ -270,22 +275,6 @@ void	dabProcessor::stop	(void) {
 	   sleep (1);
 	   threadHandle. join ();
 	}
-}
-
-void	dabProcessor::call_systemData (bool f, int16_t snr, int32_t freq) {
-	if (systemdataHandler != nullptr)
-	   systemdataHandler (f, snr, freq, userData);
-}
-
-void	dabProcessor::show_Corrector (int freqOffset) {
-	if (systemdataHandler != nullptr)
-	   systemdataHandler (isSynced,
-	                      my_ofdmDecoder. get_snr (),
-	                      freqOffset, userData);
-}
-
-bool	dabProcessor::signalSeemsGood	(void) {
-	return isSynced;
 }
 //
 //	to be handled by delegates
