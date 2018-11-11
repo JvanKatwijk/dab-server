@@ -175,6 +175,7 @@ SyncOnPhase:
 	                  coarseOffset + fineOffset);
 	   my_ofdmDecoder. processBlock_0 (ofdmBuffer. data ());
 	   my_mscHandler.  process_mscBlock (ofdmBuffer. data (), 0);
+	   signalLevel	= compute_signalLevel (ofdmBuffer. data (), T_u);
 //
 //	if correction is needed (known by the fic handler)
 //	we compute the coarse offset in the phaseSynchronizer
@@ -223,7 +224,12 @@ SyncOnPhase:
 //	at the end of the frame, just skip Tnull samples
 	   myReader. getSamples (ofdmBuffer. data (),
 	                         T_null, coarseOffset + fineOffset);
-
+	   nullLevel	= compute_signalLevel (ofdmBuffer. data (), T_null);
+	static	int count	= 0;
+	if (++count > 10) {
+	   count = 0;
+	   fprintf (stderr, "snr = %f\n", 20 * log10 (signalLevel / nullLevel));
+	}
 	   if (fineOffset > carrierDiff / 2) {
 	      coarseOffset += carrierDiff;
 	      fineOffset -= carrierDiff;
@@ -246,6 +252,15 @@ SyncOnPhase:
 void	dabProcessor:: reset	(void) {
 	stop  ();
 	start ();
+}
+
+float	dabProcessor::compute_signalLevel (std::complex<float> *b, int32_t s) {
+float	sum	= 0;
+int	i;
+
+	for (i = 0; i < s; i ++)
+	   sum += abs (b [i]);
+	return sum;
 }
 
 void	dabProcessor::stop	(void) {	

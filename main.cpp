@@ -196,19 +196,29 @@ static bool isStarted	= false;
 }
 
 static
+bool	syncFlag	= false;
+static
 void	systemData (bool flag, int16_t snr, int32_t freqOff, void *ctx) {
 //	fprintf (stderr, "synced = %s, snr = %d, offset = %d\n",
 //	                    flag? "on":"off", snr, freqOff);
 	if (scanning)
 	   return;
-	int_Writer (Q_SYNCED, flag);
+	if (flag != syncFlag) {
+	   int_Writer (Q_SYNCED, flag);
+	   syncFlag = flag);
+	}
 }
 
+static
+int	fibValue	= -10;
 static
 void	fibQuality	(int16_t q, void *ctx) {
 	if (scanning)
 	   return;
-	int_Writer (Q_SIGNAL_QUALITY, (char)q);
+	if (q != fibValue) {
+	   int_Writer (Q_SIGNAL_QUALITY, (char)q);
+	   fibValue = q;
+	}
 }
 
 static

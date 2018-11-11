@@ -104,6 +104,9 @@ private:
 	int32_t		carriers;
 	int32_t		carrierDiff;
 
+	float		nullLevel;
+	float		signalLevel;
+	float		compute_signalLevel	(std::complex<float> *, int32_t);
 virtual	void		run		(void);
 };
 #endif
