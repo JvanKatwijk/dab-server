@@ -46,6 +46,7 @@ public class ClientView extends JFrame {
 	   m_selectedService. setToolTipText ("the name of the selected service");
 	   m_resetButton. 	setBackground (Color. red);
 	   m_resetButton. 	setOpaque (true);
+	   m_resetButton. 	setToolTipText ("Pushing will instruct the server to scan over all channels");
 	   m_autogainButton.	setBackground	(Color. green);
 	   m_autogainButton.	setOpaque (true);	
 	   m_autogainButton.	setText ("autogain off");
@@ -54,6 +55,9 @@ public class ClientView extends JFrame {
 	   m_gainSlider.	setPreferredSize (new Dimension (150, 30));
 	   m_syncedLabel.	setBackground (Color. red);
 	   m_syncedLabel.	setOpaque (true);
+	   m_syncedLabel.	setToolTipText ("green: decoding might succeed");
+	   m_qualityLabel.	setToolTipText ("snr");
+	   m_lnaState.		setToolTipText ("set the lna state of the SDRplay");
 //... Layout the components.      
            JPanel row1 = new JPanel();
 	   row1.setLayout(new BoxLayout (row1, BoxLayout. X_AXIS));
@@ -68,7 +72,6 @@ public class ClientView extends JFrame {
 	   row1. add (m_syncedLabel);
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
 	   row1. add (m_selectedService);
-	   m_qualityLabel. setToolTipText ("quality of the received signal");
 
 	   JPanel row2	= new JPanel ();
 	   row2. setLayout (new BoxLayout (row2, BoxLayout. X_AXIS));
@@ -81,7 +84,7 @@ public class ClientView extends JFrame {
 	   row3. add (m_autogainButton);
 	   row3. add (Box. createRigidArea (new Dimension (30, 0)));
 	   row3. add (m_gainSlider);
-	   m_gainSlider. setToolTipText ("The gain for the device, range 1 .. 100");
+	   m_gainSlider. setToolTipText ("The Gain Reduction 20 .. 59");
 	   row3. add (m_gainLabel);
 	   row3. add (Box. createRigidArea (new Dimension (50, 0)));
 	   row3. add (m_lnaState);
