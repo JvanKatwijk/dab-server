@@ -103,6 +103,11 @@ public class ClientController implements modelSignals, viewSignals {
 	   m_view. clearScreen ();
 	}
 
+	@Override
+	public	void	set_stereoIndicator	(boolean b) {
+	   m_view. set_stereoIndicator (b);
+	}
+
 	public	void	startService	(String s) {
 	   String serviceName	= s;
 	   m_view.  showService   (serviceName);

@@ -95,7 +95,6 @@ public class ClientModel extends Thread {
 	      case Q_SOUND:
 	         break;
 
-	      case Q_SIGNAL_STEREO:
 	
 	      case Q_ENSEMBLE:
 	         { buffer [segSize]	= 0;
@@ -227,6 +226,19 @@ public class ClientModel extends Thread {
 	                  }});
                  } catch (Exception e) {}
 	         break;
+
+	      case Q_SIGNAL_STEREO:
+	         try {
+	              final boolean b = buffer [0] != 0;
+	              javax. swing. SwingUtilities.
+	                         invokeLater (new Runnable () {
+                          @Override
+                          public void run () {
+	                     set_stereoIndicator (b);
+	                  }});
+                 } catch (Exception e) {}
+	         break;
+
 	      default:;
 	   }
 	}
@@ -285,7 +297,13 @@ public class ClientModel extends Thread {
 	   });
 	}
 
-	public	void setService (String s) {
+	public	void	set_stereoIndicator	(boolean b) {
+	   listener. forEach ((hl) -> {
+	      hl. set_stereoIndicator (b);
+	   });
+	}
+
+	public	void	setService (String s) {
 	   char data [] = new char [s. length () + 4];
 	   data [0] = Q_SERVICE;
 	   data [1] = 0;

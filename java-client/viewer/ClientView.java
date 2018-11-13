@@ -16,8 +16,8 @@ import	java. awt. Dimension;
 
 public class ClientView extends JFrame {
     
-    //... Components
-	private final	JLabel	m_dynamicLabel	= new JLabel ("                     ");
+//... Components
+	private final	JLabel	m_dynamicLabel	= new JLabel ("           ");
 	private	final	JSlider	m_gainSlider	=
 	                    new JSlider (JSlider. HORIZONTAL, 20, 59, 30);
 	private	final	JButton	m_resetButton	= new JButton ("reset");
@@ -32,6 +32,8 @@ public class ClientView extends JFrame {
 	                     new JSpinner (new SpinnerNumberModel (0, -10, 10, 1));
 	private final	JLabel m_ensembleLabel	= new JLabel ("ensemble");
 	private final	JLabel m_selectedService= new JLabel ("wait for services");
+	private final	JLabel m_stereoIndicator = new JLabel ("st");
+	
 	private final	JLabel m_channelLabel	= new JLabel ("          ");
 	public serviceTable m_serviceTable	= new serviceTable ();
 	private java.util.List<viewSignals> listeners = new ArrayList<>();
@@ -47,6 +49,10 @@ public class ClientView extends JFrame {
 	   m_resetButton. 	setBackground (Color. red);
 	   m_resetButton. 	setOpaque (true);
 	   m_resetButton. 	setToolTipText ("Pushing will instruct the server to scan over all channels");
+	   m_stereoIndicator.	setBackground (Color. red);
+	   m_stereoIndicator.	setOpaque (true);
+	   m_stereoIndicator.	setToolTipText ("green: stereo signal");
+
 	   m_autogainButton.	setBackground	(Color. green);
 	   m_autogainButton.	setOpaque (true);	
 	   m_autogainButton.	setText ("autogain off");
@@ -68,6 +74,9 @@ public class ClientView extends JFrame {
 	   row1. add (m_ensembleLabel);
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
 	   row1. add (m_qualityLabel);
+	   row1. add (Box. createRigidArea (new Dimension (10, 0)));
+	   row1. add (m_stereoIndicator);
+	
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
 	   row1. add (m_syncedLabel);
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
@@ -252,6 +261,13 @@ public class ClientView extends JFrame {
 	public	void	setDeviceGain (int v) {
 	   m_gainSlider. setValue (v);
 	   m_gainLabel. setText (Integer. toString (v));
+	}
+
+	public	void	set_stereoIndicator	(boolean b) {
+	   if (b)
+	      m_stereoIndicator. setBackground (Color. green);
+	   else
+	      m_stereoIndicator. setBackground (Color. red);
 	}
 
 	public	void	clearScreen () {

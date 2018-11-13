@@ -10,5 +10,6 @@ public interface modelSignals {
 	public	void	set_lnaState		(int s);
 	public	void	set_GRdB		(int s);
 	public	void	clearScreen		();
+	public	void	set_stereoIndicator	(boolean b);
 }
 
