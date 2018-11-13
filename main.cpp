@@ -89,8 +89,8 @@ void    sound_Writer (int16_t *buffer, int size) {
 int     i;
 char	message [2 * size + 3 + 1];
         message [0]     = Q_SOUND;
-        message [1]     = (2 * size >> 8 + 3) & 0xFF;
-        message [2]     = (2 * size + 3) & 0xFF;
+        message [1]     = ((2 * size >> 8) & 0xFF;
+        message [2]     = (2 * size) & 0xFF;
         for (i = 0; i < size; i ++) {
            message [3 + 2 * i + 0] = (buffer [i] >> 8) & 0xFF;
 	   message [3 + 2 * i + 1] = (buffer [i] & 0xFF);
@@ -208,7 +208,7 @@ void	pcmHandler (int16_t *buffer, int size, int rate,
 static bool isStarted	= false;
 //
 //	we have to think here what to do if the rate has to be changed
-	if (soundOut) {
+	if (soundOut == NULL) {
 	   sound_Writer (buffer, size);
 	   return;
 	}

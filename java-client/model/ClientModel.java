@@ -76,7 +76,7 @@ public class ClientModel extends Thread {
 	         int amount =  bReader. read (header, 0, 3);
 	         amount = bReader. read (inBuffer, 0, header [2]);
 	         int length = (int)((header [1] << 8) | (int)(header [2] & 0xFF));
-//	         System. out. println ("Key " + (int) (header [0]));
+	         System. out. println ("Key " + (int) (header [0]));
                  Dispatcher (header [0], header [2], inBuffer);
 	      } catch (Exception e) {
 	      System. out. println ("Exception thrown " + e);
