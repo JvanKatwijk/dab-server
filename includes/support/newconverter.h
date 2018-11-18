@@ -29,10 +29,8 @@
 #include	<stdint.h>
 #include	<unistd.h>
 #include	<limits>
+#include	<vector>
 #include	<samplerate.h>
-
-typedef float   DSPFLOAT;
-typedef std::complex<DSPFLOAT> DSPCOMPLEX;
 
 using namespace std;
 
@@ -45,8 +43,8 @@ private:
 	int32_t		inputLimit;
 	SRC_STATE	*converter;
 	SRC_DATA	*src_data;
-	float		*inBuffer;
-	float		*outBuffer;
+	std::vector<float> inBuffer;
+	std::vector<float> outBuffer;
 	int32_t		inp;
 public:
 		newConverter (int32_t inRate, int32_t outRate, 
@@ -54,8 +52,8 @@ public:
 
 		~newConverter (void);
 
-	bool	convert (DSPCOMPLEX v,
-	                 DSPCOMPLEX *out, int32_t *amount);
+	bool	convert (std::complex<float> v,
+	                 std::complex<float>*out, int32_t *amount);
 
 	int32_t	getOutputsize (void);
 };

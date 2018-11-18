@@ -36,10 +36,10 @@ int	err;
 //	converter		= src_new (SRC_LINEAR, 2, &err);
 //	converter		= src_new (SRC_SINC_MEDIUM_QUALITY, 2, &err);
 	src_data		= new SRC_DATA;
-	inBuffer		= new float [2 * inputLimit + 20];
-	outBuffer		= new float [2 * outputLimit + 20];
-	src_data-> data_in	= inBuffer;
-	src_data-> data_out	= outBuffer;
+	inBuffer. resize (2 * inputLimit + 20);
+	outBuffer. resize (2 * outputLimit + 20);
+	src_data-> data_in	= inBuffer. data ();
+	src_data-> data_out	= outBuffer. data ();
 	src_data-> src_ratio	= ratio;
 	src_data-> end_of_input	= 0;
 	inp			= 0;
@@ -47,13 +47,11 @@ int	err;
 
 	newConverter::~newConverter (void) {
 	src_delete	(converter);
-	delete []	inBuffer;
-	delete []	outBuffer;
 	delete		src_data;
 }
 
-bool	newConverter::convert (DSPCOMPLEX v,
-	                       DSPCOMPLEX *out, int32_t *amount) {
+bool	newConverter::convert (std::complex<float> v,
+	                       std::complex<float> *out, int32_t *amount) {
 int32_t	i;
 int32_t	framesOut;
 int	res;
@@ -74,7 +72,8 @@ int	res;
 	inp		= 0;
 	framesOut	= src_data -> output_frames_gen;
 	for (i = 0; i < framesOut; i ++)
-	   out [i] = DSPCOMPLEX (outBuffer [2 * i], outBuffer [2 * i + 1]);
+	   out [i] = std::complex<float> (outBuffer [2 * i],
+	                                  outBuffer [2 * i + 1]);
 	*amount		= framesOut;
 	return true;
 }

@@ -71,31 +71,31 @@ public class ClientModel extends Thread {
 	public void run () {
            char inBuffer[] = new char [255];
 	   char header  [] = new char [3];
-	   while (true) {
+	   while (true) { 
+	      int amount	= 0;
+	      int length	= 0;
 	      try {
-	         int amount =  bReader. read (header, 0, 3);
-	         amount = bReader. read (inBuffer, 0, header [2]);
-	         int length = (int)((header [1] << 8) | (int)(header [2] & 0xFF));
-	         System. out. println ("Key " + (int) (header [0]));
-                 Dispatcher (header [0], header [2], inBuffer);
+	         amount =  bReader. read (header, 0, 3);
+	         length = (int)(((header [1] & 0xFF) << 8) |
+	                                  (int)(header [2] & 0xFF));
+	         amount = bReader. read (inBuffer, 0, length);
+                 Dispatcher (header [0], length, inBuffer);
 	      } catch (Exception e) {
-	      System. out. println ("Exception thrown " + e);
+	      System. out. println ("length = " + length + " amount = " + amount);
 	      }
            }
 	}
 
 //
 //	This function is called from within the thread
-	public void Dispatcher (char key, char segSize, char [] inBuffer) {
+	public void Dispatcher (char key, int segSize, char [] inBuffer) {
 	   char buffer [] = new char [segSize + 1];
-	   for (int i = 0; i < segSize; i ++)
-	      buffer [i] = inBuffer [i];
+	   System. arraycopy (inBuffer, 0, buffer, 0, segSize);
 
 	   switch (key) {
 	      case Q_SOUND:
 	         break;
 
-	
 	      case Q_ENSEMBLE:
 	         { buffer [segSize]	= 0;
 	           final String ensembleLabel = String. valueOf (buffer);

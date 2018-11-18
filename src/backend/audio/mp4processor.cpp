@@ -271,7 +271,11 @@ stream_parms	streamParameters;
 #endif
 	   }
 	   else {
-	      fprintf (stderr, "CRC failure with dab+ frame should not happen\n");
+//
+//	CRC failures are actually not totally unexpected, consider what
+//	happens in the RS decoding when an one of the parity bytes
+//	is erroneous, so we do not give the message
+//	      fprintf (stderr, "CRC failure with dab+ frame should not happen\n");
 	   }
 	}
 	return true;

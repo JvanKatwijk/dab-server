@@ -256,6 +256,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/backend/virtual-backend.cpp
 	     ./src/backend/audio-backend.cpp
 	     ./src/backend/data-backend.cpp
+	     ./src/backend/audio/faad-decoder.cpp
 	     ./src/backend/audio/mp4processor.cpp 
 	     ./src/backend/audio/mp2processor.cpp 
 	     ./src/backend/data/virtual-datahandler.cpp 

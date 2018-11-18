@@ -69,11 +69,11 @@ sdp_session_t *register_service (void);
 //      different threads from within the library
 static
 void    string_Writer (uint8_t code, std::string theText) {
-int     len     = theText. length ();
+int     len     = strlen (theText. c_str ());
 int     i;
 char	message [len + 3 + 1];
         message [0]     = (char)code;
-        message [1]     = (len >> 8) & 0xFF;
+        message [1]     = ((len + 1) >> 8) & 0xFF;
         message [2]     = (len + 1) & 0xFF;
         for (i = 0; i < len; i ++)
            message [3 + i] = theText [i];
@@ -89,7 +89,7 @@ void    sound_Writer (int16_t *buffer, int size) {
 int     i;
 char	message [2 * size + 3 + 1];
         message [0]     = Q_SOUND;
-        message [1]     = ((2 * size >> 8) & 0xFF;
+        message [1]     = ((2 * size) >> 8) & 0xFF;
         message [2]     = (2 * size) & 0xFF;
         for (i = 0; i < size; i ++) {
            message [3 + 2 * i + 0] = (buffer [i] >> 8) & 0xFF;
@@ -602,7 +602,11 @@ int	starter	= 0;
 static
 sdp_session_t *register_service (void) {
 uint8_t service_uuid_int [] =
-	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xab, 0xcd };
+//	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xab, 0xcd };
+//{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00,
+// 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB};
+{0x9c, 0xe8, 0xf7, 0x56, 0xe9, 0x7b, 0x11, 0xe8,
+0x9f, 0x32, 0xf2, 0x80, 0x1f, 0x1b, 0x9f, 0xd1};
 
 uint8_t rfcomm_channel		= 3;
 const char *service_name	= "Jan's dab handler";
@@ -623,7 +627,8 @@ sdp_record_t record		= { 0 };
 sdp_session_t	*session	= 0;
 
 //	set the general service ID
-	sdp_uuid128_create (&svc_uuid, &service_uuid_int);
+	sdp_uuid16_create (&svc_uuid, 0xabcd);
+//	sdp_uuid128_create (&svc_uuid, &service_uuid_int);
 	sdp_set_service_id (&record, svc_uuid);
 
 char str [256] = "";

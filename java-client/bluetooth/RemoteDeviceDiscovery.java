@@ -8,15 +8,16 @@ import javax.bluetooth.*;
   * Minimal Device Discovery example.
   */
 public class RemoteDeviceDiscovery {
-	public void findDevices (Vector devicesDiscovered)
+	public void findDevices (Vector<RemoteDevice> devicesDiscovered)
 	                      throws IOException, InterruptedException {
 	   final Object inquiryCompletedEvent = new Object ();
 	   devicesDiscovered. clear ();
+
 	   DiscoveryListener listener = new DiscoveryListener () {
 	      public void deviceDiscovered (RemoteDevice btDevice,
 	                                    DeviceClass cod) {
 	         System. out. println
-	             ("Device " + btDevice.getBluetoothAddress() + " found");
+	             ("Device " + btDevice. getBluetoothAddress () + " found");
 	         devicesDiscovered. addElement (btDevice);
 	         try {
 	            System. out. println ("     name " +
@@ -37,13 +38,14 @@ public class RemoteDeviceDiscovery {
 
 	      public void servicesDiscovered (int transID,
 	                                   ServiceRecord [] servRecord) {
-	         System. out. println ("service found " + transID);
 	      }
            };
 
 	   synchronized (inquiryCompletedEvent) {
 	      boolean started =
-	             LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, listener);
+	             LocalDevice.getLocalDevice().
+	                     getDiscoveryAgent ().
+	                          startInquiry(DiscoveryAgent.GIAC, listener);
 	      if (started) {
 	         System. out. println
 	                    ("wait for device inquiry to complete...");

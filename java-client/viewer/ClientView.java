@@ -15,7 +15,7 @@ import	javax. swing. JSlider;
 import	java. awt. Dimension;
 
 public class ClientView extends JFrame {
-    
+	private static final long serialVersionUID = 1234567;
 //... Components
 	private final	JLabel	m_dynamicLabel	= new JLabel ("           ");
 	private	final	JSlider	m_gainSlider	=
@@ -125,8 +125,11 @@ public class ClientView extends JFrame {
                     Object o    = m_serviceTable. table. getValueAt (row, 0);
                     if (!(o instanceof String))
                        return;
-                    if (!javax. swing. SwingUtilities. isRightMouseButton (evt))
+                    if (!javax. swing. SwingUtilities.
+	                           isRightMouseButton (evt)) {
 	               tableSelect_withLeft ((String)o);
+	               m_dynamicLabel. setText (" ");
+	            }
 //	            else
 //	               tableSelect_withRight ((String)o);
 	         }
