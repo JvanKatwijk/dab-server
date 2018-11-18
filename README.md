@@ -6,13 +6,21 @@
 ![java client for dab server](/java-client.png?raw=true)
 
 A simple DAB server, for use with a bluetooth client.
+
 The project I am working on aims at creating a simple remote control for
-a DAB server. The latter then will run on e.g. a RPI 2/3 and a bluetooth
+a DAB server, the latter being a modified (simplified) version of
+the DAB library. The server then will run on something like an RPI 2/3 and a bluetooth
 device - currently my laptop - will connect using bluetooth, show the
 services within reach and controls the radio.
-Currently ONLY the sdrplay device is supported. It is not difficult though
-to chgange that, although that will most likely lead to changes in the client's
-GUI
+The picture shows a simple java client, running on my laptop.
+Current work is on creating a client on android, so that the control
+is using your tablet or phone.
+
+Currently ONLY the sdrplay device is supported. It is pretty simple though
+to change that, although that will most likely lead to changes in the client's
+GUI (Note that the current GUI shows controls for both the if gain reduction and
+the lnaState, while for e.g. DABsticks a single slider, setting the gain, might
+suffice)
 
 
 -------------------------------------------------------------------------
@@ -38,7 +46,7 @@ For proper installing bluetooth see
 Copyrights
 -------------------------------------------------------------------------
 	
-	Copyright (C)  2016, 2017
+	Copyright (C)  2017, 2018
 	Jan van Katwijk (J.vanKatwijk@gmail.com)
 	Lazy Chair Programming
 
