@@ -14,7 +14,8 @@ public class ServicesSearch {
 	final RemoteDeviceDiscovery mySearcher =
 	                              new RemoteDeviceDiscovery ();
 	final Object serviceSearchCompletedEvent = new Object ();
-	UUID radioId;
+	final UUID radioId	=
+                        new UUID ("9ce8f756e97b11e89f32f2801f1b9fd1", false);
 	final UUID serviceUUID	= new UUID (0x0003);	// RFComm
 	final Vector<RemoteDevice> devicesDiscovered =
                                                    new Vector <RemoteDevice> ();
@@ -23,8 +24,6 @@ public class ServicesSearch {
 	public StreamConnection findService ()
 	                 throws IOException, InterruptedException {
 
-	radioId				= 
-                        new UUID ("9ce8f756e97b11e89f32f2801f1b9fd1", false);
 
 //	First run RemoteDeviceDiscovery and use discovered device
 	   serviceFound.      clear ();
@@ -79,8 +78,8 @@ public class ServicesSearch {
 	      }
 	   };
 
-	   UUID [] searchUuidSet = new UUID[] {radioId};
-//	   UUID [] searchUuidSet = new UUID[] {serviceUUID, radioId};
+//	   UUID [] searchUuidSet = new UUID[] {radioId};
+	   UUID [] searchUuidSet = new UUID[] {serviceUUID, radioId};
 	   int[] attrIDs =  new int[] {
                 0x0100 // Service name
 	   };
@@ -90,7 +89,8 @@ public class ServicesSearch {
 	   for (int i = 0; i < devicesDiscovered. size (); i ++) {
 	      RemoteDevice btDevice =
 	                     devicesDiscovered. get (i);
-	      if (btDevice. getFriendlyName (true). equals ("raspberrypi")) {
+	      {
+//	      if (btDevice. getFriendlyName (true). equals ("raspberrypi")) {
 	         synchronized (serviceSearchCompletedEvent) {
 	            LocalDevice. getLocalDevice ().
 	                         getDiscoveryAgent().

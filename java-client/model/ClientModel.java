@@ -81,7 +81,8 @@ public class ClientModel extends Thread {
 	         amount = bReader. read (inBuffer, 0, length);
                  Dispatcher (header [0], length, inBuffer);
 	      } catch (Exception e) {
-	      System. out. println ("length = " + length + " amount = " + amount);
+	      System. out. println ("length = " + length +
+	                                      " amount = " + amount);
 	      }
            }
 	}
@@ -93,7 +94,7 @@ public class ClientModel extends Thread {
 	   System. arraycopy (inBuffer, 0, buffer, 0, segSize);
 
 	   switch (key) {
-	      case Q_SOUND:
+	      case Q_SOUND:	// not yet implemented
 	         break;
 
 	      case Q_ENSEMBLE:

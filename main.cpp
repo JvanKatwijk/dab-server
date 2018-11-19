@@ -115,7 +115,8 @@ char	message [5];
 }
 //
 //
-//	Communication: the library sends the following signals:
+//	Communication: the library sends the following signals
+//	to the main program (all callbacks)
 static
 std::atomic<bool>timeSynced;
 

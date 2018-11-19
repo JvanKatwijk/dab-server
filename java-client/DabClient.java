@@ -29,10 +29,12 @@ public class DabClient {
 	      System. out. println ("could not establish connection");
 	      return;
 	   }
+
 	   if (thePlug == null) {
 	      System. out. println ("failed to connect, fatal\n");
 	      return;
 	   }
+
 	   java.awt.EventQueue.invokeLater (new Runnable() {
               @Override
 	      public void run () {
@@ -48,24 +50,23 @@ public class DabClient {
 	                                  new ClientController (model, view);
 	         inputReader. startRadio ();
                  view.setVisible(true);
-	         view. setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                 view. addWindowListener(new java.awt.event.WindowAdapter() {
+	         view. setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+                 view. addWindowListener (new java.awt.event.WindowAdapter() {
 	            @Override
 	             public void
-	                windowClosing(java.awt.event.WindowEvent windowEvent) {
-	                if (JOptionPane.showConfirmDialog (new JFrame (),
-	                    "Are you sure to close this window?",
-	                                       "Really Closing?",
-	                     JOptionPane.YES_NO_OPTION,
-	                     JOptionPane.QUESTION_MESSAGE) ==
-	                              JOptionPane.YES_OPTION){
-                        }
-                        System.exit(0);
-                    }
-	         });
+	                windowClosing (java.awt.event.WindowEvent windowEvent) {
+	                   if (JOptionPane.showConfirmDialog (new JFrame (),
+	                       "Are you sure to close this window?",
+	                                            "Really Closing?",
+	                        JOptionPane.YES_NO_OPTION,
+	                        JOptionPane.QUESTION_MESSAGE) ==
+	                                 JOptionPane.YES_OPTION){
+                                }
+                                System.exit(0);
+                           }
+	            });
 	      }
 	   });
 	}
-
 }
 
