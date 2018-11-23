@@ -23,17 +23,13 @@ the lnaState, while for e.g. DABsticks a single slider, setting the gain, might
 suffice)
 
 
--------------------------------------------------------------------------
- Definitely work in progress.
---------------------------------------------------------------------------
-
 Current status is that a java client is able to connect - using bluetooth -,
 The client might set/change the ifgain and lna state of the device.
 The client might set/change the audio loudness setting of the server
 (current set using an alsa setting). Of course the client might select
 a service. On selecting a service, the server might have to change the
 selected channel.
-Finally, the client can dorce a rescan over all channels in band III.
+Finally, the client can force a rescan over all channels in band III.
 
 One of the major issues is setting up something useful over bluetooth,
 while it works, it needs additional attention.
@@ -41,6 +37,12 @@ while it works, it needs additional attention.
 For proper installing bluetooth see 
 	https://askubuntu.com/questions/775303/unified-remote-bluetooth-could-not-connect-to-sdp
 
+----------------------------------------------------------------------------
+Android client
+----------------------------------------------------------------------------
+
+Most of the current activities are related to creating an android client
+Since it is my first activity on Android, it will take some time
 
 -------------------------------------------------------------------------
 Copyrights
@@ -51,6 +53,7 @@ Copyrights
 	Lazy Chair Programming
 
 The dab-library software is made available under the GPL-2.0. The dab-library uses a number of GPL-ed libraries, all
-rigfhts gratefully acknowledged.
-All SDR-J software, among which dab-library is one - is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 	GNU General Public License for more details.
+rigfhts gratefully acknowledged. The DAB client is available under GPL-2.0. The Android client is for private use only.
+
+
 
