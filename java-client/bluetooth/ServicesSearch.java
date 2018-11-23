@@ -17,7 +17,7 @@ public class ServicesSearch {
 //	final UUID radioId	=
 //                      new UUID ("04c6093b00001000800000805f9b34fb", false);
         private static final UUID radioId =
-                UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+                new UUID ("0000110100001000800000805F9B34FB", false);
 	final UUID serviceUUID	= new UUID (0x0003);	// RFComm
 	final Vector<RemoteDevice> devicesDiscovered =
                                                    new Vector <RemoteDevice> ();
