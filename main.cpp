@@ -327,13 +327,13 @@ int	optie;
         register_service ();
 //      allocate socket
         s = socket (AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-//      bind socket to port 1 of the first available
+//      bind socket to port 3 of the first available
 
 //      local bluetooth adapter
         loc_addr.rc_family = AF_BLUETOOTH;
         loc_addr.rc_bdaddr = tmp;
 //	loc_addr.rc_bdaddr = *BDADDR_ANY;
-        loc_addr.rc_channel = (uint8_t) 1;
+	loc_addr.rc_channel = (uint8_t) 1;
         bind (s, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
 //
 //	
@@ -602,14 +602,13 @@ int	starter	= 0;
 
 static
 sdp_session_t *register_service (void) {
-uint8_t service_uuid_int [] =
-//	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xab, 0xcd };
-//{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00,
-// 0x80, 0x00, 0x00, 0x80, 0x5F, 0x9B, 0x34, 0xFB};
-{0x9c, 0xe8, 0xf7, 0x56, 0xe9, 0x7b, 0x11, 0xe8,
-0x9f, 0x32, 0xf2, 0x80, 0x1f, 0x1b, 0x9f, 0xd1};
+//uint8_t svc_uuid_int [] =
+//{0x04, 0xc6, 0x09, 0x3b, 0x00, 0x00, 0x10, 0x00,
+// 0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb};
+uint32_t svc_uuid_int[] = {0x01110000, 0x00100000, 0x80000080, 0xFB349B5F};
 
-uint8_t rfcomm_channel		= 3;
+
+uint8_t rfcomm_channel		= 1;
 const char *service_name	= "Jan's dab handler";
 const char *svc_dsc		= "dab handler";
 const char *service_prov	= "Lazy Chair computing";
@@ -628,11 +627,11 @@ sdp_record_t record		= { 0 };
 sdp_session_t	*session	= 0;
 
 //	set the general service ID
-	sdp_uuid16_create (&svc_uuid, 0xabcd);
-//	sdp_uuid128_create (&svc_uuid, &service_uuid_int);
+//	sdp_uuid16_create (&svc_uuid, 0xabcd);
+	sdp_uuid128_create (&svc_uuid, &svc_uuid_int);
 	sdp_set_service_id (&record, svc_uuid);
 
-char str [256] = "";
+        char str [256] = "";
 	sdp_uuid2strn (&svc_uuid, str, 256);
 	fprintf (stderr, "registering UUID %s\n", str);
 //	set the service class

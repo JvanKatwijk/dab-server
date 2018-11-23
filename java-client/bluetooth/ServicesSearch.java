@@ -14,8 +14,10 @@ public class ServicesSearch {
 	final RemoteDeviceDiscovery mySearcher =
 	                              new RemoteDeviceDiscovery ();
 	final Object serviceSearchCompletedEvent = new Object ();
-	final UUID radioId	=
-                        new UUID ("9ce8f756e97b11e89f32f2801f1b9fd1", false);
+//	final UUID radioId	=
+//                      new UUID ("04c6093b00001000800000805f9b34fb", false);
+        private static final UUID radioId =
+                UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	final UUID serviceUUID	= new UUID (0x0003);	// RFComm
 	final Vector<RemoteDevice> devicesDiscovered =
                                                    new Vector <RemoteDevice> ();
@@ -89,8 +91,7 @@ public class ServicesSearch {
 	   for (int i = 0; i < devicesDiscovered. size (); i ++) {
 	      RemoteDevice btDevice =
 	                     devicesDiscovered. get (i);
-	      {
-//	      if (btDevice. getFriendlyName (true). equals ("raspberrypi")) {
+	      if (btDevice. getFriendlyName (true). equals ("raspberrypi")) {
 	         synchronized (serviceSearchCompletedEvent) {
 	            LocalDevice. getLocalDevice ().
 	                         getDiscoveryAgent().
