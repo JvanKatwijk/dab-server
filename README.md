@@ -1,5 +1,5 @@
 
-	DAB-SERVER (bluetooth)
+	DAB-SERVER (bluetooth), java and android clients
 
 ---------------------------------------------------------------------
 
@@ -7,42 +7,42 @@
 
 A simple DAB server, for use with a bluetooth client.
 
-The project I am working on aims at creating a simple remote control for
-a DAB server, the latter being a modified (simplified) version of
-the DAB library. The server then will run on something like an RPI 2/3 and a bluetooth
-device - currently my laptop - will connect using bluetooth, show the
-services within reach and controls the radio.
-The picture shows a simple java client, running on my laptop.
-Current work is on creating a client on android, so that the control
-is using your tablet or phone.
+The project I am working on aims at extending the "dab-cmdline" library and
+creating the DAB functionality as a server with a (reasonably) well defined interface.
+In this project I am experimenting with Bluetooth as means for cummunication.
 
-Currently ONLY the sdrplay device is supported. It is pretty simple though
+The server runs on a Linux box, I am running it most of the time on an RPI 2/3.
+The server, when started, collects services in ensembles  found in the different channels
+in Band III, and - when this is finished - is waiting for someone to call.
+
+As soon as a client connects, the names of the services are transmitted to the client, and the
+server is ready to receive commands.
+Typical commands are selecting a service or changing the gain setting of the device.
+If the user is not satisfied with the amount of services, there is a "reset" button
+that instructs the server to scan all channels again.
+
+One of the open issues is where the sound should go, in the current approach the server
+will have to make it audible, the client just being the remore control.
+The alternative - obviously - would be to send the audio back to the client.
+
+In this experiment, we use bluetooth as communication medium between client and server
+and two clients are - experimental - implemented (or better: being implemented).
+
+a. a simple Java client, showed in the picture. The client is being exercised on my laptop
+b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
+to further study.
+
+Currently the ONLY supported device is the sdrplay device. It is pretty simple though
 to change that, although that will most likely lead to changes in the client's
 GUI (Note that the current GUI shows controls for both the if gain reduction and
 the lnaState, while for e.g. DABsticks a single slider, setting the gain, might
 suffice)
 
-
-Current status is that a java client is able to connect - using bluetooth -,
-The client might set/change the ifgain and lna state of the device.
-The client might set/change the audio loudness setting of the server
-(current set using an alsa setting). Of course the client might select
-a service. On selecting a service, the server might have to change the
-selected channel.
-Finally, the client can force a rescan over all channels in band III.
-
-One of the major issues is setting up something useful over bluetooth,
-while it works, it needs additional attention.
-
-For proper installing bluetooth see 
+Installing bluetooth on Linux required some searching, for proper installing bluetooth see 
 	https://askubuntu.com/questions/775303/unified-remote-bluetooth-could-not-connect-to-sdp
+For Java, the bluecove libraries implement the required functionality and
+Android provides a quite extensive library for Bluetooth support.
 
-----------------------------------------------------------------------------
-Android client
-----------------------------------------------------------------------------
-
-Most of the current activities are related to creating an android client
-Since it is my first activity on Android, it will take some time
 
 -------------------------------------------------------------------------
 Copyrights
