@@ -361,7 +361,7 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
-        public	void	reset	() {
+        public	void	doReset	() {
            byte data [] = new byte [4];
            data [0] = (byte)Q_RESET;
            data [1] = (byte)0;

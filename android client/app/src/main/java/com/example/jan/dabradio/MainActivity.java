@@ -36,11 +36,13 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private ArrayList<Object>   BTResultMac;
     private CountDownTimer      scanTimer;
     private Button              startButton;
+    private Button              resetButton;
     private Button              autogainButton;
     private SeekBar             ifgainReduction;
     private Spinner             lnaState;
     private ListView            services;
     private ArrayList<String>   theServices;
+    static ArrayAdapter<String>serviceAdapter;
     private ListView            lResult;
     private BluetoothAdapter    myBluetoothAdapter;
     private BluetoothDevice     device;
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements Signals {
     Integer [] lnastateValues = new Integer [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     static ArrayAdapter<Integer> lnaAdapter;
     static ArrayList<String> serviceItems;
-    static ArrayAdapter<String>serviceAdapter;
     private static UUID my_uuid = UUID.fromString ("00001101-0000-1000-8000-00805f9b34fb");
 
     @Override
@@ -70,8 +71,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
         tStatus         = (TextView)findViewById (R. id. statusLabel);
         startButton     = (Button)  findViewById (R. id. startButton);
         autogainButton  = (Button)  findViewById (R. id. autogainButton);
+        resetButton     = (Button)  findViewById (R. id. resetButton);
+        resetButton.    setEnabled (false);
         ifgainReduction = (SeekBar) findViewById (R. id. ifgainReduction);
+        ifgainReduction. setEnabled (false);
         lnaState        = (Spinner) findViewById (R. id. lnaState);
+        lnaState.       setEnabled (false);
         services        = (ListView)findViewById (R. id. services);
         lResult         = (ListView) findViewById(R. id. lResult);
         ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
@@ -157,6 +162,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
                 tStatus.setText ("Connected");
                 toaster ("Connected, going forward");
+                resetButton. setEnabled (true);
+                ifgainReduction. setEnabled (true);
+                lnaState. setEnabled (true);
             }
         });
 
@@ -176,8 +184,16 @@ public class MainActivity extends AppCompatActivity implements Signals {
 //
 //      Open Button
         startButton. setOnClickListener (new View.OnClickListener() {
-            public void onClick(View v) {
+            public void onClick (View v) {
                 int result = connectRadio ();
+            }
+        });
+
+//
+//      Reset Button
+        resetButton. setOnClickListener (new View. OnClickListener () {
+            public void onClick (View v) {
+                doReset ();
             }
         });
 //
@@ -262,7 +278,17 @@ public class MainActivity extends AppCompatActivity implements Signals {
     }
 //
 //	The signals (should) lead to changing the GUI
-    public  void    show_ensembleName       (String s1, int s2) {}
+
+    public void  doReset () {
+        theServices. clear ();
+        serviceAdapter. clear ();
+        my_radioInterface. doReset ();
+    }
+
+    public  void    show_ensembleName       (String s1, int s2) {
+        ensembleLabel. setText (s1);
+    }
+
     public  void    show_serviceName        (String s1) {
         serviceItems. add (s1);
         serviceAdapter. notifyDataSetChanged ();

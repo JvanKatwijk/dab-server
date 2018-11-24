@@ -215,7 +215,7 @@ static bool isStarted	= false;
 	}
 
 	if (isStereo != signalStereo) {
-	   int_Writer (Q_SIGNAL_STEREO, 0);
+	   int_Writer (Q_SIGNAL_STEREO, isStereo);
 	   signalStereo	= isStereo;
 	}
 	if (!isStarted) {
@@ -733,6 +733,11 @@ std::string	startChannel	= "5A";
 	      int timeSyncTime	= 2;
 	      ensembleRecognized.	store (false);
 	      fprintf (stderr, "scanning channel %s\n", theChannel. c_str ());
+	      if (fresh) {
+	          std::string s = "scanning channel ";
+	          s = s. append (theChannel);
+	          string_Writer (Q_TEXT_MESSAGE, s);
+              }
 	      theRadio	-> start ();
 //
 //	The approach is to look for a short time for a kind of DAB signal
