@@ -203,4 +203,37 @@
         app:layout_constraintStart_toEndOf="@+id/lResult"
         app:layout_constraintTop_toBottomOf="@+id/stereoLabel" />
 
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="78dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="532dp"
+        android:text="quit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/lResult"
+        app:layout_constraintTop_toBottomOf="@+id/resetButton" />
+
+    <TextView
+        android:id="@+id/snrLabel"
+        android:layout_width="92dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginLeft="82dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginBottom="25dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/lResult"
+        app:layout_constraintEnd_toStartOf="@+id/startButton"
+        app:layout_constraintStart_toEndOf="@+id/ensembleLabel"
+        app:layout_constraintTop_toBottomOf="@+id/gainLabel" />
+
 </android.support.constraint.ConstraintLayout>

@@ -237,7 +237,7 @@ void	systemData (bool flag, int16_t snr, int32_t freqOff, void *ctx) {
 	   int_Writer (Q_SYNCED, flag);
 	   syncFlag = flag;
 	}
-	int_Writer (Q_SIGNAL_QUALITY, (uint8_t)(snr));
+	int_Writer (Q_SNR, (uint8_t)(snr));
 }
 
 static

@@ -79,8 +79,8 @@ public class ClientController implements modelSignals, viewSignals {
 	}
 
 	@Override
-	public	void	show_signalQuality	(int q) {
-	   m_view. show_signalQuality (q);
+	public	void	show_snr	(int q) {
+	   m_view. show_snr (q);
 	}
 
 	@Override

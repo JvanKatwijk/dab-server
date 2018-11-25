@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private TextView            dynamicLabel;
     private TextView            ensembleLabel;
     private TextView            tStatus;
+    private TextView            snrLabel;
     private ArrayAdapter<String> BTArrayAdapter;
     private ArrayList<Object>   BTResultMac;
     private CountDownTimer      scanTimer;
@@ -69,8 +70,10 @@ public class MainActivity extends AppCompatActivity implements Signals {
         stereoLabel     = (TextView)findViewById (R. id. stereoLabel);
         dynamicLabel    = (TextView)findViewById (R. id. dynamicLabel);
         tStatus         = (TextView)findViewById (R. id. statusLabel);
+        snrLabel        = (TextView)findViewById (R. id. snrLabel);
         startButton     = (Button)  findViewById (R. id. startButton);
         autogainButton  = (Button)  findViewById (R. id. autogainButton);
+        autogainButton. setEnabled (false);
         resetButton     = (Button)  findViewById (R. id. resetButton);
         resetButton.    setEnabled (false);
         ifgainReduction = (SeekBar) findViewById (R. id. ifgainReduction);
@@ -300,7 +303,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
     }
 
     public  void    show_programData        (String s) {}
-    public  void    show_signalQuality      (int q) {}
+    public  void    show_snr                (int q) {
+        snrLabel. setText (Integer. toString (q));
+    }
 
     public  void    show_synced             (boolean q) {
         if (q)

@@ -32,7 +32,7 @@ public class radioInterface extends Thread {
         private	final int	Q_SERVICE_NAME		= 0101;
         private	final int	Q_TEXT_MESSAGE		= 0102;
         private	final int	Q_PROGRAM_DATA		= 0103;
-        private	final int	Q_SIGNAL_QUALITY	= 0104;
+        private	final int	Q_SNR	                = 0104;
         private	final int	Q_NEW_ENSEMBLE		= 0105;
         private	final int	Q_NO_SERVICE		= 0106;
         private	final int	Q_SYNCED		= 0107;
@@ -158,13 +158,13 @@ public class radioInterface extends Thread {
                }
                break;
 
-               case Q_SIGNAL_QUALITY: {
-                   final int qualityInd = buffer [0];
+               case Q_SNR: {
+                   final int snr = buffer [0];
                    try {
                        the_gui. runOnUiThread (new Runnable () {
                           @Override
                           public void run () {
-                             show_signalQuality (qualityInd);
+                             show_snr (snr);
                         }});
                    } catch (Exception e) {}
                }

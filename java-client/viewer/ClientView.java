@@ -26,7 +26,7 @@ public class ClientView extends JFrame {
 	private	final	JButton	m_autogainButton	= new JButton ("auto");
 	private		boolean	autogainState		= false;
 	private	final	JLabel	m_gainLabel	= new JLabel ("30");
-	private final	JLabel	m_qualityLabel	= new JLabel ("0");
+	private final	JLabel	m_snrLabel	= new JLabel ("0");
 	private	final	JLabel	m_syncedLabel	= new JLabel ("sync");
 	private	final	JSpinner m_soundLevel	=
 	                     new JSpinner (new SpinnerNumberModel (0, -10, 10, 1));
@@ -62,7 +62,7 @@ public class ClientView extends JFrame {
 	   m_syncedLabel.	setBackground (Color. red);
 	   m_syncedLabel.	setOpaque (true);
 	   m_syncedLabel.	setToolTipText ("green: decoding might succeed");
-	   m_qualityLabel.	setToolTipText ("snr");
+	   m_snrLabel.	        setToolTipText ("snr");
 	   m_lnaState.		setToolTipText ("set the lna state of the SDRplay");
 //... Layout the components.      
            JPanel row1 = new JPanel();
@@ -73,7 +73,7 @@ public class ClientView extends JFrame {
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
 	   row1. add (m_ensembleLabel);
 	   row1. add (Box. createRigidArea (new Dimension (20, 0)));
-	   row1. add (m_qualityLabel);
+	   row1. add (m_snrLabel);
 	   row1. add (Box. createRigidArea (new Dimension (10, 0)));
 	   row1. add (m_stereoIndicator);
 	
@@ -221,8 +221,8 @@ public class ClientView extends JFrame {
 	public	void	show_programData	(String s) {
 	}
 
-	public	void	show_signalQuality	(int q) {
-	   m_qualityLabel. setText (Integer. toString (q));
+	public	void	show_snr	(int q) {
+	   m_snrLabel. setText (Integer. toString (q));
 	}
 
 	public	void	show_synced		(boolean b) {
