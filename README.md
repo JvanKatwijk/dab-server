@@ -53,7 +53,7 @@ Copyrights
 	Lazy Chair Programming
 
 The dab-library software is made available under the GPL-2.0. The dab-library uses a number of GPL-ed libraries, all
-rigfhts gratefully acknowledged. The DAB client is available under GPL-2.0. The Android client is for private use only.
+rigfhts gratefully acknowledged. The DAB-java client is available under GPL-2.0. The Android client is for private use only.
 
 
 
