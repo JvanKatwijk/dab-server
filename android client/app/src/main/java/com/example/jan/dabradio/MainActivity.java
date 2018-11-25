@@ -39,11 +39,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private Button              startButton;
     private Button              resetButton;
     private Button              autogainButton;
+    private Button              quitButton;
     private SeekBar             ifgainReduction;
     private Spinner             lnaState;
     private ListView            services;
     private ArrayList<String>   theServices;
-    static ArrayAdapter<String>serviceAdapter;
+    static ArrayAdapter<String> serviceAdapter;
     private ListView            lResult;
     private BluetoothAdapter    myBluetoothAdapter;
     private BluetoothDevice     device;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
         tStatus         = (TextView)findViewById (R. id. statusLabel);
         snrLabel        = (TextView)findViewById (R. id. snrLabel);
         startButton     = (Button)  findViewById (R. id. startButton);
+        quitButton      = (Button)  findViewById (R. id. quitButton);
         autogainButton  = (Button)  findViewById (R. id. autogainButton);
         autogainButton. setEnabled (false);
         resetButton     = (Button)  findViewById (R. id. resetButton);
@@ -165,13 +167,14 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
                 tStatus.setText ("Connected");
                 toaster ("Connected, going forward");
-                resetButton. setEnabled (true);
-                ifgainReduction. setEnabled (true);
-                lnaState. setEnabled (true);
+                resetButton.       setEnabled (true);
+                ifgainReduction.   setEnabled (true);
+                autogainButton.    setEnabled (true);
+                lnaState.          setEnabled (true);
             }
         });
 
-//	touching a n element of the services list
+//	touching an element of the services list
         services. setOnItemClickListener (new AdapterView.
                                                    OnItemClickListener() {
             @Override
@@ -197,6 +200,20 @@ public class MainActivity extends AppCompatActivity implements Signals {
         resetButton. setOnClickListener (new View. OnClickListener () {
             public void onClick (View v) {
                 doReset ();
+            }
+        });
+//
+//	Quit Button
+        quitButton. setOnClickListener (new View. OnClickListener () {
+            public void
+
+            onClick (View v) {
+                if (btSocket. isConnected ())
+                    try {
+                        btSocket. close ();
+                    } catch (IOException e) {}
+                finish ();
+                System.exit(0);
             }
         });
 //
@@ -231,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 startActivityForResult (
                         new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                         REQUEST_ENABLE_BT);
-            tStatus.setText("Status: BlueTooth Enabled");
+            tStatus. setText("Status: BlueTooth Enabled");
             BTArrayAdapter = new ArrayAdapter<String>(this,
                                        android.R.layout.simple_list_item_1);
             BTResultMac = new ArrayList<Object>();
@@ -254,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
             @Override
             public void onFinish () {
                 myBluetoothAdapter. cancelDiscovery ();
-                tStatus.setText("Status: Search Finished");
+                tStatus.setText ("Status: Search Finished");
             }
         };
         scanTimer.start();
@@ -263,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
         public void onReceive (Context context, Intent intent) {
-            String action = intent.getAction();
+            String action = intent. getAction();
             if (BluetoothDevice. ACTION_FOUND. equals (action)) {
                 BluetoothDevice device =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);

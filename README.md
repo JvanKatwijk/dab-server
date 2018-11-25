@@ -8,22 +8,12 @@
 A simple DAB server, for use with a bluetooth client.
 
 The project I am working on aims at extending the "dab-cmdline" library and
-creating the DAB functionality as a server with a (reasonably) well defined interface.
+providing DAB functionality through a server with a (reasonably) well defined interface.
 In this project I am experimenting with Bluetooth as means for cummunication.
 
 The server runs on a Linux box, I am running it most of the time on an RPI 2/3.
 The server, when started, collects services in ensembles  found in the different channels
 in Band III, and - when this is finished - is waiting for someone to call.
-
-As soon as a client connects, the names of the services are transmitted to the client, and the
-server is ready to receive commands.
-Typical commands are selecting a service or changing the gain setting of the device.
-If the user is not satisfied with the amount of services, there is a "reset" button
-that instructs the server to scan all channels again.
-
-One of the open issues is where the sound should go, in the current approach the server
-will have to make it audible, the client just being the remore control.
-The alternative - obviously - would be to send the audio back to the client.
 
 In this experiment, we use bluetooth as communication medium between client and server
 and two clients are - experimental - implemented (or better: being implemented).
@@ -31,6 +21,28 @@ and two clients are - experimental - implemented (or better: being implemented).
 a. a simple Java client, showed in the picture. The client is being exercised on my laptop
 b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
 to further study.
+
+The android client has a start button, touching it will instruct the client
+to look at bluetooth devices in the neighbourhood.
+Touching the name of the device running the server will (try to) establish
+the connection.
+As soon as a client is connected the names of the services are
+transmitted to the client, and the
+server is ready to receive commands.
+Typical commands are selecting a service or changing the gain setting of the device.
+If the user is not satisfied with the amount of services, there is a "reset" button
+that instructs the server to scan all channels again.
+
+To close down the connection, a the uer can touch the "quit" button, the server
+will then be available for another client.
+
+The java client will try to connect directly to the server that reports
+to have the right service.
+
+One of the open issues is where the sound should go, in the current approach the server
+will have to make it audible, the client just being the remore control.
+The alternative - obviously - would be to send the audio back to the client.
+
 
 Currently the ONLY supported device is the sdrplay device. It is pretty simple though
 to change that, although that will most likely lead to changes in the client's

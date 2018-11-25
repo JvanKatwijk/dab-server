@@ -285,11 +285,11 @@ public class radioInterface extends Thread {
             };
         }
 
-        public	void	show_signalQuality (int q) {
+        public	void	show_snr (int q) {
             int i;
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
-                handler. show_signalQuality (q);
+                handler. show_snr (q);
             };
         }
 
