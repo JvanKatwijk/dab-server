@@ -7,14 +7,14 @@
     tools:context=".MainActivity">
 
     <Button
-        android:textColor="@android:color/black"
         android:id="@+id/startButton"
-        android:layout_width="111dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
+        android:layout_width="102dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:text="start"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ifgainReduction" />
 
@@ -66,68 +66,67 @@
 
     <ListView
         android:id="@+id/lResult"
-        android:layout_width="175dp"
-        android:layout_height="491dp"
+        android:layout_width="189dp"
+        android:layout_height="385dp"
         android:layout_marginStart="21dp"
         android:layout_marginLeft="21dp"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="140dp"
         android:layout_marginRight="140dp"
-        android:layout_marginBottom="41dp"
-        app:layout_constraintBottom_toTopOf="@+id/statusLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/services"
         app:layout_constraintTop_toBottomOf="@+id/autogainButton" />
 
     <TextView
         android:id="@+id/syncLabel"
-        android:layout_width="80dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_width="97dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
         android:text="synced"
+        app:layout_constraintBottom_toTopOf="@+id/stereoLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/lResult"
         app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
     <TextView
         android:id="@+id/stereoLabel"
-        android:layout_width="79dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_width="97dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginBottom="772dp"
         android:text="Stereo"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/lResult"
         app:layout_constraintTop_toBottomOf="@+id/syncLabel" />
 
     <TextView
         android:id="@+id/dynamicLabel"
-        android:layout_width="698dp"
-        android:layout_height="64dp"
+        android:layout_width="730dp"
+        android:layout_height="62dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginRight="51dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="156dp"
         android:text="TextView"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/services"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/services" />
 
     <TextView
         android:id="@+id/gainLabel"
@@ -140,12 +139,13 @@
         android:layout_marginRight="51dp"
         android:layout_marginBottom="89dp"
         android:text="TextView"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/lResult"
         app:layout_constraintEnd_toStartOf="@+id/autogainButton"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/ifgainReduction"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.84" />
+        app:layout_constraintVertical_bias="0.609" />
 
     <TextView
         android:id="@+id/ensembleLabel"
@@ -158,6 +158,7 @@
         android:layout_marginRight="233dp"
         android:layout_marginBottom="17dp"
         android:text="TextView"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/services"
         app:layout_constraintEnd_toStartOf="@+id/startButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -165,67 +166,72 @@
 
     <Button
         android:id="@+id/autogainButton"
-        android:layout_width="120dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="164dp"
-        android:layout_marginLeft="164dp"
-        android:layout_marginTop="68dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginLeft="192dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="22dp"
         android:text="autogain"
+        app:layout_constraintBottom_toTopOf="@+id/startButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ifgainReduction"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:textColor="@android:color/black"
         android:id="@+id/statusLabel"
-        android:layout_width="184dp"
-        android:layout_height="45dp"
+        android:layout_width="297dp"
+        android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginRight="136dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginRight="23dp"
         android:layout_marginBottom="216dp"
         android:text="TextView"
+        android:gravity="center"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toTopOf="@+id/dynamicLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/services"
-        app:layout_constraintTop_toBottomOf="@+id/lResult" />
+        app:layout_constraintTop_toBottomOf="@+id/lResult"
+        app:layout_constraintVertical_bias="0.027" />
 
     <Button
         android:id="@+id/resetButton"
-        android:layout_width="102dp"
-        android:layout_height="81dp"
+        android:layout_width="95dp"
+        android:layout_height="79dp"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="26dp"
         android:layout_marginRight="26dp"
-        android:layout_marginBottom="522dp"
+        android:layout_marginBottom="24dp"
         android:text="reset"
-        app:layout_constraintBottom_toTopOf="@+id/dynamicLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/lResult"
-        app:layout_constraintTop_toBottomOf="@+id/stereoLabel"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/quitButton"
-        android:layout_width="102dp"
-        android:layout_height="81dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginTop="78dp"
-        android:layout_marginEnd="26dp"
-        android:layout_marginRight="26dp"
-        android:layout_marginBottom="532dp"
-        android:text="quit"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/quitButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/lResult"
-        app:layout_constraintTop_toBottomOf="@+id/resetButton"
-        app:layout_constraintVertical_bias="0.982" />
+        app:layout_constraintTop_toBottomOf="@+id/stereoLabel" />
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="95dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="65dp"
+        android:text="quit"
+        app:layout_constraintBottom_toTopOf="@+id/statusLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/lResult"
+        app:layout_constraintTop_toBottomOf="@+id/resetButton" />
 
     <TextView
         android:id="@+id/snrLabel"
@@ -243,7 +249,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/ensembleLabel"
         app:layout_constraintTop_toBottomOf="@+id/gainLabel"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView"
