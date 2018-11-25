@@ -71,12 +71,18 @@ public class MainActivity extends AppCompatActivity implements Signals {
         stereoLabel     = (TextView)findViewById (R. id. stereoLabel);
         dynamicLabel    = (TextView)findViewById (R. id. dynamicLabel);
         tStatus         = (TextView)findViewById (R. id. statusLabel);
+        tStatus.    setBackgroundColor (Color. YELLOW);
+        tStatus.    setTextColor (Color. BLACK);
         snrLabel        = (TextView)findViewById (R. id. snrLabel);
         startButton     = (Button)  findViewById (R. id. startButton);
+        startButton. setBackgroundColor (Color. GREEN);
         quitButton      = (Button)  findViewById (R. id. quitButton);
+        quitButton.  setBackgroundColor (Color. RED);
         autogainButton  = (Button)  findViewById (R. id. autogainButton);
         autogainButton. setEnabled (false);
         resetButton     = (Button)  findViewById (R. id. resetButton);
+        resetButton. setBackgroundColor (Color.  YELLOW);
+        autogainButton. setBackgroundColor (Color. GREEN);
         resetButton.    setEnabled (false);
         ifgainReduction = (SeekBar) findViewById (R. id. ifgainReduction);
         ifgainReduction. setEnabled (false);
@@ -326,9 +332,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
     public  void    show_synced             (boolean q) {
         if (q)
-            syncLabel.setTextColor (Color.GREEN);
+            syncLabel.setBackgroundColor (Color.GREEN);
         else
-            syncLabel.setTextColor (Color.RED);
+            syncLabel.setBackgroundColor (Color.RED);
     }
 
     public  void    set_lnaState            (int s) {
@@ -343,9 +349,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
     public  void    set_stereoIndicator     (boolean b) {
         if (b) 
-            stereoLabel. setTextColor (Color. GREEN);
+            stereoLabel. setBackgroundColor (Color. GREEN);
         else
-            stereoLabel. setTextColor (Color. RED);
+            stereoLabel. setBackgroundColor (Color. RED);
     }
 };
 
