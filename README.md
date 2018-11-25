@@ -47,6 +47,8 @@ that instructs the server to scan all channels again.
 To close down the connection, a the uer can touch the "quit" button, the server
 will then be available for another client.
 
+The GUI obviously needs some additional work!!!
+
 ----------------------------------------------------------------------------
 
 Java Client
