@@ -50,15 +50,27 @@ int32_t	deviceHandler::Samples		(void) {
 	return 0;
 }
 
-void	deviceHandler::set_autogain	(bool b) {
-	(void)b;
-}
-
 void	deviceHandler::set_ifgainReduction  (int x) {
 	(void)x;
 }
 
 void	deviceHandler::set_lnaState	(int x) {
 	(void)x;
+}
+
+void	deviceHandler::set_autogain	(bool b) {
+	(void)b;
+}
+
+std::string deviceHandler::deviceName	(void) {
+	return std::string ("no device");
+}
+
+void	deviceHandler::set_gain		(int x) {
+	(void)x;
+}
+
+int	deviceHandler::whoamI		(void) {
+	return S_NOBODY;
 }
 

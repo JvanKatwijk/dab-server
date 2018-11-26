@@ -27,18 +27,15 @@ public class ClientModel extends Thread {
 	private	final int	Q_RESET			= 0107;
 //
 //	keys for incoming messages
-	private	final int	Q_ENSEMBLE		= 0100;
-	private	final int	Q_SERVICE_NAME		= 0101;
-	private	final int	Q_TEXT_MESSAGE		= 0102;
-	private	final int	Q_PROGRAM_DATA		= 0103;
-	private	final int	Q_SNR			= 0104;
-	private	final int	Q_NEW_ENSEMBLE		= 0105;
-	private	final int	Q_NO_SERVICE		= 0106;
-	private	final int	Q_SYNCED		= 0107;
-	private	final int	Q_INITIAL_LNA		= 0110;
-	private	final int	Q_INITIAL_GRdB		= 0111;
-	private	final int	Q_SOUND			= 0112;
-	private final int	Q_SIGNAL_STEREO		= 0113;
+	private	final int	Q_INITIALS		= 0100;
+	private final int	Q_DEVICE_NAME		= 0101;
+	private	final int	Q_ENSEMBLE		= 0102;
+	private	final int	Q_SERVICE_NAME		= 0103;
+	private	final int	Q_TEXT_MESSAGE		= 0104;
+	private final int	Q_STATE			= 0105;
+	private final int	Q_STEREO		= 0106;
+	private	final int	Q_NEW_ENSEMBLE		= 0107;
+	private	final int	Q_SOUND			= 0110;
 //
 //	For the connection we need
 	private final StreamConnection thePlug;
@@ -97,113 +94,92 @@ public class ClientModel extends Thread {
 	      case Q_SOUND:	// not yet implemented
 	         break;
 
-	      case Q_ENSEMBLE:
-	         { buffer [segSize]	= 0;
-	           final String ensembleLabel = String. valueOf (buffer);
-	           try {
-	              javax. swing. SwingUtilities.
+	      case Q_INITIALS: {
+	         final char sysdata [] = new char [segSize + 1];
+	         for (int i = 0; i < segSize + 1; i ++)
+	            sysdata [i] = inBuffer [i];
+//	         System. arraycopy (inBuffer, 0, sysdata, 0);
+	         try {
+	            javax. swing. SwingUtilities.
 	                         invokeLater (new Runnable () {
                           @Override
                           public void run () {
+	                     set_initialValues (sysdata);
+	            }});
+                 } catch (Exception e) {}
+	      }
+	      break;
+
+	      case Q_DEVICE_NAME: {
+	         buffer [segSize]	= 0;
+	         final String deviceName = String. valueOf (buffer);
+	         try {
+	             javax. swing. SwingUtilities.
+	                         invokeLater (new Runnable () {
+                         @Override
+                         public void run () {
+	                    show_deviceName (deviceName);
+	             }});
+                 } catch (Exception e) {}
+	      }
+	      break;
+	                         
+	      case Q_ENSEMBLE: {
+	         buffer [segSize]	= 0;
+	         final String ensembleLabel = String. valueOf (buffer);
+	         try {
+	             javax. swing. SwingUtilities.
+	                         invokeLater (new Runnable () {
+                         @Override
+                         public void run () {
 	                     show_ensembleName (ensembleLabel, 0);
-	                  }});
-                   } catch (Exception e) {}
-	         }
-	         break;
+	             }});
+                 } catch (Exception e) {}
+	      }
+	      break;
 
-	      case Q_SERVICE_NAME:
-	         {  buffer [segSize] = 0;
-	            final String serviceLabel = String. valueOf (buffer);
-	            try {
-	               javax. swing. SwingUtilities.
+	      case Q_SERVICE_NAME: {
+	         buffer [segSize] = 0;
+	         final String serviceLabel = String. valueOf (buffer);
+	         try {
+	             javax. swing. SwingUtilities.
 	                         invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
+                         @Override
+                         public void run () {
 	                     show_serviceName (serviceLabel);
-	                  }});
-                    } catch (Exception e) {}
-	         }
+	             }});
+                 } catch (Exception e) {}
+	      }
+	      break;
+
+	      case Q_TEXT_MESSAGE: {
+	         buffer [segSize] = 0;
+	         final String dynamicLabel = String. valueOf (buffer);
+	         try {
+	             javax. swing. SwingUtilities.
+	                         invokeLater (new Runnable () {
+                         @Override
+                         public void run () {
+	                     show_dynamicLabel (dynamicLabel);
+	             }});
+                 } catch (Exception e) {}
+	      }
 	         break;
 
-	      case Q_TEXT_MESSAGE:
-	         {  buffer [segSize] = 0;
-	            final String dynamicLabel = String. valueOf (buffer);
-	            try {
-	                 javax. swing. SwingUtilities.
+	      case  Q_STATE: {
+	         final char vector [] = new char [2];
+	         vector [0] = buffer [0];
+	         vector [1] = buffer [1];
+	         try {
+	             javax. swing. SwingUtilities.
 	                            invokeLater (new Runnable () {
-                             @Override
-                             public void run () {
-	                        show_dynamicLabel (dynamicLabel);
-	                     }});
-                    } catch (Exception e) {}
-	         }
-	         break;
-
-	      case Q_PROGRAM_DATA:
-	         {  buffer [segSize] = 0;
-	            final String programData = String. valueOf (buffer);
-	            try {
-	               javax. swing. SwingUtilities.
-	                            invokeLater (new Runnable () {
-                             @Override
-                             public void run () {
-	                        show_programData (programData);
-	                     }});
-                    } catch (Exception e) {}
-	         }
-	         break;
-
-	      case Q_SNR:
-	         {  final int snr = buffer [0];
-	            try {
-	               javax. swing. SwingUtilities.
-	                            invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
-	                     show_snr (snr);
-	                  }});
-                    } catch (Exception e) {}
-	         }
-	         break;
-
-	      case Q_SYNCED:
-	         {  final boolean synced = buffer [0] != 0;
-	            try {
-	               javax. swing. SwingUtilities.
-	                            invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
-	                     show_synced (synced);
-	                  }});
-                    } catch (Exception e) {}
-	         }
-	         break;
-
-	      case Q_INITIAL_LNA:
-	         {  final int initialLNA = buffer [0];
-	            try {
-	               javax. swing. SwingUtilities.
-	                            invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
-	                     set_lnaState (initialLNA);
-	                  }});
-                    } catch (Exception e) {}
-	         }
-	         break;
-
-	      case Q_INITIAL_GRdB:
-	         {  final int initialGRdB = buffer [0];
-	            try {
-	               javax. swing. SwingUtilities.
-	                            invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
-	                     set_GRdB (initialGRdB);
-	                  }});
-                    } catch (Exception e) {}
-	         }
-	         break;
+                         @Override
+                         public void run () {
+	                     show_state (vector);
+	             }});
+                 } catch (Exception e) {}
+	      }
+	      break;
 
 	      case Q_NEW_ENSEMBLE:
 	         try {
@@ -216,19 +192,7 @@ public class ClientModel extends Thread {
 	         } catch (Exception e) {}
 	         break;
 
-	      case Q_NO_SERVICE:
-	         try {
-	              final String s = "no service found";
-	              javax. swing. SwingUtilities.
-	                         invokeLater (new Runnable () {
-                          @Override
-                          public void run () {
-	                     show_dynamicLabel (s);
-	                  }});
-                 } catch (Exception e) {}
-	         break;
-
-	      case Q_SIGNAL_STEREO:
+	      case Q_STEREO:
 	         try {
 	              final boolean b = buffer [0] != 0;
 	              javax. swing. SwingUtilities.
@@ -236,12 +200,24 @@ public class ClientModel extends Thread {
                           @Override
                           public void run () {
 	                     set_stereoIndicator (b);
-	                  }});
+	              }});
                  } catch (Exception e) {}
 	         break;
 
 	      default:;
 	   }
+	}
+
+	public	void	show_deviceName (String name) {
+	   listener. forEach ((hl) -> {
+	         hl. show_deviceName (name);
+	   });
+	}
+
+	public	void	set_initialValues (char [] v) {
+	   listener. forEach ((hl) -> {
+	        hl. set_initialValues (v);
+	   });
 	}
 
 	public  void show_ensembleName (String Name, int Sid) {
@@ -262,39 +238,15 @@ public class ClientModel extends Thread {
 	   });
 	}
 
-	public	void	show_programData (String s) {
+	public	void	show_state (char [] s) {
 	   listener. forEach ((hl) -> {
-	      hl. show_programData (s);
+	      hl. show_state (s);
 	   });
 	}
 
 	public	void	clearScreen () {
 	   listener. forEach ((hl) -> {
 	      hl. clearScreen ();
-	   });
-	}
-
-	public	void	show_snr (int q) {
-	   listener. forEach ((hl) -> {
-	      hl. show_snr (q);
-	   });
-	}
-
-	public	void	show_synced	(boolean b) {
-	   listener. forEach ((hl) -> {
-	      hl. show_synced (b);
-	   });
-	}
-
-	public	void	set_lnaState	(int initialLNA) {
-	   listener. forEach ((hl) -> {
-	      hl. set_lnaState	(initialLNA);
-	   });
-	}
-
-	public	void	set_GRdB	(int initialGRdB) {
-	   listener. forEach ((hl) -> {
-	      hl. set_GRdB	(initialGRdB);
 	   });
 	}
 

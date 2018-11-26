@@ -44,7 +44,12 @@
 #include	"band-handler.h"
 #include	"protocol.h"
 #include	"radiodata.h"
+#ifdef	HAVE_SDRPLAY__
 #include	"sdrplay-handler.h"
+#endif
+#ifdef	HAVE_AIRSPY
+#include	"airspy-handler.h"
+#endif
 #include	"dab-processor.h"
 
 using std::cerr;
@@ -102,15 +107,15 @@ char	message [2 * size + 3 + 1];
 //
 //	for some keys we only send a small integer value
 static
-void	int_Writer (uint8_t code, int8_t v) {
-char	message [5];
+void	vector_Writer (uint8_t code, uint8_t *v, int l) {
+char	message [3 + l + 1];
 	message [0]	= (char)code;
 	message [1]	= 0;
-	message [2]	= 2;
-	message [3]	= v;
-	message [4]	= 0;
+	message [2]	= l + 1;
+	for (int i = 0; i < l; i ++)
+	   message [3 + i]	= v [i];
 //	locker. lock ();
-	write (client, message, 5);
+	write (client, message, 3 + l + 1);
 //	locker. unlock ();
 }
 //
@@ -207,7 +212,8 @@ static
 void	pcmHandler (int16_t *buffer, int size, int rate,
 	                              bool isStereo, void *ctx) {
 static bool isStarted	= false;
-//
+uint8_t stereoFlag	= isStereo ? 1 : 0;
+
 //	we have to think here what to do if the rate has to be changed
 	if (soundOut == NULL) {
 	   sound_Writer (buffer, size);
@@ -215,7 +221,7 @@ static bool isStarted	= false;
 	}
 
 	if (isStereo != signalStereo) {
-	   int_Writer (Q_SIGNAL_STEREO, isStereo);
+	   vector_Writer (Q_STEREO, &stereoFlag, 1);
 	   signalStereo	= isStereo;
 	}
 	if (!isStarted) {
@@ -228,16 +234,22 @@ static bool isStarted	= false;
 static
 bool	syncFlag	= false;
 static
-void	systemData (bool flag, int16_t snr, int32_t freqOff, void *ctx) {
+int	old_snr		= 0;
+static
+void	systemData (bool syncedFlag, int16_t snr, int32_t freqOff, void *ctx) {
 //	fprintf (stderr, "synced = %s, snr = %d, offset = %d\n",
 //	                    flag? "on":"off", snr, freqOff);
+uint8_t v [10];
+	v [0] = syncedFlag ? 1 : 0;
+        v [1] = (uint8_t) snr;
+	
 	if (scanning)
 	   return;
-	if (flag != syncFlag) {
-	   int_Writer (Q_SYNCED, flag);
-	   syncFlag = flag;
+	if ((syncedFlag != syncFlag)  || (snr != old_snr)){
+	   vector_Writer (Q_STATE, v, 2);
+	   syncFlag	= syncedFlag;
+	   old_snr	= snr;
 	}
-	int_Writer (Q_SNR, (uint8_t)(snr));
 }
 
 static
@@ -342,6 +354,9 @@ int	optie;
 	sigact.sa_flags = 0;
 
 	int32_t frequency	= 220000000;	// default
+
+	theDevice	= NULL;
+#ifdef	HAVE_SDRPLAY
 	try {
 	   theDevice	=  new sdrplayHandler (frequency,
 	                                       my_radioData. ppmCorrection,
@@ -350,10 +365,23 @@ int	optie;
 	                                       my_radioData. autoGain);
 	}
 	catch (int e) {
-	   fprintf (stderr, "No device\n");
-	   exit (32);
 	}
-//
+#endif
+#ifdef	__AIRSPY_HANDLER__
+	try {
+	   theDevice	=  new airspyHandler (frequency,
+	                                      my_radioData. ppmCorrection,
+	                                      my_radioData. gain);
+	}
+	catch (int e) {
+	}
+#endif
+
+	if (theDevice == NULL) {
+	   fprintf (stderr, "no device(s) found, fatal\n");
+	   exit (33);
+	}
+
 	soundOut	= new audioSink	(my_radioData. latency,
 	                                 my_radioData. soundChannel, &err);
 	if (err) {
@@ -402,17 +430,51 @@ int	optie;
            memset (buf, 0, sizeof (buf));
 //
 //	send out the collected service names
-	
+
+	   string_Writer (Q_DEVICE_NAME, theDevice -> deviceName ());
+	   uint8_t startData [128];
+	   switch (theDevice -> whoamI ()) {
+	      case S_DABSTICK:
+	         startData [0] = S_DABSTICK;
+	         startData [1] = 0;	// false
+	         startData [2] = 0;	// begin gain range
+	         startData [3] = 100;	// end gain range
+	         startData [4] = 1;	// true for autogain
+	         startData [5] = my_radioData. gain;
+	         vector_Writer (Q_INITIALS, startData, 6);
+	         break;
+
+	      case S_AIRSPY:
+	         startData [0] = S_AIRSPY;
+	         startData [1] = 0;	// false
+	         startData [2] = 0;	// begin gain range
+	         startData [3] = 21;	// end gain range
+	         startData [4] = 0;	// true for autogain
+	         startData [5] = my_radioData. gain;
+	         vector_Writer (Q_INITIALS, startData, 6);
+	         break;
+
+	      default:
+	      case S_SDRPLAY:
+	         startData [0] = S_SDRPLAY;
+	         startData [1] = 1;	// true for lnaState setting
+	         startData [2] = 20;	// begin gain range
+	         startData [3] = 59;	// end gain range
+	         startData [4] = 1;	// true for autogain
+	         startData [5] = 9;	// range for lna state
+	         startData [6] = my_radioData. lnaState;
+	         startData [7] = my_radioData. GRdB;
+	         vector_Writer (Q_INITIALS, startData, 8);
+                 break;
+	   }
+//
+//	then send over the service names
 	   for (std::map<std::string, std::string>
 	                              ::iterator it = serviceMap. begin ();
 	             it != serviceMap. end(); ++it) {
 	      string_Writer (Q_SERVICE_NAME, it -> first);
 	      usleep (100);
 	   }
-//
-//	and the - saved - values for lnaState and Gain reduction
-	   int_Writer (Q_INITIAL_LNA, my_radioData. lnaState);
-	   int_Writer (Q_INITIAL_GRdB, my_radioData. GRdB);
 //
 //	The server-loop itself is quite sime
            while (true) {
@@ -515,7 +577,7 @@ int	starter	= 0;
 	      case Q_RESET:
 	         theDevice	-> stopReader ();
 	         theRadio	-> stop ();
-	         int_Writer (Q_NEW_ENSEMBLE, 0);
+	         vector_Writer (Q_NEW_ENSEMBLE, NULL, 0);
 	         scanning	= true;
 	         buildServiceList (true);
 //	send out the collected service names
@@ -539,7 +601,6 @@ int	starter	= 0;
 	            
 	            std::string channel	= findChannelfor (my_radioData. serviceName);
 	            if (channel == "") {
-	               string_Writer (Q_NO_SERVICE, "service not found");
 	               break;
 	            }
 
@@ -567,7 +628,6 @@ int	starter	= 0;
 	                     sleep (1);
 	               }
 	               if (!ensembleRecognized. load ()) {
-	                  string_Writer (Q_NO_SERVICE, "service not found");
 	                  break;
 	               }
 	            }

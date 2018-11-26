@@ -59,6 +59,16 @@ public class ClientController implements modelSignals, viewSignals {
 	}
 
 	@Override
+	public	void	set_initialValues (char [] v) {
+	   m_view. set_initialValues (v);
+	}
+
+	@Override
+	public	void	show_deviceName	(String s) {
+	   m_view. show_deviceName (s);
+	}
+
+	@Override
 	public void	show_ensembleName (String s, int SId) {
 	   m_view. show_ensembleName (s);
 	}
@@ -74,28 +84,8 @@ public class ClientController implements modelSignals, viewSignals {
 	}
 
 	@Override
-	public	void	show_programData	(String s) {
-	   m_view. show_programData (s);
-	}
-
-	@Override
-	public	void	show_snr	(int q) {
-	   m_view. show_snr (q);
-	}
-
-	@Override
-	public	void	show_synced		(boolean q) {
-	   m_view. show_synced (q);
-	}
-
-	@Override
-	public	void	set_lnaState		(int q) {
-	   m_view. set_lnaState (q);
-	}
-
-	@Override
-	public	void	set_GRdB		(int q) {
-	   m_view. set_GRdB (q);
+	public	void	show_state	(char [] q) {
+	   m_view. show_state (q);
 	}
 
 	@Override

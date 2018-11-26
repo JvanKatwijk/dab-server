@@ -132,6 +132,7 @@ int     i;
               break;
            }
         }
+	return finger [0]. key;
 }
 
 void	bandHandler::setChannel (std::string c) {

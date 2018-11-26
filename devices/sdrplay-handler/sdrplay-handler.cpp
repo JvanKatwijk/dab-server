@@ -65,6 +65,8 @@ mir_sdr_DeviceT devDesc [4];
 //	   else
 //	      err = mir_sdr_RSPII_AntennaControl (mir_sdr_RSPII_ANTENNA_B);
 
+	nameofDevice	= std::string (devDesc [deviceIndex]. DevNm);
+
 	if (hwVersion == 255) {
 	   nrBits	= 14;
 	   denominator	= 8192.0;
@@ -92,6 +94,10 @@ mir_sdr_DeviceT devDesc [4];
 	   delete _I_Buffer;
 }
 //
+
+int	sdrplayHandler::whoamI		(void) {
+	return S_SDRPLAY;
+}
 
 //
 //	For the setting of gain, not using a widget, we map the
@@ -214,5 +220,9 @@ int32_t	sdrplayHandler::Samples	(void) {
 
 void	sdrplayHandler::resetBuffer	(void) {
 	_I_Buffer	-> FlushRingBuffer ();
+}
+
+std::string	sdrplayHandler::deviceName (void) {
+	return nameofDevice;
 }
 

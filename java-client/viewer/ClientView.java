@@ -16,7 +16,14 @@ import	java. awt. Dimension;
 
 public class ClientView extends JFrame {
 	private static final long serialVersionUID = 1234567;
+
+	private final 	int	S_SDRPLAY       = 001;
+	private	final	int	S_DABSTICK	= 002;
+	private	final	int	S_AIRSPY	= 003;
+	private	final	int	S_NOBODY	= 000;
+
 //... Components
+        private final	JLabel  m_deviceLabel   = new JLabel ("           ");
 	private final	JLabel	m_dynamicLabel	= new JLabel ("           ");
 	private	final	JSlider	m_gainSlider	=
 	                    new JSlider (JSlider. HORIZONTAL, 20, 59, 30);
@@ -83,6 +90,8 @@ public class ClientView extends JFrame {
 	   row1. add (m_selectedService);
 
 	   JPanel row2	= new JPanel ();
+	   row2. add (m_deviceLabel);
+	   row2. add (Box. createRigidArea (new Dimension (20, 0)));
 	   row2. setLayout (new BoxLayout (row2, BoxLayout. X_AXIS));
 	   row2. add (m_dynamicLabel);
 
@@ -202,6 +211,28 @@ public class ClientView extends JFrame {
            });
         }
 
+	public	void	set_initialValues	(char [] v) {
+	   int device = v [0];
+	   switch (device) {
+	      case S_SDRPLAY:
+	         m_gainSlider. setValue ((int)(v [7]));
+	         m_gainLabel. setText (Integer. toString ((int)v [7]));
+	         m_lnaState. setValue ((int)(v [6]));
+	         break;
+
+	      case S_AIRSPY:
+	         m_lnaState. setVisible (false);
+	         m_autogainButton. setVisible (false);
+	         m_gainSlider. setMaximum (21);
+	         break;
+	      default:;
+	   }
+	}
+
+	public	void	show_deviceName		(String s) {
+	   m_deviceLabel. setText (s);
+	}
+
 	public	String	get_serviceName (int row, int column) {
 	   return m_serviceTable. get_serviceName (row, column);
 	}
@@ -218,15 +249,10 @@ public class ClientView extends JFrame {
 	   m_dynamicLabel. setText (s);
 	}
 
-	public	void	show_programData	(String s) {
-	}
-
-	public	void	show_snr	(int q) {
-	   m_snrLabel. setText (Integer. toString (q));
-	}
-
-	public	void	show_synced		(boolean b) {
-	   m_syncedLabel. setBackground (b ? Color. green : Color. red);
+	public	void	show_state	(char [] v) {
+	   m_syncedLabel. setBackground ( v [0] != 0?
+	                                 Color. green : Color. red);
+	   m_snrLabel. setText (Integer. toString (v [1]));
 	}
 
 	public	void	set_lnaState		(int s) {
@@ -258,12 +284,6 @@ public class ClientView extends JFrame {
 	public	void	clear_dynamicLabel	() {
 	   String s = " ";
 	   m_dynamicLabel. setText (s);
-	}
-
-//	Used to set the initial value
-	public	void	setDeviceGain (int v) {
-	   m_gainSlider. setValue (v);
-	   m_gainLabel. setText (Integer. toString (v));
 	}
 
 	public	void	set_stereoIndicator	(boolean b) {

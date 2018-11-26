@@ -32,6 +32,11 @@
 #include	<thread>
 using namespace std;
 
+#define	S_SDRPLAY	001
+#define	S_DABSTICK	002
+#define	S_AIRSPY	003
+#define	S_NOBODY	000
+
 class	deviceHandler {
 public:
 			deviceHandler 	(void);
@@ -41,11 +46,15 @@ virtual		void	stopReader	(void);
 virtual		int32_t	getSamples	(std::complex<float> *, int32_t);
 virtual		int32_t	Samples		(void);
 virtual		void	set_autogain	(bool);
+virtual		std::string deviceName	(void);
+virtual		int	whoamI		(void);
 //
 //	for the sdrplay
 virtual		void	set_ifgainReduction (int);
 virtual		void	set_lnaState	(int);
 //
+//	for the dabsticks and the airspy
+virtual		void	set_gain	(int);
 protected:
 		int32_t	lastFrequency;
 	        int32_t	vfoOffset;

@@ -42,23 +42,27 @@
 #define	Q_RESET		0107
 
 //	The radio sends messages to the (connected) client
-#define Q_ENSEMBLE      0100
-#define Q_SERVICE_NAME  0101
-#define Q_TEXT_MESSAGE  0102
-#define	Q_PROGRAM_DATA	0103
-#define	Q_SNR		0104
-#define	Q_NEW_ENSEMBLE	0105
-#define	Q_NO_SERVICE	0106
-#define	Q_SYNCED	0107
-#define	Q_INITIAL_LNA	0110
-#define	Q_INITIAL_GRdB	0111
-#define	Q_SOUND		0112
-#define	Q_SIGNAL_STEREO	0113
+#define	Q_INITIALS	0100
+#define	Q_DEVICE_NAME	0101
+#define Q_ENSEMBLE      0102
+#define Q_SERVICE_NAME  0103
+#define Q_TEXT_MESSAGE  0104
+#define	Q_STATE		0105
+#define	Q_STEREO	0106
+#define	Q_NEW_ENSEMBLE	0107
+#define	Q_SOUND		0110
 //
 //	packetstructure
 //	byte 0	key
 //	byte 1	high order byte of 16 bit data length 
 //	byte 2  low order byte of 16 bit data length
 //	byte 3 .. 3 + length payload
-#endif
+//
+//	for Q_INITIALS the payload is the encoding of a record
+//	for DEVICE_NAME, ENSEMBLE, SERVICE_NAME and TEXT_MESSAGE the
+//	payload is a null terminated string
+//	for STATE the payload consists of the values snr and synced 
+//	for STEREO the payload is a single value 1 or 0
+//	for NEW_ENSEMBLE, a trigger, the payload is empty
 
+#endif

@@ -65,6 +65,8 @@ public:
 	void	set_ifgainReduction	(int32_t);
 	void	set_autogain		(bool);
 	void	set_lnaState		(int);
+	std::string	deviceName	(void);
+	int	whoamI			(void);
 //
 //	need to be visible, since being accessed from 
 //	within the callback
@@ -82,6 +84,7 @@ private:
 	int16_t		GRdB;
 	int16_t		lnaState;
 	bool		autoGain;
+	std::string	nameofDevice;
 	std::atomic<bool>	running;
 	mir_sdr_AgcControlT agcMode;
 };

@@ -33,6 +33,7 @@ typedef struct  {
 	int16_t		GRdB;
 	int16_t		lnaState;
 	bool            autoGain;
+	int		gain;
 	bool		soundOut;
 	std::string     soundChannel;
 	int16_t         latency;

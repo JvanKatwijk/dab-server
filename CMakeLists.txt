@@ -27,7 +27,26 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 ######################################################################
 #
 ########################################################################
+if(DEFINED AIRSPY)
+   set(AIRSPY true)
+endif ()
+
+if(DEFINED SDRPLAY)
    set(SDRPLAY true)
+endif ()
+
+if(DEFINED RTLSDR)
+   set(RTLSDR true)
+endif ()
+
+if(DEFINED RTLTCP)
+   set(RTLTCP true)
+endif ()
+
+if(DEFINED HACKRF)
+        set(HACKRF true)
+endif ()
+
    set(objectName dab-server)
 
 
@@ -111,6 +130,12 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	endif (SDRPLAY)
 
 	if (AIRSPY)
+           find_library (AIRSPYLIB airspy)
+           if(NOT(AIRSPYLIB))
+              message(FATAL_ERROR "please install -lairspy")
+           else(NOT(AIRSPYLIB))
+              list (APPEND extraLibs ${AIRSPYLIB})
+           endif(NOT(AIRSPYLIB))
            find_package(LibAIRSPY)
            if (NOT LIBAIRSPY_FOUND)
                message(FATAL_ERROR "please install airspy library")
@@ -118,17 +143,17 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	   ### include_directories (${AIRSPYLIB_INCLUDE_DIR})
 
 	   include_directories (
-	     ../devices/airspy-handler
+	     ./devices/airspy-handler
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ../devices/airspy-handler/airspy-handler.h
+	        ./devices/airspy-handler/airspy-handler.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ../devices/airspy-handler/airspy-handler.cpp
+	        ./devices/airspy-handler/airspy-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_AIRSPY)
@@ -168,6 +193,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	           .
 	           ./
 	           ../
+	           ./devices
 	           ./includes
 	           ./includes/ofdm
 	           ./includes/backend
@@ -190,7 +216,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/support/audio-base.h
 	     ./includes/support/audiosink.h
 	     ./includes/support/newconverter.h
-	     ./device-handler.h
 	     ./includes/dab-constants.h
 	     ./includes/dab-processor.h
 	     ./includes/ofdm/phasereference.h
@@ -227,6 +252,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/support/fft_handler.h
 	     ./includes/support/dab-params.h
 	     ./includes/support/tii_table.h
+	     ./devices/device-handler.h
 	)
 
 	set (${objectName}_SRCS
@@ -237,7 +263,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/support/audiosink.cpp
 	     ./src/support/newconverter.cpp
 	     ./src/support/band-handler.cpp
-	     ./device-handler.cpp
 	     ./src/dab-processor.cpp
 	     ./src/ofdm/ofdm-decoder.cpp
 	     ./src/ofdm/phasereference.cpp
@@ -275,6 +300,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/support/fft_handler.cpp
 	     ./src/support/dab-params.cpp
 	     ./src/support/tii_table.cpp
+	     ./devices/device-handler.cpp
 	)
 #
 	include_directories (
