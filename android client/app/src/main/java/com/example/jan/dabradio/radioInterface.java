@@ -27,19 +27,16 @@ public class radioInterface extends Thread {
         private	final int	Q_SERVICE		= 0106;
         private	final int	Q_RESET			= 0107;
 //
-//	keys for incoming messages
-        private	final int	Q_ENSEMBLE		= 0100;
-        private	final int	Q_SERVICE_NAME		= 0101;
-        private	final int	Q_TEXT_MESSAGE		= 0102;
-        private	final int	Q_PROGRAM_DATA		= 0103;
-        private	final int	Q_SNR	                = 0104;
-        private	final int	Q_NEW_ENSEMBLE		= 0105;
-        private	final int	Q_NO_SERVICE		= 0106;
-        private	final int	Q_SYNCED		= 0107;
-        private	final int	Q_INITIAL_LNA		= 0110;
-        private	final int	Q_INITIAL_GRdB		= 0111;
-        private	final int	Q_SOUND			= 0112;
-        private final int	Q_SIGNAL_STEREO		= 0113;
+//      keys for incoming messages
+        private final int       Q_INITIALS              = 0100;
+        private final int       Q_DEVICE_NAME           = 0101;
+        private final int       Q_ENSEMBLE              = 0102;
+        private final int       Q_SERVICE_NAME          = 0103;
+        private final int       Q_TEXT_MESSAGE          = 0104;
+        private final int       Q_STATE                 = 0105;
+        private final int       Q_STEREO                = 0106;
+        private final int       Q_NEW_ENSEMBLE          = 0107;
+        private final int       Q_SOUND                 = 0110;
 //
 //	For the connection we need
 
@@ -98,35 +95,61 @@ public class radioInterface extends Thread {
 //
 //	This function is called from within the thread
         public void Dispatcher (byte key, int segSize, char [] inBuffer) {
-           char buffer [] = new char [segSize + 1];
+            char buffer [] = new char [segSize + 1];
+            System. arraycopy (inBuffer, 0, buffer, 0, segSize);
 
-           System. arraycopy (inBuffer, 0, buffer, 0, segSize);
+            switch (key) {
+                case Q_SOUND:  // not yet implemented
+                break;
 
-           switch (key) {
-              case Q_SOUND:  // not yet implemented
-              break;
+                case Q_INITIALS: {
+                    final byte sysdata [] = new byte [segSize + 1];
+                    for (int i = 0; i < segSize + 1; i ++)
+                       sysdata [i] = (byte)(inBuffer [i]);
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                set_initialValues (sysdata);
+                       }});
+                    } catch (Exception e) {}
+                }
+                break;
 
-              case Q_ENSEMBLE: {
-                  buffer [segSize]	= 0;
-                  final String ensembleLabel = String. valueOf (buffer);
-                  try {
-                      the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                             show_ensembleName (ensembleLabel, 0);
-                          }});
-                  } catch (Exception e) {}
-               }
-               break;
+                case Q_DEVICE_NAME: {
+                    buffer [segSize]	= 0;
+                    final String deviceLabel = String. valueOf (buffer);
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                show_deviceName (deviceLabel);
+                        }});
+                    } catch (Exception e) {}
+                }
+                break;
 
-               case Q_SERVICE_NAME: {
-                   buffer [segSize] = 0;
-                   final String serviceLabel = String. valueOf (buffer);
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                             show_serviceName (serviceLabel);
+                case Q_ENSEMBLE: {
+                    buffer [segSize]	= 0;
+                    final String ensembleLabel = String. valueOf (buffer);
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                show_ensembleName (ensembleLabel, 0);
+                        }});
+                    } catch (Exception e) {}
+                }
+                break;
+
+                case Q_SERVICE_NAME: {
+                    buffer [segSize] = 0;
+                    final String serviceLabel = String. valueOf (buffer);
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                show_serviceName (serviceLabel);
                         }});
                     } catch (Exception e) {}
                 }
@@ -142,107 +165,64 @@ public class radioInterface extends Thread {
                                 show_dynamicLabel (dynamicLabel);
                         }});
                     } catch (Exception e) {}
-               }
-               break;
+                }
+                break;
 
-               case Q_PROGRAM_DATA: {
-                   buffer [segSize] = 0;
-                   final String programData = String. valueOf (buffer);
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                              show_programData (programData);
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
-
-               case Q_SNR: {
-                   final int snr = buffer [0];
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                             show_snr (snr);
+                case  Q_STATE: {
+                    final byte vector [] = new byte [2];
+                    vector [0] =  (byte)(buffer [0]);
+                    vector [1] =  (byte)(buffer [1]);
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                show_state (vector);
                         }});
-                   } catch (Exception e) {}
-               }
-               break;
+                    } catch (Exception e) {}
+                }
+                break;
 
-               case Q_SYNCED: {
-                   final boolean synced = buffer [0] != 0;
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                             show_synced (synced);
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
+                case Q_NEW_ENSEMBLE: {
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                clearScreen ();
+                        }});
+                    } catch (Exception e) {}
+                }
+                break;
 
-               case Q_INITIAL_LNA: {
-                   final int initialLNA = buffer [0];
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                          @Override
-                          public void run () {
-                             set_lnaState (initialLNA);
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
+                case Q_STEREO: {
+                    final boolean b = buffer [0] != 0;
+                    try {
+                        the_gui. runOnUiThread (new Runnable () {
+                            @Override
+                            public void run () {
+                                set_stereoIndicator (b);
+                        }});
+                    } catch (Exception e) {}
+                }
+                break;
 
-               case Q_INITIAL_GRdB: {
-                  final int initialGRdB = buffer [0];
-                  try {
-                      the_gui. runOnUiThread (new Runnable () {
-                         @Override
-                         public void run () {
-                            set_GRdB (initialGRdB);
-                      }});
-                  } catch (Exception e) {}
-               }
-               break;
-
-               case Q_NEW_ENSEMBLE: {
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                           @Override
-                           public void run () {
-                              clearScreen ();
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
-
-               case Q_NO_SERVICE: {
-                   final String s = "no service found";
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                           @Override
-                           public void run () {
-                              show_dynamicLabel (s);
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
-
-               case Q_SIGNAL_STEREO: {
-                   final boolean b = buffer [0] != 0;
-                   try {
-                       the_gui. runOnUiThread (new Runnable () {
-                           @Override
-                           public void run () {
-                              set_stereoIndicator (b);
-                       }});
-                   } catch (Exception e) {}
-               }
-               break;
-
-               default:;
+                default:;
            }
+        }
+
+        public  void show_deviceName (String Name) {
+            int i;
+            for (i = 0; i < listener. size (); i ++) {
+                Signals handler = listener. get (i);
+                handler. show_deviceName (Name);
+            };
+        }
+
+        public  void    set_initialValues (byte [] v) {
+            int i;
+            for (i = 0; i < listener. size (); i ++) {
+                Signals handler = listener. get (i);
+                handler.  set_initialValues (v);
+           };
         }
 
         public  void show_ensembleName (String Name, int Sid) {
@@ -269,12 +249,12 @@ public class radioInterface extends Thread {
             };
         }
 
-        public	void	show_programData (String s) {
+        public  void    show_state (byte [] v) {
             int i;
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
-                handler. show_programData (s);
-            };
+                handler. show_state (v);
+            }
         }
 
         public	void	clearScreen () {
@@ -282,38 +262,6 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. clearScreen ();
-            };
-        }
-
-        public	void	show_snr (int q) {
-            int i;
-            for (i = 0; i < listener. size (); i ++) {
-                Signals handler = listener. get (i);
-                handler. show_snr (q);
-            };
-        }
-
-        public	void	show_synced	(boolean b) {
-            int i;
-            for (i = 0; i < listener. size (); i ++) {
-                Signals handler = listener. get (i);
-                handler. show_synced (b);
-            };
-        }
-
-        public	void	set_lnaState	(int initialLNA) {
-            int i;
-            for (i = 0; i < listener. size (); i ++) {
-                Signals handler = listener. get (i);
-                handler. set_lnaState	(initialLNA);
-            };
-        }
-
-        public	void	set_GRdB	(int initialGRdB) {
-            int i;
-            for (i = 0; i < listener. size (); i ++) {
-                Signals handler = listener. get (i);
-                handler. set_GRdB	(initialGRdB);
             };
         }
 
@@ -361,7 +309,7 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
-        public	void	doReset	() {
+        public	void	reset	() {
            byte data [] = new byte [4];
            data [0] = (byte)Q_RESET;
            data [1] = (byte)0;

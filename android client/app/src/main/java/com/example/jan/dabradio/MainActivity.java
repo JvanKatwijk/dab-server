@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private TextView            ensembleLabel;
     private TextView            tStatus;
     private TextView            snrLabel;
+    private TextView            deviceLabel;
     private ArrayAdapter<String> BTArrayAdapter;
     private ArrayList<Object>   BTResultMac;
     private CountDownTimer      scanTimer;
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements Signals {
         services        = (ListView)findViewById (R. id. services);
         lResult         = (ListView) findViewById(R. id. lResult);
         ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
+        deviceLabel     = (TextView)findViewById (R. id. deviceLabel);
+
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         my_radioInterface = new radioInterface (the_gui);
         my_radioInterface. addServiceListener (the_gui);
@@ -308,7 +311,14 @@ public class MainActivity extends AppCompatActivity implements Signals {
     public void  doReset () {
         theServices. clear ();
         serviceAdapter. clear ();
-        my_radioInterface. doReset ();
+//        my_radioInterface. doReset ();
+    }
+
+    public  void    show_deviceName         (String s1) {
+        deviceLabel. setText (s1);
+    }
+
+    public  void    set_initialValues       (byte [] v) {
     }
 
     public  void    show_ensembleName       (String s1, int s2) {
@@ -325,24 +335,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
         dynamicLabel. setText (s);
     }
 
-    public  void    show_programData        (String s) {}
-    public  void    show_snr                (int q) {
-        snrLabel. setText (Integer. toString (q));
-    }
-
-    public  void    show_synced             (boolean q) {
-        if (q)
+    public  void    show_state      (byte [] v) {
+        if (v [0] != 0)
             syncLabel.setBackgroundColor (Color.GREEN);
         else
             syncLabel.setBackgroundColor (Color.RED);
-    }
-
-    public  void    set_lnaState            (int s) {
-        lnaState. setSelection (s, true);
-    }
-
-    public  void    set_GRdB                (int s) {
-        ifgainReduction. setProgress (s);
+        snrLabel. setText (Integer. toString (v [1]));
     }
 
     public  void    clearScreen             () {}
