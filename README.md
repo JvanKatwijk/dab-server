@@ -26,9 +26,10 @@ client and server, the server announces its service with a fancy UUID.
 
 Two clients are being worked on
 
-a. a simple Java client is being exercised on my laptop, it has some problems
+ a. a simple Java client is being exercised on my laptop, it has some problems
 in identifying the server;
-b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
+
+ b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
 ---------------------------------------------------------------------
