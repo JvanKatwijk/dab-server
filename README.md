@@ -61,6 +61,9 @@ of the user.
 The Android client
 
 -----------------------------------------------------------------------
+The android client is - as can be expected - under development. The releases
+section contains an "apk" file, the package built by android studio and
+the one running on my tablet.
 
 The android client has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood.
