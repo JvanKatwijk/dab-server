@@ -10,6 +10,7 @@ public interface Signals {
         public  void    clearScreen             ();
         public  void    set_stereoIndicator     (boolean b);
         public	void	toaster			(String s);
+        public  void    set_quit                ();
 };
 
 

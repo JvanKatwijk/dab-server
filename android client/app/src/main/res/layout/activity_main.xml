@@ -16,7 +16,7 @@
         android:text="start"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ifgainReduction" />
+        app:layout_constraintTop_toBottomOf="@+id/gainSlider" />
 
     <Spinner
         android:textColor="@android:color/black"
@@ -30,14 +30,14 @@
         android:layout_marginRight="104dp"
         android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toTopOf="@+id/services"
-        app:layout_constraintEnd_toStartOf="@+id/ifgainReduction"
+        app:layout_constraintEnd_toStartOf="@+id/gainSlider"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:textColor="@android:color/black"
-        android:id="@+id/ifgainReduction"
+        android:id="@+id/gainSlider"
         android:layout_width="335dp"
         android:layout_height="47dp"
         android:layout_marginStart="28dp"
@@ -143,7 +143,7 @@
         app:layout_constraintBottom_toTopOf="@+id/lResult"
         app:layout_constraintEnd_toStartOf="@+id/autogainButton"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ifgainReduction"
+        app:layout_constraintStart_toEndOf="@+id/gainSlider"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.609" />
 
@@ -162,7 +162,7 @@
         app:layout_constraintBottom_toTopOf="@+id/services"
         app:layout_constraintEnd_toStartOf="@+id/startButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ifgainReduction" />
+        app:layout_constraintTop_toBottomOf="@+id/gainSlider" />
 
     <Button
         android:id="@+id/autogainButton"
@@ -177,7 +177,7 @@
         android:text="autogain"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ifgainReduction"
+        app:layout_constraintStart_toEndOf="@+id/gainSlider"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

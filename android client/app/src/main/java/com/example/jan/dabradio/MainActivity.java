@@ -26,6 +26,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements Signals {
+    private final   int     S_SDRPLAY       = 001;
+    private final   int     S_DABSTICK      = 002;
+    private final   int     S_AIRSPY        = 003;
+    private final   int     S_NOBODY        = 000;
+
     private TextView            gainLabel;
     private TextView            syncLabel;
     private TextView            stereoLabel;
@@ -41,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private Button              resetButton;
     private Button              autogainButton;
     private Button              quitButton;
-    private SeekBar             ifgainReduction;
+    private SeekBar             gainSlider;
     private Spinner             lnaState;
     private ListView            services;
     private ArrayList<String>   theServices;
@@ -85,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements Signals {
         resetButton. setBackgroundColor (Color.  YELLOW);
         autogainButton. setBackgroundColor (Color. GREEN);
         resetButton.    setEnabled (false);
-        ifgainReduction = (SeekBar) findViewById (R. id. ifgainReduction);
-        ifgainReduction. setEnabled (false);
+        gainSlider      = (SeekBar) findViewById (R. id. gainSlider);
+        gainSlider.  setEnabled (false);
         lnaState        = (Spinner) findViewById (R. id. lnaState);
         lnaState.       setEnabled (false);
         services        = (ListView)findViewById (R. id. services);
@@ -106,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements Signals {
                                                                 serviceItems);
         theServices     = new ArrayList<String> ();
 
-        ifgainReduction. setMax (59);
-        ifgainReduction. setProgress (33);
+        gainSlider. setMax (59);
+        gainSlider. setProgress (33);
 
         gainLabel. setText (Integer. toString (33));
         lnaState. setAdapter (lnaAdapter);
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 tStatus.setText ("Connected");
                 toaster ("Connected, going forward");
                 resetButton.       setEnabled (true);
-                ifgainReduction.   setEnabled (true);
+                gainSlider.        setEnabled (true);
                 autogainButton.    setEnabled (true);
                 lnaState.          setEnabled (true);
             }
@@ -227,13 +232,13 @@ public class MainActivity extends AppCompatActivity implements Signals {
         });
 //
 //	Touching the seekbar
-	ifgainReduction. setOnSeekBarChangeListener (
+	gainSlider. setOnSeekBarChangeListener (
                                      new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged (SeekBar seekBar,
                                            int progressValue,
                                            boolean fromUser) {
-                my_radioInterface. gainReduction (progressValue);
+                my_radioInterface. set_gainSlider (progressValue);
 	        gainLabel. setText (String. valueOf (progressValue));
             }
 
@@ -311,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     public void  doReset () {
         theServices. clear ();
         serviceAdapter. clear ();
-//        my_radioInterface. doReset ();
+        my_radioInterface. doReset ();
     }
 
     public  void    show_deviceName         (String s1) {
@@ -319,6 +324,32 @@ public class MainActivity extends AppCompatActivity implements Signals {
     }
 
     public  void    set_initialValues       (byte [] v) {
+        int device = (int)(v [0]);
+        switch (device) {
+            case S_DABSTICK:
+                break;
+
+            case S_AIRSPY:
+                lnaState. setVisibility (View. GONE);
+                autogainButton. setVisibility (View. GONE);
+                gainSlider. setMax (21);
+                gainSlider. setProgress ((int)(v [5]));
+                gainLabel. setText (Integer. toString ((int)(v [5])));
+                break;
+
+            case S_SDRPLAY:
+                lnaState. setVisibility (View. VISIBLE);
+                autogainButton. setVisibility (View. VISIBLE);
+                gainSlider. setVisibility (View. VISIBLE);
+                gainSlider. setMax (59);
+                gainSlider. setProgress ((int)(v [7]));
+                gainLabel. setText (Integer. toString ((int)v [7]));
+                lnaState. setSelection ((int)(v [6]));
+                break;
+          
+            default:
+                break;
+        }
     }
 
     public  void    show_ensembleName       (String s1, int s2) {
@@ -351,5 +382,17 @@ public class MainActivity extends AppCompatActivity implements Signals {
         else
             stereoLabel. setBackgroundColor (Color. RED);
     }
+
+    public void     set_quit                () {
+        if (btSocket. isConnected ()) {
+            try {
+                btSocket. close ();
+            } catch (IOException e) {}
+        }
+
+        finish ();
+        System.exit(0);
+    }
+
 };
 

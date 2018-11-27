@@ -43,6 +43,7 @@ uint32_t samplerate_count;
 
 	this	-> frequency	= frequency;
 	this	-> ppmCorrection = ppmCorrection;
+	this	-> theGain	= theGain;
 //
 	device			= 0;
 	serialNumber		= 0;
@@ -124,7 +125,7 @@ int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
 	theBuffer	-> FlushRingBuffer ();
 	result = airspy_set_sample_type (device, AIRSPY_SAMPLE_INT16_IQ);
 	result = airspy_set_freq (device, newFrequency);
-	result = airspy_set_sensitivity_gain (device, gain);
+	result = airspy_set_sensitivity_gain (device, theGain);
 	
 	result = airspy_start_rx (device,
 	            (airspy_sample_block_cb_fn)callback, this);

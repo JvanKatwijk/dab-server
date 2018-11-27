@@ -20,7 +20,7 @@ public class radioInterface extends Thread {
 //
 //	keys for the outgoing messages
         private final int	Q_QUIT			= 0100;
-        private	final int	Q_IF_GAIN_REDUCTION	= 0101;
+        private	final int	Q_GAIN_SLIDER		= 0101;
         private	final int	Q_SOUND_LEVEL		= 0102;
         private	final int	Q_LNA_STATE		= 0103;
         private	final int	Q_AUTOGAIN		= 0104;
@@ -44,6 +44,7 @@ public class radioInterface extends Thread {
         private OutputStream os;
         private DataOutputStream outputter;
         private DataInputStream inputter;
+        private BluetoothSocket thePlug;
 //
 //      for changing values in the GUI we need
         private AppCompatActivity the_gui;
@@ -60,6 +61,7 @@ public class radioInterface extends Thread {
         }
 
         public void startRadio (BluetoothSocket  thePlug) throws IOException {
+            this. thePlug    = thePlug;
             is               = thePlug. getInputStream  ();
             os               = thePlug. getOutputStream ();
             inputter         = new DataInputStream (is);
@@ -75,8 +77,21 @@ public class radioInterface extends Thread {
                 int amount	= 0;
                 int length	= 0;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep (100);
                 } catch (Exception e) {}
+                if (!thePlug. isConnected ()) {
+                    toaster ("connection lost");
+                    try {
+                        the_gui.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                set_quit();
+                            }
+                        });
+                    } catch (Exception e) {
+                    }
+	            return;
+                }
                 try {
                     for (int i = 0; i < 3; i ++)
                         header [i] = inputter. readByte ();
@@ -88,7 +103,16 @@ public class radioInterface extends Thread {
                         inBuffer [i] = (char) inputter. readByte ();
                     Dispatcher (header [0], length, inBuffer);
                 } catch (Exception e) {
-                    toaster ("length = " + length + " amount = " + amount);
+                    toaster ("connection lost");
+                    try {
+                        the_gui.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                set_quit();
+                            }
+                        });
+                    } catch (Exception e1) {
+                    }
                 }
             }
         }
@@ -207,6 +231,15 @@ public class radioInterface extends Thread {
 
                 default:;
            }
+        }
+
+
+        public  void set_quit  () {
+            int i;
+            for (i = 0; i < listener. size (); i ++) {
+                Signals handler = listener. get (i);
+                handler. set_quit ();
+            }
         }
 
         public  void show_deviceName (String Name) {
@@ -333,12 +366,12 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
-        public	void	gainReduction	(int GRdB) {
+        public	void	set_gainSlider	(int val) {
            byte data [] = new byte [3 + 2];
-           data [0] = (byte)Q_IF_GAIN_REDUCTION;
+           data [0] = (byte)Q_GAIN_SLIDER;
            data [1] = (byte)0;
            data [2] = (byte)2;
-           data [3] = (byte)GRdB;
+           data [3] = (byte)val;
            try {
               outputter. write (data, 0, 5);
               outputter. flush ();
@@ -370,4 +403,16 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
+        public void    doReset     () {
+            byte data[] = new byte[4];
+            data[0] = Q_RESET;
+            data[1] = 0;
+            data[2] = (char) (1);
+            data[3] = 0;
+            try {
+                outputter.write(data, 0, 4);
+                outputter.flush();
+            } catch (Exception e) {
+            }
+        }
 };

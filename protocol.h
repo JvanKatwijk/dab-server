@@ -34,7 +34,7 @@
 //	e.g. Q_GAIN 70 or Q_CHANNEL "11C"
 
 #define Q_QUIT		0100
-#define Q_IF_GAIN_REDUCTION	0101
+#define Q_GAIN_SLIDER	0101
 #define Q_SOUND_LEVEL	0102
 #define Q_LNA_STATE	0103
 #define	Q_AUTOGAIN	0104

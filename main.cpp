@@ -44,11 +44,12 @@
 #include	"band-handler.h"
 #include	"protocol.h"
 #include	"radiodata.h"
-#ifdef	HAVE_SDRPLAY__
+#ifdef	HAVE_SDRPLAY
 #include	"sdrplay-handler.h"
-#endif
-#ifdef	HAVE_AIRSPY
+#elif defined(HAVE_AIRSPY)
 #include	"airspy-handler.h"
+#elif	defined (HAVE_RTLSDR)
+#include	"rtlsdr-handler.h"
 #endif
 #include	"dab-processor.h"
 
@@ -303,13 +304,23 @@ int	optie;
 	         my_radioData. soundOut	= true;
 	         break;
 	      case 'G':
+#ifdef	HAVE_SDRPLAY
 	         my_radioData. GRdB	= atoi (optarg);
 	         my_config	-> update ("GRdB", std::string (optarg));
+#elif	defined(HAVE_RTLSDR)
+	         my_radioData. dabstickGain = atoi (optarg);
+                 my_config	-> update ("dabstickGain", std::string (optarg));
+#elif	defined(HAVE_AIRSPY)
+	         my_radioData. airspyGain = atoi (optarg);
+                 my_config	-> update ("airspyGain", std::string (optarg));
+#endif
 	         break;
 
 	      case 'L':
+#ifdef	HAVE_SDRPLAY
 	         my_radioData. lnaState	= atoi (optarg);
 	         my_config	-> update ("lnaState", std::string (optarg));
+#endif
 	         break;
 
 	      case 'A':
@@ -354,8 +365,8 @@ int	optie;
 	sigact.sa_flags = 0;
 
 	int32_t frequency	= 220000000;	// default
-
 	theDevice	= NULL;
+
 #ifdef	HAVE_SDRPLAY
 	try {
 	   theDevice	=  new sdrplayHandler (frequency,
@@ -366,14 +377,21 @@ int	optie;
 	}
 	catch (int e) {
 	}
-#endif
-#ifdef	__AIRSPY_HANDLER__
+#elif	defined(HAVE_AIRSPY)
 	try {
 	   theDevice	=  new airspyHandler (frequency,
 	                                      my_radioData. ppmCorrection,
-	                                      my_radioData. gain);
+	                                      my_radioData. airspyGain);
 	}
 	catch (int e) {
+	}
+#elif	defined(HAVE_RTLSDR)
+	try {
+	   theDevice = new rtlsdrHandler   (frequency,
+                                            my_radioData. ppmCorrection,
+                                            my_radioData. dabstickGain,
+                                            my_radioData. autoGain);
+	} catch (int e) {
 	}
 #endif
 
@@ -440,7 +458,7 @@ int	optie;
 	         startData [2] = 0;	// begin gain range
 	         startData [3] = 100;	// end gain range
 	         startData [4] = 1;	// true for autogain
-	         startData [5] = my_radioData. gain;
+	         startData [5] = my_radioData. dabstickGain;
 	         vector_Writer (Q_INITIALS, startData, 6);
 	         break;
 
@@ -450,7 +468,7 @@ int	optie;
 	         startData [2] = 0;	// begin gain range
 	         startData [3] = 21;	// end gain range
 	         startData [4] = 0;	// true for autogain
-	         startData [5] = my_radioData. gain;
+	         startData [5] = my_radioData. airspyGain;
 	         vector_Writer (Q_INITIALS, startData, 6);
 	         break;
 
@@ -512,6 +530,8 @@ std::string value;
 	rd	-> ppmCorrection	= 0;
 	rd	-> GRdB			= 30;
 	rd	-> lnaState		= 4;
+	rd	-> airspyGain		= 19;
+        rd	-> dabstickGain		= 60;
 	rd	-> autoGain		= false;
 	rd	-> soundChannel		= "default";
 	rd	-> latency		= 10;
@@ -523,6 +543,7 @@ std::string value;
 	value	= my_config	-> getValue ("Band");
 	if (value != std::string (""))
 	   rd	-> theBand	= stoi (value);
+#ifdef	HAVE_SDRPLAY
 	value	= my_config	-> getValue ("lnaState");
 	if (value != std::string (""))
 	   rd	-> lnaState	= stoi (value);
@@ -532,6 +553,18 @@ std::string value;
 	value	= my_config	-> getValue ("autoGain");
 	if (value != std::string (""))
 	   rd	-> autoGain	= stoi (value) != 0;
+#elif	HAVE_AIRSPY
+	value	= my_config	-> getValue  ("airspyGain");
+	if (value != std::string (""))
+	   rd	-> airspyGain		= stoi (value);
+#elif	HAVE_DABSTICK
+	value	= my_config	-> getValue  ("dabstickGain");
+	if (value != std::string (""))
+	   rd	-> dabstickGain		= stoi (value);
+	value	= my_config	-> getValue ("autoGain");
+	if (value != std::string (""))
+	   rd	-> autoGain	= stoi (value) != 0;
+#endif
 }
 
 
@@ -549,11 +582,23 @@ int	starter	= 0;
 	         fprintf (stderr, "quit request\n");
 	         return 0;
 
-	      case Q_IF_GAIN_REDUCTION:
+	      case Q_GAIN_SLIDER:
+#ifdef	HAVE_SDRPLAY
 	         my_radioData. GRdB = lbuf [starter + 3];
 	         theDevice      -> set_ifgainReduction (my_radioData. GRdB);
 	         my_config	-> update ("GRdB",
 		                        std::to_string (my_radioData. GRdB));
+#elif	defined(HAVE_AIRSPY)
+	         my_radioData. airspyGain = lbuf [starter + 3];
+	         theDevice      -> set_gain (my_radioData. airspyGain);
+	         my_config	-> update ("airspyGain",
+		                        std::to_string (my_radioData. airspyGain));
+#elif	defined(HAVE_DABSTICK)
+	         my_radioData. dabstickGain = lbuf [starter + 3];
+	         theDevice      -> set_gain (my_radioData. airspyGain);
+	         my_config	-> update ("dabstickGain",
+		                        std::to_string (my_radioData. dabstickGain));
+#endif
 	         break;
 
 	      case Q_LNA_STATE:
@@ -769,6 +814,7 @@ bool	searchable (std::string channel) {
 
 static
 void	markChannels (bool flag, std::string Channel) {
+	my_config -> update (Channel, flag ? "on": "no data");
 }
 
 static

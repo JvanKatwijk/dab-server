@@ -113,17 +113,17 @@ endif ()
            endif(NOT(SDRPLAYLIB))
 
 	   include_directories (
-	     ./sdrplay-handler
+	     ./devices/sdrplay-handler
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ./sdrplay-handler/sdrplay-handler.h
+	        ./devices/sdrplay-handler/sdrplay-handler.h
            )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./sdrplay-handler/sdrplay-handler.cpp
+	        ./devices/sdrplay-handler/sdrplay-handler.cpp
 	   )
 
 	 add_definitions (-DHAVE_SDRPLAY)
@@ -161,24 +161,30 @@ endif ()
 
 
 	if (RTLSDR)
+           find_library (RTLSDRLIB rtlsdr)
+           if(NOT(RTLSDRLIB))
+              message(FATAL_ERROR "please install -lrtlsdr")
+           else(NOT(RTLSDRLIB))
+              list (APPEND extraLibs ${RTLSDRLIB})
+           endif(NOT(RTLSDRLIB))
            find_package(LibRTLSDR)
            if (NOT LIBRTLSDR_FOUND)
                message(FATAL_ERROR "please install librtlsdr")
            endif ()
-	   ###include_directories (${RTLSDR_INCLUDE_DIR})
+	   include_directories (${RTLSDR_INCLUDE_DIR})
 
 	   include_directories (
-	        ../devices/rtlsdr-handler/
+	        ./devices/rtlsdr-handler/
 	   )
 
 	   set (${objectName}_HDRS
 	        ${${objectName}_HDRS}
-	        ../devices/rtlsdr-handler/rtlsdr-handler.h
+	        ./devices/rtlsdr-handler/rtlsdr-handler.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ../devices/rtlsdr-handler/rtlsdr-handler.cpp
+	        ./devices/rtlsdr-handler/rtlsdr-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_RTLSDR)

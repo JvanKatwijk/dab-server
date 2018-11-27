@@ -52,7 +52,6 @@ public:
 private:
 	int32_t		frequency;
 	int16_t		ppmCorrection;
-	int16_t		gain;
 	bool		success;
 	bool		running;
 	int32_t		selectedRate;
