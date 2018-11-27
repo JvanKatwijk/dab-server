@@ -506,8 +506,8 @@ int	optie;
                  break;
 	      }
 	   }
-	   theDevice	-> stopReader ();
-	   theRadio	-> stop ();
+//	   theDevice	-> stopReader ();
+//	   theRadio	-> stop ();
 	}
 
 	theDevice	-> stopReader ();
