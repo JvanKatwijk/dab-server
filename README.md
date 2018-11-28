@@ -21,7 +21,7 @@ found in the different channels in Band III, and - when this is finished -
 is waiting for someone to call.
 
 Since most of the channels do not carry DAB data, the server will "remember"
-in which channels it found an emsemble.
+in which channels it found an ensemble.
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
@@ -70,17 +70,19 @@ the one running on my tablet.
 
 The android remote control has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood.
-The server will display the names of the devices found,
+The client will display the names of the devices found on the GUI,
 after touching the name of the device in this list
-the server will (try to) establish the connection.
-
-As soon as a client is connected the names of the services are
+the client will (try to) establish the connection, assuming a
+server runs on the selected device.
+.
+As soon as a client is connected to a device running the server,
+the names of the services are
 transmitted to the client, and the server is ready to receive commands.
 
 Typical commands are selecting a service or changing the
 gain setting of the device.
 The client "knows" which device is used at the server side,
-and it adapts its GUI wet to gain setting.
+and it adapts its GUI wrt to gain setting.
 I.e. for the SDRplay, the state of the lna and the gain reduction
 can be set (as well as the autogain), while for the AIRspy the
 gain slider allows values from 1 .. 21, and both the spinner
@@ -90,7 +92,8 @@ For the rtlsdr based devices, the gain setting allows values from
 to appropriate gain values.
 
 If the user is not satisfied with the amount of services,
-there is a "reset" button that instructs the server to scan all channels again
+there is a "reset" button on the GUI that - when touched -instructs the
+server to scan all channels again
 and record which channels carry useful data.
 
 To close down the connection, a the user can touch the "quit" button, the server
