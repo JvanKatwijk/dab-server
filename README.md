@@ -1,16 +1,17 @@
 
-	DAB-SERVER (bluetooth), android client
+	DAB-SERVER (bluetooth), android client as remote control
 
 ---------------------------------------------------------------------
 
 ![android client for dab server](/android-client.png?raw=true)
 
 A simple DAB server - supporting SDRplay devices, AIRspy devices and RTLSDR
-devices - for use with an android client using Bluetooth,
+devices - for use with an android client as remote control using Bluetooth,
 
 The project I am working on aims at extending the "dab-cmdline" library and
 providing DAB functionality through a server with a (reasonably) well defined interface.
-In this project I am using Bluetooth as means for cummunication.
+In this project I am using Bluetooth as means for communication for an android
+remote controller.
 
 The **server** runs on a Linux box, in my environment it is usually
 running on an RPI 2/3 under Stretch.
@@ -24,7 +25,7 @@ in which channels it found an emsemble.
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
-Two clients are being worked on
+Two clients - remote controls - are being worked on
 
  a. a simple Java client is being exercised on my laptop, it has some problems
 in identifying the server;
@@ -56,16 +57,18 @@ The settings of the gain as well as the status of the different channels
 are stored in a file ".dab-server.ini", kept in the home directory
 of the user.
 
+The server will send its audio output to the soundcard of the machine it runs on.
+
 ----------------------------------------------------------------------
 
-The Android client
+The Android remote control.
 
 -----------------------------------------------------------------------
-The android client is - as can be expected - under development. The releases
+The android remote control is - as can be expected - under development. The releases
 section contains an "apk" file, the package built by android studio and
 the one running on my tablet.
 
-The android client has a start button, touching it will instruct the client
+The android remote control has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood.
 The server will display the names of the devices found,
 after touching the name of the device in this list
@@ -92,7 +95,9 @@ and record which channels carry useful data.
 
 To close down the connection, a the user can touch the "quit" button, the server
 will then be available for another client.
-If the connection is broken, the client will also quit.
+If the connection is broken, the server will just continue. To change the
+server settings, restart the remote control, connect and instruct.
+
 
 ----------------------------------------------------------------------------
 
