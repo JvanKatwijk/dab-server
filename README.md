@@ -1,16 +1,17 @@
 
-	DAB-SERVER (bluetooth), android client
+	DAB-SERVER (bluetooth), android client as remote control
 
 ---------------------------------------------------------------------
 
 ![android client for dab server](/android-client.png?raw=true)
 
 A simple DAB server - supporting SDRplay devices, AIRspy devices and RTLSDR
-devices - for use with an android client using Bluetooth,
+devices - for use with an android client as remote control using Bluetooth,
 
 The project I am working on aims at extending the "dab-cmdline" library and
 providing DAB functionality through a server with a (reasonably) well defined interface.
-In this project I am using Bluetooth as means for cummunication.
+In this project I am using Bluetooth as means for communication for an android
+remote controller.
 
 The **server** runs on a Linux box, in my environment it is usually
 running on an RPI 2/3 under Stretch.
@@ -20,11 +21,11 @@ found in the different channels in Band III, and - when this is finished -
 is waiting for someone to call.
 
 Since most of the channels do not carry DAB data, the server will "remember"
-in which channels it found an emsemble.
+in which channels it found an ensemble.
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
-Two clients are being worked on
+Two clients - remote controls - are being worked on
 
  a. a simple Java client is being exercised on my laptop, it has some problems
 in identifying the server;
@@ -56,28 +57,32 @@ The settings of the gain as well as the status of the different channels
 are stored in a file ".dab-server.ini", kept in the home directory
 of the user.
 
+The server will send its audio output to the soundcard of the machine it runs on.
+
 ----------------------------------------------------------------------
 
-The Android client
+The Android remote control.
 
 -----------------------------------------------------------------------
-The android client is - as can be expected - under development. The releases
+The android remote control is - as can be expected - under development. The releases
 section contains an "apk" file, the package built by android studio and
 the one running on my tablet.
 
-The android client has a start button, touching it will instruct the client
+The android remote control has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood.
-The server will display the names of the devices found,
+The client will display the names of the devices found on the GUI,
 after touching the name of the device in this list
-the server will (try to) establish the connection.
-
-As soon as a client is connected the names of the services are
+the client will (try to) establish the connection, assuming a
+server runs on the selected device.
+.
+As soon as a client is connected to a device running the server,
+the names of the services are
 transmitted to the client, and the server is ready to receive commands.
 
 Typical commands are selecting a service or changing the
 gain setting of the device.
 The client "knows" which device is used at the server side,
-and it adapts its GUI wet to gain setting.
+and it adapts its GUI wrt to gain setting.
 I.e. for the SDRplay, the state of the lna and the gain reduction
 can be set (as well as the autogain), while for the AIRspy the
 gain slider allows values from 1 .. 21, and both the spinner
@@ -87,12 +92,15 @@ For the rtlsdr based devices, the gain setting allows values from
 to appropriate gain values.
 
 If the user is not satisfied with the amount of services,
-there is a "reset" button that instructs the server to scan all channels again
+there is a "reset" button on the GUI that - when touched -instructs the
+server to scan all channels again
 and record which channels carry useful data.
 
 To close down the connection, a the user can touch the "quit" button, the server
 will then be available for another client.
-If the connection is broken, the client will also quit.
+If the connection is broken, the server will just continue. To change the
+server settings, restart the remote control, connect and instruct.
+
 
 ----------------------------------------------------------------------------
 
