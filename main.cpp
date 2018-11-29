@@ -802,8 +802,10 @@ void	set_audioLevel (int offset) {
 char	command [255];
 	if (offset == 0)
 	   return;
-
-	sprintf (command, "amixer set PCM -- %d%%", (offset + 10) * 5);
+//
+//	change this for your configuration
+	sprintf (command, "amixer set Master -- %d%%", offset);
+//	sprintf (command, "amixer set PCM -- %d%%", (offset + 10) * 5);
 	system (command);
 }
 

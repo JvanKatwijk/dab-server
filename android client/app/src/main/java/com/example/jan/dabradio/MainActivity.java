@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private final   int     S_NOBODY        = 000;
 
     private TextView            gainLabel;
+    private TextView            audioLabel;
     private TextView            syncLabel;
     private TextView            stereoLabel;
     private TextView            dynamicLabel;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private Button              autogainButton;
     private Button              quitButton;
     private SeekBar             gainSlider;
+    private SeekBar             audioGain;
     private Spinner             lnaState;
     private ListView            services;
     private ArrayList<String>   theServices;
@@ -94,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
         gainSlider.  setEnabled (false);
         lnaState        = (Spinner) findViewById (R. id. lnaState);
         lnaState.       setEnabled (false);
+        audioGain       = (SeekBar) findViewById (R. id. audioGain);
+        audioGain.      setEnabled (false);
+        audioLabel      = (TextView)findViewById (R. id. audioLabel);
         services        = (ListView)findViewById (R. id. services);
         lResult         = (ListView) findViewById(R. id. lResult);
         ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
@@ -113,9 +118,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
         gainSlider. setMax (59);
         gainSlider. setProgress (33);
-
         gainLabel. setText (Integer. toString (33));
         lnaState. setAdapter (lnaAdapter);
+        audioGain. setMax (100);
+        audioGain. setProgress (50);
+        audioLabel. setText (Integer. toString (50));
+
         services. setAdapter (serviceAdapter);
 
 //	touching the spinner
@@ -185,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 gainSlider.        setEnabled (true);
                 autogainButton.    setEnabled (true);
                 lnaState.          setEnabled (true);
+                audioGain.         setEnabled (true);
             }
         });
 
@@ -231,15 +240,34 @@ public class MainActivity extends AppCompatActivity implements Signals {
             }
         });
 //
-//	Touching the seekbar
+//	Touching the gainSlider
 	gainSlider. setOnSeekBarChangeListener (
                                      new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged (SeekBar seekBar,
                                            int progressValue,
                                            boolean fromUser) {
-                my_radioInterface. set_gainSlider (progressValue);
+                my_radioInterface. set_gainLevel (progressValue);
 	        gainLabel. setText (String. valueOf (progressValue));
+            }
+
+            @Override
+            public void onStartTrackingTouch (SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch (SeekBar seekBar) {
+            }
+        });
+//
+//	Touching the audioGain
+	audioGain. setOnSeekBarChangeListener (
+                                     new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged (SeekBar seekBar,
+                                           int progressValue,
+                                           boolean fromUser) {
+                my_radioInterface. set_gainLevel (progressValue);
+	        audioLabel. setText (String. valueOf (progressValue));
             }
 
             @Override

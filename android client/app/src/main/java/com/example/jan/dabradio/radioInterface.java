@@ -366,7 +366,7 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
-        public	void	set_gainSlider	(int val) {
+        public	void	set_gainLevel	(int val) {
            byte data [] = new byte [3 + 2];
            data [0] = (byte)Q_GAIN_SLIDER;
            data [1] = (byte)0;

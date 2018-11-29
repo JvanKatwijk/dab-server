@@ -10,44 +10,51 @@
         android:id="@+id/startButton"
         android:layout_width="102dp"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="43dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="30dp"
         android:text="start"
         android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/syncLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gainSlider" />
+        app:layout_constraintStart_toEndOf="@+id/gainLabel"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:textColor="@android:color/black"
         android:id="@+id/lnaState"
         android:layout_width="65dp"
         android:layout_height="57dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginLeft="38dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="104dp"
-        android:layout_marginRight="104dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
         android:layout_marginBottom="60dp"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toTopOf="@+id/services"
         app:layout_constraintEnd_toStartOf="@+id/gainSlider"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.718" />
 
     <SeekBar
-        android:textColor="@android:color/black"
         android:id="@+id/gainSlider"
         android:layout_width="335dp"
         android:layout_height="47dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="48dp"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toTopOf="@+id/services"
+        app:layout_constraintEnd_toStartOf="@+id/gainLabel"
         app:layout_constraintStart_toEndOf="@+id/lnaState"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.405" />
+        app:layout_constraintVertical_bias="0.444" />
 
     <ListView
         android:id="@+id/services"
@@ -67,13 +74,14 @@
     <ListView
         android:id="@+id/lResult"
         android:layout_width="189dp"
-        android:layout_height="385dp"
+        android:layout_height="362dp"
         android:layout_marginStart="21dp"
         android:layout_marginLeft="21dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="152dp"
         android:layout_marginEnd="140dp"
         android:layout_marginRight="140dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toEndOf="@+id/services"
         app:layout_constraintTop_toBottomOf="@+id/autogainButton" />
 
@@ -83,7 +91,7 @@
         android:layout_height="69dp"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="27dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="12dp"
@@ -131,45 +139,41 @@
     <TextView
         android:id="@+id/gainLabel"
         android:layout_width="87dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="42dp"
-        android:layout_marginLeft="42dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginRight="51dp"
-        android:layout_marginBottom="89dp"
-        android:text="TextView"
+        android:layout_height="39dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginBottom="19dp"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/lResult"
-        app:layout_constraintEnd_toStartOf="@+id/autogainButton"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/snrLabel"
+        app:layout_constraintEnd_toStartOf="@+id/startButton"
         app:layout_constraintStart_toEndOf="@+id/gainSlider"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintTop_toBottomOf="@+id/audioLabel" />
 
     <TextView
         android:id="@+id/ensembleLabel"
         android:layout_width="371dp"
         android:layout_height="33dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginLeft="49dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="19dp"
         android:layout_marginEnd="233dp"
         android:layout_marginRight="233dp"
         android:layout_marginBottom="17dp"
-        android:text="TextView"
         android:gravity="center"
+        android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/services"
         app:layout_constraintEnd_toStartOf="@+id/startButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gainSlider" />
+        app:layout_constraintTop_toBottomOf="@+id/lnaState" />
 
     <Button
         android:id="@+id/autogainButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="192dp"
-        android:layout_marginLeft="192dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="27dp"
         android:layout_marginRight="27dp"
@@ -177,7 +181,6 @@
         android:text="autogain"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/gainSlider"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -239,17 +242,16 @@
         android:layout_height="45dp"
         android:layout_marginStart="82dp"
         android:layout_marginLeft="82dp"
-        android:layout_marginTop="41dp"
+        android:layout_marginTop="9dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="12dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/lResult"
         app:layout_constraintEnd_toStartOf="@+id/startButton"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.788"
         app:layout_constraintStart_toEndOf="@+id/ensembleLabel"
-        app:layout_constraintTop_toBottomOf="@+id/gainLabel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/gainLabel" />
 
     <TextView
         android:id="@+id/textView"
@@ -282,5 +284,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/dynamicLabel" />
+
+    <SeekBar
+        android:id="@+id/audioGain"
+        android:layout_width="329dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="146dp"
+        android:layout_marginLeft="146dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/gainSlider"
+        app:layout_constraintEnd_toStartOf="@+id/audioLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/audioLabel"
+        android:layout_width="85dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="165dp"
+        android:layout_marginRight="165dp"
+        android:layout_marginBottom="6dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/gainLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/audioGain"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
 </android.support.constraint.ConstraintLayout>
