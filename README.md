@@ -57,6 +57,17 @@ The settings of the gain as well as the status of the different channels
 are stored in a file ".dab-server.ini", kept in the home directory
 of the user.
 
+The top slider can be used to control the sound setting of the server.
+One might have to adapt the code in the server, controlling the sound level
+is by using the "amixer" function of alsa.
+
+The next-to-top slider can be used to control the gain setting of the device.
+As device shown on the picture is an SDRplay device, the spinner to the left
+of the slider is used to set the lna state and the slider sets
+the gain reduction. If e.g. an RTLSDR based device
+is configured, this spinner will not be visible and the
+slider will set the gain.
+
 The server will send its audio output to the soundcard of the machine it runs on.
 
 ----------------------------------------------------------------------
