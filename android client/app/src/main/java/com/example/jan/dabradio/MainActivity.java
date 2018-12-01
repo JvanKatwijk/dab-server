@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private TextView            tStatus;
     private TextView            snrLabel;
     private TextView            deviceLabel;
+    private TextView            serviceLabel;
     private ArrayAdapter<String> BTArrayAdapter;
     private ArrayList<Object>   BTResultMac;
     private CountDownTimer      scanTimer;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
         lResult         = (ListView) findViewById(R. id. lResult);
         ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
         deviceLabel     = (TextView)findViewById (R. id. deviceLabel);
+        serviceLabel    = (TextView)findViewById (R. id. serviceLabel);
 
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         my_radioInterface = new radioInterface (the_gui);
@@ -118,13 +120,13 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
         gainSlider. setMax (59);
         gainSlider. setProgress (33);
-        gainLabel. setText (Integer. toString (33));
-        lnaState. setAdapter (lnaAdapter);
-        audioGain. setMax (100);
-        audioGain. setProgress (50);
+        gainLabel.  setText (Integer. toString (33));
+        lnaState.   setAdapter (lnaAdapter);
+        audioGain.  setMax (100);
+        audioGain.  setProgress (50);
         audioLabel. setText (Integer. toString (50));
 
-        services. setAdapter (serviceAdapter);
+        services.   setAdapter (serviceAdapter);
 
 //	touching the spinner
         lnaState. setOnItemSelectedListener(new AdapterView.
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 }
 
                 tStatus.setText ("Connected");
-                toaster ("Connected, going forward");
+                toaster ("Connected, we're on");
                 resetButton.       setEnabled (true);
                 gainSlider.        setEnabled (true);
                 autogainButton.    setEnabled (true);
@@ -206,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 try {
 	            my_radioInterface.
 	                      setService (theServices. get (position));
+                    serviceLabel. setText (theServices. get (position));
                 } catch (Exception e) {
                 }
             }
