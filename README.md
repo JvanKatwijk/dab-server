@@ -20,17 +20,22 @@ The server, when started, collects services in ensembles
 found in the different channels in Band III, and - when this is finished -
 is waiting for someone to call.
 
-Since most of the channels do not carry DAB data, the server will "remember"
-in which channels it found an ensemble.
+Since most of the channels do not carry DAB data, the server is  instruct to "remember"
+in which channels it found an ensemble whn doing a full scan. The scan done on start-up
+is then limited to those channels that previously have shown to contain DAB data.
+
+The clients contain a "reset" button, instructing the server to scan all channels in the
+given band.
+
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
 Two clients - remote controls - are being worked on
 
- a. a simple Java client is being exercised on my laptop, it has some problems
+a. a simple Java client is being exercised on my laptop, it has some problems
 in identifying the server;
 
- b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
+b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
 ---------------------------------------------------------------------
@@ -70,8 +75,7 @@ the one running on my tablet.
 
 The android remote control has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood.
-The client will display the names of the devices found on the GUI,
-after touching the name of the device in this list
+After touching the name of the device in this list
 the client will (try to) establish the connection, assuming a
 server runs on the selected device.
 .
@@ -83,15 +87,16 @@ Typical commands are selecting a service or changing the
 gain setting of the device.
 The client "knows" which device is used at the server side,
 and it adapts its GUI wrt to gain setting.
-I.e. for the SDRplay, the state of the lna and the gain reduction
-can be set (as well as the autogain), while for the AIRspy the
-gain slider allows values from 1 .. 21, and both the spinner
-for the lnaState and the button for thr autogain are hidden.
+
+For the SDRplay, the state of the lna and the gain reduction (20 .. 59)
+can be set (as well as the autogain).  For the AIRspy the
+gain slider is constrained to values from 1 .. 21, and both the spinner
+for the lnaState and the button for the autogain are hidden.
 For the rtlsdr based devices, the gain setting allows values from
 0 .. 100, they will be translated by the device driver software
 to appropriate gain values.
 
-The top slider can be used to control the sound setting of the server.
+The top slider on the remote control can be used to control the sound setting of the server.
 One might have to adapt the code in the server, controlling the sound level
 is by using the "amixer" function of alsa.
 
@@ -109,7 +114,8 @@ and record which channels carry useful data.
 
 To close down the connection, a the user can touch the "quit" button, the server
 will then be available for another client.
-If the connection is broken, the server will just continue. To change the
+If the connection is broken by stopping the remore control program, 
+the server will just continue. To change the
 server settings, restart the remote control, connect and instruct.
 
 
