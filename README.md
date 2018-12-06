@@ -11,21 +11,24 @@ computations.
 
 In this project a DAB server, running on an headless RPI2/3 (under
 Stretch) is being developed. The DAB server is started when turning
-on the RPI 2 and is controlled by an android client, using a bluetooth
-connection. When properly installed, the server will run without
-any further action from the user, i.e the RPI can run headless, even without
-an ssh connection.
+on the RPI (as a "service") and will run without any further
+interaction from a user, i.e. the RPI can run headless.
+The user interacts with the server using an android client, using a bluetooth
+connection. 
 
-The server, when started, collects services in ensembles
-found in the different channels in Band III, and - when this is finished -
+The server, when started, will scan different channels in Band III and
+collects services in ensembles
+found in these channels, and - when this is finished -
 is waiting for someone to call.
+A client can connect to the server and select a service.
 
 Since most of the channels do not carry DAB data, the server is  instruct to "remember"
 in which channels it found an ensemble whn doing a full scan. The scan done on start-up
 is then limited to those channels that previously have shown to contain DAB data.
 
-The clients contain a "reset" button, instructing the server to scan all channels in the
-given band.
+The client contains a "reset" button, instructing the server to scan all channels in the
+given band - of course the results are recorded by the server and used the next invocation
+to scan the band.
 
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
@@ -67,7 +70,8 @@ Running the server as a systemd service
 
 ----------------------------------------------------------------------
 
-Obviously, one should have enabled bluetooth on the RPI,
+In my setting the server runs stand alone. Communication - if any-
+is using bluetooth. Obviously, one should have enabled bluetooth on the RPI,
 how to instal the bluez software is described in many places
 on the internet. In order to allow the server to register
 its "service", and to make the bluetooth discoverable, one should
@@ -106,7 +110,10 @@ The registration of the service is by
 
 The service will execute - after the bluetooth service was enabled -
 the file "command.sh", which is stored in the dab-server folder
-in the directory /home/pi
+in the directory /home/pi.
+
+The command file just contains a 2 line shell script to instantiate
+the dab server.
 
 
 Note that these files are still subject to further development
@@ -166,37 +173,6 @@ If the connection is broken by stopping the remore control program,
 the server will just continue. To change the
 server settings, restart the remote control, connect and instruct.
 
-
-----------------------------------------------------------------------------
-
-Java Client
-
-----------------------------------------------------------------------------
-
-![java client for dab server](/java-client.png?raw=true)
-
-The java client will try to connect directly to the server that reports
-to have the right service.
-
-Operation is more or less the same as with the android client,
-the server will - once the connection is established - transmit
-the names of the services.
-
-Selecting a service is by clicking on the name.
-Here also, a reset button is available and a slider and spinbox for setting
-the gain of the device connected to the server.
-
----------------------------------------------------------------------------
-
-
-Issues to be considered
-
---------------------------------------------------------------------------
-
-One of the open issues is where the sound should go, in the current approach the server
-will have to make it audible, the client just being the remore control.
-The alternative - obviously - would be to send the audio back to the client.
-
 ---------------------------------------------------------------------------
 
 Supported devices
@@ -229,7 +205,8 @@ Copyrights
 	Lazy Chair Programming
 
 The dab-library software is made available under the GPL-2.0. The dab-library uses a number of GPL-ed libraries, all
-rigfhts gratefully acknowledged. The DAB-java client is available under GPL-2.0. The Android client is for private use only.
+rigfhts gratefully acknowledged. The android client is a first attempt to create some application for android
+and leaves quite some room for improvement.
 
 
 
