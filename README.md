@@ -1,20 +1,20 @@
 
-	DAB-SERVER (bluetooth), android client as remote control
+	STAND ALONE DAB-SERVER with an android client as remote control
 
 ---------------------------------------------------------------------
 
 ![android client for dab server](/android-client.png?raw=true)
 
-A simple DAB server - supporting SDRplay devices, AIRspy devices and RTLSDR
-devices - for use with an android client as remote control using Bluetooth,
+The RPI2 and 3 are excellent devices to use as a specialized
+server, they are small but powerfull enough to do all kinds of 
+computations.
 
-The project I am working on aims at extending the "dab-cmdline" library and
-providing DAB functionality through a server with a (reasonably) well defined interface.
-In this project I am using Bluetooth as means for communication for an android
-remote controller.
-
-The **server** runs on a Linux box, in my environment it is usually
-running on an RPI 2/3 under Stretch.
+In this project a DAB server, running on an headless RPI2/3 (under
+Stretch) is being developed. The DAB server is started when turning
+on the RPI 2 and is controlled by an android client, using a bluetooth
+connection. When properly installed, the server will run without
+any further action from the user, i.e the RPI can run headless, even without
+an ssh connection.
 
 The server, when started, collects services in ensembles
 found in the different channels in Band III, and - when this is finished -
@@ -30,12 +30,8 @@ given band.
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
-Two clients - remote controls - are being worked on
-
-a. a simple Java client is being exercised on my laptop, it has some problems
-in identifying the server;
-
-b. a simple android client, being exercised on my tablet. The client is still pretty simple, and android is subject
+A simple android client is being exercised on my tablet.
+The client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
 ---------------------------------------------------------------------
@@ -62,13 +58,65 @@ The settings of the gain as well as the status of the different channels
 are stored in a file ".dab-server.ini", kept in the home directory
 of the user.
 
-The server will send its audio output to the soundcard of the machine it runs on.
+The server will send its audio output to the soundcard of
+the machine it runs on.
+
+----------------------------------------------------------------------
+
+Running the server as a systemd service
+
+----------------------------------------------------------------------
+
+Obviously, one should have enabled bluetooth on the RPI,
+how to instal the bluez software is described in many places
+on the internet. In order to allow the server to register
+its "service", and to make the bluetooth discoverable, one should
+add "--compat" to the line
+
+	ExecStart=/usr/lib/bluetooth/bluetoothd --compat
+
+and add the lines
+
+	ExecStartPost=/bin/chmod 777 /var/run/sdp
+	ExecStartPost=/bin/hciconfig hci0 piscan
+
+all in the file
+
+	/etc/systemd/system/dbus-org.bluez.service
+
+To have the dab-server start as a service, one should create a
+file (here named /etc/systemd/system/dab-server.service), with as content
+
+	[Unit]
+	Description=dab-server
+	After=systemd-udev.service
+	After=dbus-org.bluez.service
+	
+	[Service]
+	ExecStart= /bin/sh /home/pi/dab-server/command.sh
+	
+	[Install]
+	WantedBy=default.target
+
+The registration of the service is by
+
+	systemctl daemon-reload
+	systemctl enable dab-server.service
+
+
+The service will execute - after the bluetooth service was enabled -
+the file "command.sh", which is stored in the dab-server folder
+in the directory /home/pi
+
+
+Note that these files are still subject to further development
 
 ----------------------------------------------------------------------
 
 The Android remote control.
 
 -----------------------------------------------------------------------
+
 The android remote control is - as can be expected - under development. The releases
 section contains an "apk" file, the package built by android studio and
 the one running on my tablet.
