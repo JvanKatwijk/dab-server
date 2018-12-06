@@ -1,6 +1,5 @@
-
+-----------------------------------------------------------------------
 	STAND ALONE DAB-SERVER with an android client as remote control
-
 ---------------------------------------------------------------------
 
 ![android client for dab server](/android-client.png?raw=true)
@@ -38,9 +37,7 @@ The client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
 ---------------------------------------------------------------------
-
 The server
-
 ---------------------------------------------------------------------
 
 The server - currently - can be configured to support one of
@@ -65,9 +62,7 @@ The server will send its audio output to the soundcard of
 the machine it runs on.
 
 ----------------------------------------------------------------------
-
 Running the server as a systemd service
-
 ----------------------------------------------------------------------
 
 In my setting the server runs stand alone. Communication - if any-
@@ -119,9 +114,7 @@ the dab server.
 Note that these files are still subject to further development
 
 ----------------------------------------------------------------------
-
 The Android remote control.
-
 -----------------------------------------------------------------------
 
 The android remote control is - as can be expected - under development. The releases
@@ -174,9 +167,16 @@ the server will just continue. To change the
 server settings, restart the remote control, connect and instruct.
 
 ---------------------------------------------------------------------------
+Possible extension
+----------------------------------------------------------------------------
 
+Having used the device now for a couple of days, it seems one thing is missing:
+closing down the RPI from the remore control. Just pulling out the plug is not
+good for the health of the card.
+
+
+---------------------------------------------------------------------------
 Supported devices
-
 ---------------------------------------------------------------------------
 
 
@@ -185,9 +185,7 @@ are supported. Although quite obvious, ensure that the corresponding
 support library is installed.
 
 ----------------------------------------------------------------------------
-
 Bluetooth
-
 -------------------------------------------------------------------------------
 
 Installing bluetooth on Linux required some searching, for proper installing bluetooth see 
