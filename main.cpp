@@ -3,14 +3,14 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the DAB-library
+ *    This file is part of the DAB-server
  *
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
@@ -350,7 +350,7 @@ int	optie;
         register_service ();
 //      allocate socket
         s = socket (AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-//      bind socket to port 3 of the first available
+//      bind socket to port 1 of the first available
 
 //      local bluetooth adapter
         loc_addr.rc_family = AF_BLUETOOTH;
@@ -494,7 +494,7 @@ int	optie;
 	      usleep (100);
 	   }
 //
-//	The server-loop itself is quite sime
+//	The server-loop itself is quite simple
            while (true) {
               char buf [1024];
               int bytes_read = read (client, buf, sizeof (buf));
@@ -506,8 +506,6 @@ int	optie;
                  break;
 	      }
 	   }
-//	   theDevice	-> stopReader ();
-//	   theRadio	-> stop ();
 	}
 
 	theDevice	-> stopReader ();
@@ -581,6 +579,9 @@ int	starter	= 0;
 	      case Q_QUIT:
 	         fprintf (stderr, "quit request\n");
 	         return 0;
+
+	      case Q_SYSTEM_EXIT:
+	         break;
 
 	      case Q_GAIN_SLIDER:
 #ifdef	HAVE_SDRPLAY

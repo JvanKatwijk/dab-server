@@ -40,6 +40,7 @@
 #define	Q_AUTOGAIN	0104
 #define Q_SERVICE       0106
 #define	Q_RESET		0107
+#define	Q_SYSTEM_EXIT	0110
 
 //	The radio sends messages to the (connected) client
 #define	Q_INITIALS	0100
