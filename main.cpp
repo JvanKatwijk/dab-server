@@ -294,7 +294,7 @@ int	optie;
 
 	theBandHandler	= new bandHandler ();
 
-	my_config	= new config (std::string ("/.dab-server.ini"));
+	my_config	= new config (std::string ("/home/pi/.dab-server.ini"));
 	handleSettings (my_config, &my_radioData);
 
 	my_radioData. soundOut	= false;

@@ -36,6 +36,9 @@ A simple android client is being exercised on my tablet.
 The client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
+To experiment a little with anroid, there are two versions, identical
+though for different screen formats.
+
 ---------------------------------------------------------------------
 The server
 ---------------------------------------------------------------------

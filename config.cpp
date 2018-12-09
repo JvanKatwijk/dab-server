@@ -25,9 +25,10 @@ static std::string& rtrim (std::string& s) {
 }
 
 	config::config (const std::string filename) {
-std::string env	= getenv ("HOME");
+//std::string env	= getenv ("HOME");
 
-	this	-> fileName	= env. append (filename);
+	this	-> fileName	= fileName;
+//	this	-> fileName	= env. append (filename);
 	fprintf (stderr, "config is stored as %s\n", fileName. c_str ());
 	configMap. clear ();
 	parse (this -> fileName);
