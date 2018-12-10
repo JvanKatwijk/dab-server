@@ -18,9 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DAB-library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *	E X A M P L E  P R O G R A M
- *	for the DAB-library
  */
 #include	<unistd.h>
 #include        <stdio.h>
@@ -35,252 +32,27 @@
 #include	<getopt.h>
 #include        <cstdio>
 #include        <iostream>
-#include	<complex>
-#include	<vector>
-#include	<map>
 #include        <pthread.h>
-#include	"audiosink.h"
-#include	"config.h"
-#include	"band-handler.h"
+#include	<string>
 #include	"protocol.h"
-#include	"radiodata.h"
-#ifdef	HAVE_SDRPLAY
-#include	"sdrplay-handler.h"
-#elif defined(HAVE_AIRSPY)
-#include	"airspy-handler.h"
-#elif	defined (HAVE_RTLSDR)
-#include	"rtlsdr-handler.h"
-#endif
-#include	"dab-processor.h"
+#include	"dab-decoder.h"
 
 using std::cerr;
 using std::endl;
 
 static
-int	client;
-typedef std::pair <std::string, std::string> mapElement;
-static
-std::map<std::string, std::string> serviceMap;
+int	client	= 0;
 
 static
-void	buildServiceList (bool fresh);
-
+dabDecoder	*theDecoder	= NULL;
 static
-int    handleRequest (char *buf, int bufLen);
+int    handleRequest	(char *buf, int bufLen);
 
 static
 sdp_session_t *register_service (void);
 
-//      This function is called from - most likely -
-//      different threads from within the library
 static
-void    string_Writer (uint8_t code, std::string theText) {
-int     len     = strlen (theText. c_str ());
-int     i;
-char	message [len + 3 + 1];
-        message [0]     = (char)code;
-        message [1]     = ((len + 1) >> 8) & 0xFF;
-        message [2]     = (len + 1) & 0xFF;
-        for (i = 0; i < len; i ++)
-           message [3 + i] = theText [i];
-        message [len + 3] = (uint8_t)0;
-//	locker. lock ();
-        write (client, message, len + 3 + 1);
-//	locker. unlock ();
-}
-//
-//
-static
-void    sound_Writer (int16_t *buffer, int size) {
-int     i;
-char	message [2 * size + 3 + 1];
-        message [0]     = Q_SOUND;
-        message [1]     = ((2 * size) >> 8) & 0xFF;
-        message [2]     = (2 * size) & 0xFF;
-        for (i = 0; i < size; i ++) {
-           message [3 + 2 * i + 0] = (buffer [i] >> 8) & 0xFF;
-	   message [3 + 2 * i + 1] = (buffer [i] & 0xFF);
-	}
-//	locker. lock ();
-        write (client, message, 2 * size + 3);
-//	locker. unlock ();
-}
-//
-//	for some keys we only send a small integer value
-static
-void	vector_Writer (uint8_t code, uint8_t *v, int l) {
-char	message [3 + l + 1];
-	message [0]	= (char)code;
-	message [1]	= 0;
-	message [2]	= l + 1;
-	for (int i = 0; i < l; i ++)
-	   message [3 + i]	= v [i];
-//	locker. lock ();
-	write (client, message, 3 + l + 1);
-//	locker. unlock ();
-}
-//
-//
-//	Communication: the library sends the following signals
-//	to the main program (all callbacks)
-static
-std::atomic<bool>timeSynced;
-
-static
-std::atomic<bool>timesyncSet;
-
-static
-std::atomic<bool>ensembleRecognized;
-
-static
-std::string	ensembleName;
-
-static void sighandler (int signum) {
-        fprintf (stderr, "Signal caught, terminating!\n");
-	exit (21);
-}
-
-static
-void	syncsignalHandler (bool b, void *userData) {
-	timeSynced.  store (b);
-	timesyncSet. store (true);
-//	if (!b)
-//	   fprintf (stderr, " no dab signal yet\n");
-	(void)userData;
-}
-//
-//	This function is called whenever the dab engine has taken
-//	some time to gather information from the FIC bloks
-//	the Boolean b tells whether or not an ensemble has been
-//	recognized, the names of the programs are in the 
-//	ensemble
-static
-void	ensemblenameHandler (std::string name, int Id, void *userData) {
-	fprintf (stderr, "ensemble %s is (%X) recognized\n",
-	                          name. c_str (), (uint32_t)Id);
-	ensembleRecognized. store (true);
-	ensembleName	= name;
-}
-
-static
-bool	scanning	= false;
-static
-bandHandler	*theBandHandler;
-static
-void	programnameHandler (std::string s, int SId, void *userdata) {
-	if (!scanning)
-	   return;
-	for (std::map<std::string, std::string>
-	                              ::iterator it = serviceMap. begin ();
-	             it != serviceMap. end(); ++it)
-	   if (it -> first == s)
-	      return;
-
-	serviceMap. insert (mapElement (s,
-	                        theBandHandler -> currentChannel ()));
-}
-
-static
-void	programdataHandler (audiodata *d, void *ctx) {
-}
-
-//
-//	The function is called from within the library with
-//	a string, the so-called dynamic label
-static
-std::string localString;
-static
-void	dataOut_Handler (std::string dynamicLabel, void *ctx) {
-	(void)ctx;
-	if (scanning)
-	   return;
-	string_Writer (Q_TEXT_MESSAGE, dynamicLabel);
-}
-//
-//
-static
-void	bytesOut_Handler (uint8_t *data, int16_t amount,
-	                  uint8_t type, void *ctx) {
-	(void)data; (void)amount; (void)type; (void)ctx;
-}
-//
-static
-audioBase	*soundOut	= NULL;
-static
-bool		signalStereo	= false;
-
-static
-void	pcmHandler (int16_t *buffer, int size, int rate,
-	                              bool isStereo, void *ctx) {
-static bool isStarted	= false;
-uint8_t stereoFlag	= isStereo ? 1 : 0;
-
-//	we have to think here what to do if the rate has to be changed
-	if (soundOut == NULL) {
-	   sound_Writer (buffer, size);
-	   return;
-	}
-
-	if (isStereo != signalStereo) {
-	   vector_Writer (Q_STEREO, &stereoFlag, 1);
-	   signalStereo	= isStereo;
-	}
-	if (!isStarted) {
-	   soundOut	-> restart ();
-	   isStarted	= true;
-	}
-	soundOut	-> audioOut (buffer, size, rate);
-}
-
-static
-bool	syncFlag	= false;
-static
-int	old_snr		= 0;
-static
-void	systemData (bool syncedFlag, int16_t snr, int32_t freqOff, void *ctx) {
-//	fprintf (stderr, "synced = %s, snr = %d, offset = %d\n",
-//	                    flag? "on":"off", snr, freqOff);
-uint8_t v [10];
-	v [0] = syncedFlag ? 1 : 0;
-        v [1] = (uint8_t) snr;
-	
-	if (scanning)
-	   return;
-	if ((syncedFlag != syncFlag)  || (snr != old_snr)){
-	   vector_Writer (Q_STATE, v, 2);
-	   syncFlag	= syncedFlag;
-	   old_snr	= snr;
-	}
-}
-
-static
-void	fibQuality	(int16_t q, void *ctx) {
-	(void)q; (void)ctx;
-}
-
-static
-void	mscQuality	(int16_t fe, int16_t rsE, int16_t aacE, void *ctx) {
-//	fprintf (stderr, "msc quality = %d %d %d\n", fe, rsE, aacE);
-}
-//
-//
-////////////////////////////////////////////////////////////////////////
-//
-static
-radioData my_radioData;
-
-static
-deviceHandler	*theDevice;
-
-static
-config	*my_config;
-
-static
-void		handleSettings	(config *, radioData *rd);
-
-static
-dabProcessor	*theRadio	= nullptr;
-
+void    listener        (uint8_t *lbuf, int size);
 
 int	main (int argc, char **argv) {
 struct sigaction sigact;
@@ -290,60 +62,6 @@ char buf [1024] = { 0 };
 int s;
 socklen_t opt = sizeof (rem_addr);
 bdaddr_t tmp	= (bdaddr_t) {{0, 0, 0, 0, 0, 0}};
-int	optie;
-
-	theBandHandler	= new bandHandler ();
-
-	my_config	= new config (std::string ("/home/pi/.dab-server.ini"));
-	handleSettings (my_config, &my_radioData);
-
-	my_radioData. soundOut	= false;
-	while ((optie = getopt (argc, argv, "G:L:AS:D:W:S:B")) != -1) {
-	   switch (optie) {
-	      case 'B':
-	         my_radioData. soundOut	= true;
-	         break;
-	      case 'G':
-#ifdef	HAVE_SDRPLAY
-	         my_radioData. GRdB	= atoi (optarg);
-	         my_config	-> update ("GRdB", std::string (optarg));
-#elif	defined(HAVE_RTLSDR)
-	         my_radioData. dabstickGain = atoi (optarg);
-                 my_config	-> update ("dabstickGain", std::string (optarg));
-#elif	defined(HAVE_AIRSPY)
-	         my_radioData. airspyGain = atoi (optarg);
-                 my_config	-> update ("airspyGain", std::string (optarg));
-#endif
-	         break;
-
-	      case 'L':
-#ifdef	HAVE_SDRPLAY
-	         my_radioData. lnaState	= atoi (optarg);
-	         my_config	-> update ("lnaState", std::string (optarg));
-#endif
-	         break;
-
-	      case 'A':
-	         my_radioData. autoGain	= true;
-	         my_config	-> update ("autoGain", std::string ("1"));
-	         break;
-
-	      case 'S':
-	         my_radioData. soundChannel	= std::string (optarg);
-	         break;
-
-	      case 'D':
-	         my_radioData. latency	= atoi (optarg);
-	         break;
-
-	      case 'W':
-	         my_radioData. waitingTime	= atoi (optarg);
-	         break;
-
-	      default:;
-	   }
-	}
-
 //
 //	prepare the communication
 //
@@ -359,80 +77,6 @@ int	optie;
 	loc_addr.rc_channel = (uint8_t) 1;
         bind (s, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
 //
-//	
-	sigact.sa_handler = sighandler;
-	sigemptyset(&sigact.sa_mask);
-	sigact.sa_flags = 0;
-
-	int32_t frequency	= 220000000;	// default
-	theDevice	= NULL;
-
-#ifdef	HAVE_SDRPLAY
-	try {
-	   theDevice	=  new sdrplayHandler (frequency,
-	                                       my_radioData. ppmCorrection,
-	                                       my_radioData. GRdB,
-	                                       my_radioData. lnaState,
-	                                       my_radioData. autoGain);
-	}
-	catch (int e) {
-	}
-#elif	defined(HAVE_AIRSPY)
-	try {
-	   theDevice	=  new airspyHandler (frequency,
-	                                      my_radioData. ppmCorrection,
-	                                      my_radioData. airspyGain);
-	}
-	catch (int e) {
-	}
-#elif	defined(HAVE_RTLSDR)
-	try {
-	   theDevice = new rtlsdrHandler   (frequency,
-                                            my_radioData. ppmCorrection,
-                                            my_radioData. dabstickGain,
-                                            my_radioData. autoGain);
-	} catch (int e) {
-	}
-#endif
-
-	if (theDevice == NULL) {
-	   fprintf (stderr, "no device(s) found, fatal\n");
-	   exit (33);
-	}
-
-	soundOut	= new audioSink	(my_radioData. latency,
-	                                 my_radioData. soundChannel, &err);
-	if (err) {
-	   fprintf (stderr, "no valid sound channel, fatal\n");
-	   exit (33);
-	}
-//
-//	and with a sound device we can create a "backend"
-	theRadio	= new dabProcessor (theDevice,
-	                                    my_radioData. theMode,
-	                                    syncsignalHandler,
-	                                    systemData,
-	                                    ensemblenameHandler,
-	                                    programnameHandler,
-	                                    fibQuality,
-	                                    pcmHandler,
-	                                    bytesOut_Handler,
-	                                    dataOut_Handler,
-	                                    programdataHandler,
-	                                    mscQuality,
-	                                    nullptr,	// no mot slides
-	                                    nullptr	// ctx
-	                                   );
-	if (theRadio == nullptr) {
-	   fprintf (stderr, "sorry, no radio available, fatal\n");
-	   exit (4);
-	}
-//
-//	on program startup, we create a servicelist based on
-//	previous experiences
-	scanning	= true;
-	buildServiceList (false);
-	scanning	= false;
 //
 //	The eternal server loop
 	while (true) {
@@ -447,53 +91,12 @@ int	optie;
            fprintf (stderr, "accepted connection from %s\n", buf);
            memset (buf, 0, sizeof (buf));
 //
-//	send out the collected service names
-
-	   string_Writer (Q_DEVICE_NAME, theDevice -> deviceName ());
-	   uint8_t startData [128];
-	   switch (theDevice -> whoamI ()) {
-	      case S_DABSTICK:
-	         startData [0] = S_DABSTICK;
-	         startData [1] = 0;	// false
-	         startData [2] = 0;	// begin gain range
-	         startData [3] = 100;	// end gain range
-	         startData [4] = 1;	// true for autogain
-	         startData [5] = my_radioData. dabstickGain;
-	         vector_Writer (Q_INITIALS, startData, 6);
-	         break;
-
-	      case S_AIRSPY:
-	         startData [0] = S_AIRSPY;
-	         startData [1] = 0;	// false
-	         startData [2] = 0;	// begin gain range
-	         startData [3] = 21;	// end gain range
-	         startData [4] = 0;	// true for autogain
-	         startData [5] = my_radioData. airspyGain;
-	         vector_Writer (Q_INITIALS, startData, 6);
-	         break;
-
-	      default:
-	      case S_SDRPLAY:
-	         startData [0] = S_SDRPLAY;
-	         startData [1] = 1;	// true for lnaState setting
-	         startData [2] = 20;	// begin gain range
-	         startData [3] = 59;	// end gain range
-	         startData [4] = 1;	// true for autogain
-	         startData [5] = 9;	// range for lna state
-	         startData [6] = my_radioData. lnaState;
-	         startData [7] = my_radioData. GRdB;
-	         vector_Writer (Q_INITIALS, startData, 8);
-                 break;
+//	after the client restarts itself, we might end up here,
+//	so, we need to give some info for the GUI
+	   if (theDecoder != NULL) {
+	      theDecoder -> showServices ();
+	      theDecoder -> showDeviceName ();
 	   }
-//
-//	then send over the service names
-	   for (std::map<std::string, std::string>
-	                              ::iterator it = serviceMap. begin ();
-	             it != serviceMap. end(); ++it) {
-	      string_Writer (Q_SERVICE_NAME, it -> first);
-	      usleep (100);
-	   }
-//
 //	The server-loop itself is quite simple
            while (true) {
               char buf [1024];
@@ -508,203 +111,12 @@ int	optie;
 	   }
 	}
 
-	theDevice	-> stopReader ();
-	theRadio	-> stop ();
-	delete		theRadio;
-	delete		theDevice;	
-	delete		soundOut;
 	close (client);
 	close (s);
 }
 
 static
-void	handleSettings (config *my_config, radioData *rd) {
-std::string value;
-
-//	The defaults
-	rd	-> theMode		= 1;
-	rd	-> theChannel		= "11C";
-	rd	-> theBand		= BAND_III;
-	rd	-> ppmCorrection	= 0;
-	rd	-> GRdB			= 30;
-	rd	-> lnaState		= 4;
-	rd	-> airspyGain		= 19;
-        rd	-> dabstickGain		= 60;
-	rd	-> autoGain		= false;
-	rd	-> soundChannel		= "default";
-	rd	-> latency		= 10;
-	rd	-> waitingTime		= 10;
-
-	value	= my_config -> getValue ("Mode");
-	if (value != std::string (""))
-	   rd	-> theMode	= stoi (value);
-	value	= my_config	-> getValue ("Band");
-	if (value != std::string (""))
-	   rd	-> theBand	= stoi (value);
-#ifdef	HAVE_SDRPLAY
-	value	= my_config	-> getValue ("lnaState");
-	if (value != std::string (""))
-	   rd	-> lnaState	= stoi (value);
-	value	= my_config	-> getValue  ("GRdB");
-	if (value != std::string (""))
-	   rd	-> GRdB		= stoi (value);
-	value	= my_config	-> getValue ("autoGain");
-	if (value != std::string (""))
-	   rd	-> autoGain	= stoi (value) != 0;
-#elif	HAVE_AIRSPY
-	value	= my_config	-> getValue  ("airspyGain");
-	if (value != std::string (""))
-	   rd	-> airspyGain		= stoi (value);
-#elif	HAVE_DABSTICK
-	value	= my_config	-> getValue  ("dabstickGain");
-	if (value != std::string (""))
-	   rd	-> dabstickGain		= stoi (value);
-	value	= my_config	-> getValue ("autoGain");
-	if (value != std::string (""))
-	   rd	-> autoGain	= stoi (value) != 0;
-#endif
-}
-
-
-static
 void	set_audioLevel	(int);
-
-static
-std::string     findChannelfor (std::string s);
-
-int	handleRequest (char *lbuf, int bufLen) {
-int	starter	= 0;
-	while (starter < bufLen) {
-	   switch (lbuf [starter + 0]) {
-	      case Q_QUIT:
-	         fprintf (stderr, "quit request\n");
-	         return 0;
-
-	      case Q_SYSTEM_EXIT:
-	         break;
-
-	      case Q_GAIN_SLIDER:
-#ifdef	HAVE_SDRPLAY
-	         my_radioData. GRdB = lbuf [starter + 3];
-	         theDevice      -> set_ifgainReduction (my_radioData. GRdB);
-	         my_config	-> update ("GRdB",
-		                        std::to_string (my_radioData. GRdB));
-#elif	defined(HAVE_AIRSPY)
-	         my_radioData. airspyGain = lbuf [starter + 3];
-	         theDevice      -> set_gain (my_radioData. airspyGain);
-	         my_config	-> update ("airspyGain",
-		                        std::to_string (my_radioData. airspyGain));
-#elif	defined(HAVE_DABSTICK)
-	         my_radioData. dabstickGain = lbuf [starter + 3];
-	         theDevice      -> set_gain (my_radioData. airspyGain);
-	         my_config	-> update ("dabstickGain",
-		                        std::to_string (my_radioData. dabstickGain));
-#endif
-	         break;
-
-	      case Q_LNA_STATE:
-	         my_radioData. lnaState = lbuf [starter + 3];
-	         theDevice      -> set_lnaState (my_radioData. lnaState);
-	         my_config	-> update ("lnaState",
-	                              std::to_string (lbuf [starter + 3]));
-	         break;
-
-	      case Q_AUTOGAIN:
-	         my_radioData. autoGain = lbuf [starter + 3] != 0;
-	         theDevice      -> set_autogain (my_radioData. autoGain);
-	         my_config	-> update ("autoGain",
-	                              std::to_string (lbuf [starter + 3]));
-	         break;
-
-	      case Q_SOUND_LEVEL:
-	         set_audioLevel (lbuf [starter + 3]);
-	         break;
-
-	      case Q_RESET:
-	         theDevice	-> stopReader ();
-	         theRadio	-> stop ();
-	         vector_Writer (Q_NEW_ENSEMBLE, NULL, 0);
-	         scanning	= true;
-	         buildServiceList (true);
-//	send out the collected service names
-	
-	         for (std::map<std::string, std::string>
-	                              ::iterator it = serviceMap. begin ();
-	              it != serviceMap. end(); ++it) {
-	            string_Writer (Q_SERVICE_NAME, it -> first);
-	            usleep (100);
-	         }
-	         scanning	= false;
-	         break;
-//
-//	This is what the user most of the time will do mostly
-	      case Q_SERVICE:
-	         { 
-	            my_radioData. serviceName =
-	                          std::string ((char *)(&(lbuf [starter + 3])));
-	            fprintf (stderr, "service request for %s\n",
-	                              my_radioData. serviceName. c_str ());
-	            
-	            std::string channel	= findChannelfor (my_radioData. serviceName);
-	            if (channel == "") {
-	               break;
-	            }
-
-	            if (channel != theBandHandler -> currentChannel ()) {
-	               theDevice -> stopReader ();
-	               theRadio	-> stop ();
-	               theBandHandler -> setChannel (channel);
-                       int32_t frequency =
-                                theBandHandler -> Frequency ();
-	               char temp [255];
-	               sprintf (temp, "switching to channel %s", channel. c_str ());
-	               string_Writer (Q_TEXT_MESSAGE, temp);
-                       theDevice	-> restartReader (frequency);
-                       timesyncSet.         store (false);
-                       timeSynced.          store (false);
-                       int timeSyncTime         = 2;
-	               ensembleRecognized.       store (false);
-	               theRadio		-> start ();
-	               while (!timeSynced. load () && (--timeSyncTime >= 0)) {
-	                  sleep (1);
-	               }
-	               if (timeSynced. load ())	 {
-	                  timeSyncTime = 10;
-	                  while (timeSynced. load () && (--timeSyncTime > 0))
-	                     sleep (1);
-	               }
-	               if (!ensembleRecognized. load ()) {
-	                  break;
-	               }
-	            }
-
-	            if (theRadio -> kindofService
-	                        (my_radioData. serviceName) == AUDIO_SERVICE) {
-	               audiodata ad;
-	               theRadio -> dataforAudioService
-	                        (my_radioData. serviceName, &ad);
-	               if (!ad. defined) {
-	                  std::cerr << "sorry  we cannot handle service " <<
-	                                    my_radioData. serviceName << "\n";
-	               }
-	               else {
-	                  theRadio	-> reset ();
-	                  theRadio	-> set_audioChannel (&ad);
-	                  string_Writer (Q_ENSEMBLE, ensembleName);
-	               }
-	            }
-	         }
-	         break;
-
-	      default:
-	         fprintf (stderr, "Message %o not understood\n",
-	                                lbuf [starter + 0]);
-	         break;
-	   }
-	   starter += 3 + lbuf [2];
-	}
-	return 1;
-}
 
 static
 sdp_session_t *register_service (void) {
@@ -811,78 +223,77 @@ char	command [255];
 }
 
 static
-bool	searchable (std::string channel) {
-	return (my_config -> getValue (channel) == "on");
+void	createMessage (std::string s) {
+	fprintf (stderr, "%s \n", s. c_str ());
 }
 
 static
-void	markChannels (bool flag, std::string Channel) {
-	my_config -> update (Channel, flag ? "on": "no data");
-}
+int    handleRequest (char *lbuf, int bufLen) {
+int     starter = 0;
+        while (starter < bufLen) {
+           switch (lbuf [starter + 0]) {
+	      case Q_RESET:
+	         if (theDecoder == NULL)	// first time
+	         try {
+	            theDecoder = new dabDecoder (listener);
+	            createMessage (std::string ("DAB decoder is being created"));
+	         } catch (int e) {
+	            createMessage (std::string ("DAB decoder could not be created"));
+	         }
+	         else {
+	            theDecoder -> reset ();
+	            createMessage (std::string ("DAB decoder is being reset"));
+	         }
+	         break;
 
-static
-void	buildServiceList (bool fresh) {
-std::string	theChannel	= "5A";
-std::string	startChannel	= "5A";
+	      case Q_SOUND_LEVEL:
+	         set_audioLevel (lbuf [starter + 3]);
+	         break;
 
-//	be sure that the serviceList is empty
-        serviceMap. clear ();
-	fprintf (stderr, "map is cleared\n");
+	      case Q_GAIN_SLIDER:
+	         if (theDecoder != NULL)
+	            theDecoder -> setGainSlider (lbuf [starter + 3]);
+	         break;
 
-	theBandHandler	-> setChannel (theChannel);
-//	here we really start
-	while (true) {
-	   if (fresh || searchable (theChannel)) {
-	      theDevice		-> stopReader ();
-	      theRadio		-> stop ();
-              theDevice		-> restartReader
-	                                (theBandHandler -> Frequency ());
-	      timesyncSet.	store (false);
-	      timeSynced.	store (false);
-	      int timeSyncTime	= 2;
-	      ensembleRecognized.	store (false);
-	      fprintf (stderr, "scanning channel %s\n", theChannel. c_str ());
-	      if (fresh) {
-	          std::string s = "scanning channel ";
-	          s = s. append (theChannel);
-	          string_Writer (Q_TEXT_MESSAGE, s);
-              }
-	      theRadio	-> start ();
-//
-//	The approach is to look for a short time for a kind of DAB signal
-//	if not, continue with the next channel. If a timesync could
-//	be made (should not take more than 10 to 20 frames), 
-//	continue for a longer period
+	      case Q_LNA_STATE:
+	         if (theDecoder != NULL)
+	            theDecoder -> setLnaState (lbuf [starter + 3]);
+	         break;
 
-	      while (!timesyncSet. load () && (--timeSyncTime >= 0)) {
-	         sleep (1);
-	      }
-	      if (timeSynced. load ())	 {
-	         fprintf (stderr, "%s might have DAB data\n",
-	                                  theChannel. c_str ());
-	         timeSyncTime = my_radioData. waitingTime;
-	         while (timeSynced. load () && (--timeSyncTime > 0))
-	            sleep (1);
-	      }
-	      markChannels (ensembleRecognized. load (), theChannel);
-	      theDevice -> stopReader ();
+	      case Q_AUTOGAIN:
+	         if (theDecoder != NULL)
+	            theDecoder -> setAutoGain (lbuf [starter + 3] != 0);
+	         break;
+
+	      case Q_SYSTEM_EXIT:
+	         if (theDecoder != NULL) {
+	            theDecoder	-> stop ();
+	            delete theDecoder;
+	         }
+	         fprintf (stderr, "request to stop the RPI\n");
+	         exit (1);
+
+	      case Q_SERVICE:
+	         if (theDecoder != NULL) {
+	            std::string s = std::string (&lbuf [starter + 3]);
+	            theDecoder	-> selectService (s);
+	         }
+	         break;
+
+	      default:		// it is for the client
+	         break;
 	   }
-           theChannel = theBandHandler -> nextChannel ();
-           if (theChannel == startChannel)
-              break;
-	   theBandHandler	-> setChannel (theChannel);
+           starter += 3 + lbuf [2];
 	}
-	theRadio	-> stop ();
+	return 1;
+}
+//
+//	messages from the client, does not interpret
+//	anything, just passes it on
+static
+void	listener	(uint8_t *lbuf, int size) {
+	if (client != 0)
+	   write (client, lbuf, size);
 }
 
-static
-std::string	findChannelfor (std::string s) {
-	for (std::map<std::string, std::string>
-	                         ::iterator it = serviceMap. begin ();
-	   it != serviceMap. end (); ++it) {
-	   if (it -> first == my_radioData. serviceName) 
-	      return it -> second;
-	}
-	return "";
-}
 

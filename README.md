@@ -9,24 +9,31 @@ server, they are small but powerfull enough to do all kinds of
 computations.
 
 In this project a DAB server, running on an headless RPI2/3 (under
-Stretch) is being developed. The DAB server is started when turning
-on the RPI (as a "service") and will run without any further
+Stretch) is being developed.
+The server is started on the RPI (as a "service"),
+it will run without any further
 interaction from a user, i.e. the RPI can run headless.
 The user interacts with the server using an android client, using a bluetooth
 connection. 
 
-The server, when started, will scan different channels in Band III and
-collects services in ensembles
-found in these channels, and - when this is finished -
-is waiting for someone to call.
-A client can connect to the server and select a service.
+The server, when started, will wait for a user to connect through
+a bluetooth connection. Once connected, the user can actually
+start the dab "engine" by touching the "Reset" button.
+
+The dab engine will scan to a set of preselected channels for
+DAB data, and will collect the names of the services.
+After the scan, the server wil send a list with service names
+to the client.
+
+The client may select a service, the server then will tune to
+the right channel, and will select the service for processing.
 
 Since most of the channels do not carry DAB data, the server is  instruct to "remember"
-in which channels it found an ensemble whn doing a full scan. The scan done on start-up
-is then limited to those channels that previously have shown to contain DAB data.
+in which channels it found an ensemble when doing a full scan.
 
-The client contains a "reset" button, instructing the server to scan all channels in the
-given band - of course the results are recorded by the server and used the next invocation
+Touching the reset button again will instruct the server to scan
+all channels in the given band - of course the results are
+recorded by the server and used the next invocation
 to scan the band.
 
 We use bluetooth as communication medium between
@@ -54,12 +61,10 @@ Creating the server is by
 
 Running the server is simply by executing "./dab-server"
 
-The server might be called with some parameters for setting the
-(initial) gain
-
-The settings of the gain as well as the status of the different channels
-are stored in a file ".dab-server.ini", kept in the home directory
-of the user.
+The server stores some results - i.e. the channel names where DAB
+data night be found, gain setting etc - in an ini file, which
+is - by default - kept in /usr/local/src. The name can be changed
+in the include file in the _dab-decoder.h" file.
 
 The server will send its audio output to the soundcard of
 the machine it runs on.

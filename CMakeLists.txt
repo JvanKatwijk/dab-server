@@ -47,7 +47,7 @@ if(DEFINED HACKRF)
         set(HACKRF true)
 endif ()
 
-   set(objectName dab-server)
+set(objectName dab-server)
 
 
 #########################################################################
@@ -200,112 +200,115 @@ endif ()
 	           ./
 	           ../
 	           ./devices
-	           ./includes
-	           ./includes/ofdm
-	           ./includes/backend
-	           ./includes/backend/audio
-	           ./includes/backend/data
-	           ./includes/backend/data/mot
-	           ./includes/backend/data/journaline
-	           ./includes/support
-	           ./includes/support/viterbi_768
+	           ./radio
+	           ./radio/includes
+	           ./radio/includes/ofdm
+	           ./radio/includes/backend
+	           ./radio/includes/backend/audio
+	           ./radio/includes/backend/data
+	           ./radio/includes/backend/data/mot
+	           ./radio/includes/backend/data/journaline
+	           ./radio/includes/support
+	           ./radio/includes/support/viterbi_768
 	           /usr/include/
 	)
 
 	set (${objectName}_HDRS
 	     ${${objectName}_HDRS}
 	     ./protocol.h
-	     ./config.h
-	     ./radiodata.h
-	     ./includes/support/ringbuffer.h
-	     ./includes/support/band-handler.h
-	     ./includes/support/audio-base.h
-	     ./includes/support/audiosink.h
-	     ./includes/support/newconverter.h
-	     ./includes/dab-constants.h
-	     ./includes/dab-processor.h
-	     ./includes/ofdm/phasereference.h
-	     ./includes/ofdm/phasetable.h
-	     ./includes/ofdm/freq-interleaver.h
-	     ./includes/ofdm/timesyncer.h
-	     ./includes/ofdm/fic-handler.h
-	     ./includes/ofdm/fib-processor.cpp
-	     ./includes/ofdm/sample-reader.h
-	     ./includes/backend/firecode-checker.h
-	     ./includes/backend/backend-base.h
-	     ./includes/backend/charsets.h
-	     ./includes/backend/galois.h
-	     ./includes/backend/reed-solomon.h
-	     ./includes/backend/msc-handler.h
-	     ./includes/backend/virtual-backend.h
-	     ./includes/backend/audio-backend.h
-	     ./includes/backend/data-backend.h
-	     ./includes/backend/audio/faad-decoder.h
-	     ./includes/backend/audio/mp4processor.h 
-	     ./includes/backend/audio/mp2processor.h 
-	     ./includes/backend/data/virtual-datahandler.h 
-	     ./includes/backend/data/tdc-datahandler.h 
-	     ./includes/backend/data/pad-handler.h 
-	     ./includes/backend/data/data-processor.h
-	     ./includes/backend/data/mot/mot-handler.h 
-	     ./includes/backend/data/mot/mot-dir.h 
-	     ./includes/backend/data/mot/mot-object.h 
-	     ./includes/support/viterbi_768/viterbi-768.h
-	     ./includes/support/protTables.h
-	     ./includes/support/protection.h
-	     ./includes/support/uep-protection.h
-	     ./includes/support/eep-protection.h
-	     ./includes/support/fft_handler.h
-	     ./includes/support/dab-params.h
-	     ./includes/support/tii_table.h
-	     ./devices/device-handler.h
+	     ./radio/config.h
+	     ./radio/radiodata.h
+	     ./radio/dab-decoder.h
+	     ./radio/includes/support/ringbuffer.h
+	     ./radio/includes/support/band-handler.h
+	     ./radio/includes/support/audio-base.h
+	     ./radio/includes/support/audiosink.h
+	     ./radio/includes/support/newconverter.h
+	     ./radio/includes/dab-constants.h
+	     ./radio/includes/dab-processor.h
+	     ./radio/includes/ofdm/phasereference.h
+	     ./radio/includes/ofdm/phasetable.h
+	     ./radio/includes/ofdm/freq-interleaver.h
+	     ./radio/includes/ofdm/timesyncer.h
+	     ./radio/includes/ofdm/fic-handler.h
+	     ./radio/includes/ofdm/fib-processor.cpp
+	     ./radio/includes/ofdm/sample-reader.h
+	     ./radio/includes/backend/firecode-checker.h
+	     ./radio/includes/backend/backend-base.h
+	     ./radio/includes/backend/charsets.h
+	     ./radio/includes/backend/galois.h
+	     ./radio/includes/backend/reed-solomon.h
+	     ./radio/includes/backend/msc-handler.h
+	     ./radio/includes/backend/virtual-backend.h
+	     ./radio/includes/backend/audio-backend.h
+	     ./radio/includes/backend/data-backend.h
+	     ./radio/includes/backend/audio/faad-decoder.h
+	     ./radio/includes/backend/audio/mp4processor.h 
+	     ./radio/includes/backend/audio/mp2processor.h 
+	     ./radio/includes/backend/data/virtual-datahandler.h 
+	     ./radio/includes/backend/data/tdc-datahandler.h 
+	     ./radio/includes/backend/data/pad-handler.h 
+	     ./radio/includes/backend/data/data-processor.h
+	     ./radio/includes/backend/data/mot/mot-handler.h 
+	     ./radio/includes/backend/data/mot/mot-dir.h 
+	     ./radio/includes/backend/data/mot/mot-object.h 
+	     ./radio/includes/support/viterbi_768/viterbi-768.h
+	     ./radio/includes/support/protTables.h
+	     ./radio/includes/support/protection.h
+	     ./radio/includes/support/uep-protection.h
+	     ./radio/includes/support/eep-protection.h
+	     ./radio/includes/support/fft_handler.h
+	     ./radio/includes/support/dab-params.h
+	     ./radio/includes/support/tii_table.h
+	     ./radio/devices/device-handler.h
 	)
 
 	set (${objectName}_SRCS
 	     ${${objectName}_SRCS}
 	     ./main.cpp
-	     ./config.cpp
-	     ./src/support/audio-base.cpp
-	     ./src/support/audiosink.cpp
-	     ./src/support/newconverter.cpp
-	     ./src/support/band-handler.cpp
-	     ./src/dab-processor.cpp
-	     ./src/ofdm/ofdm-decoder.cpp
-	     ./src/ofdm/phasereference.cpp
-	     ./src/ofdm/phasetable.cpp
-	     ./src/ofdm/freq-interleaver.cpp
-	     ./src/ofdm/timesyncer.cpp
-	     ./src/ofdm/sample-reader.cpp
-	     ./src/ofdm/fib-processor.cpp
-	     ./src/ofdm/fic-handler.cpp
-	     ./src/backend/firecode-checker.cpp
-	     ./src/backend/backend-base.cpp
-	     ./src/backend/charsets.cpp
-	     ./src/backend/galois.cpp
-	     ./src/backend/reed-solomon.cpp
-	     ./src/backend/msc-handler.cpp
-	     ./src/backend/virtual-backend.cpp
-	     ./src/backend/audio-backend.cpp
-	     ./src/backend/data-backend.cpp
-	     ./src/backend/audio/faad-decoder.cpp
-	     ./src/backend/audio/mp4processor.cpp 
-	     ./src/backend/audio/mp2processor.cpp 
-	     ./src/backend/data/virtual-datahandler.cpp 
-	     ./src/backend/data/tdc-datahandler.cpp 
-	     ./src/backend/data/pad-handler.cpp 
-	     ./src/backend/data/data-processor.cpp
-	     ./src/backend/data/mot/mot-handler.cpp 
-	     ./src/backend/data/mot/mot-dir.cpp 
-	     ./src/backend/data/mot/mot-object.cpp 
-	     ./src/support/viterbi_768/viterbi-768.cpp
-	     ./src/support/viterbi_768/spiral-no-sse.c
-	     ./src/support/protTables.cpp
-	     ./src/support/protection.cpp
-	     ./src/support/eep-protection.cpp
-	     ./src/support/uep-protection.cpp
-	     ./src/support/fft_handler.cpp
-	     ./src/support/dab-params.cpp
-	     ./src/support/tii_table.cpp
+	     ./radio/config.cpp
+	     ./radio/dab-decoder.cpp
+	     ./radio/src/support/audio-base.cpp
+	     ./radio/src/support/audiosink.cpp
+	     ./radio/src/support/newconverter.cpp
+	     ./radio/src/support/band-handler.cpp
+	     ./radio/src/dab-processor.cpp
+	     ./radio/src/ofdm/ofdm-decoder.cpp
+	     ./radio/src/ofdm/phasereference.cpp
+	     ./radio/src/ofdm/phasetable.cpp
+	     ./radio/src/ofdm/freq-interleaver.cpp
+	     ./radio/src/ofdm/timesyncer.cpp
+	     ./radio/src/ofdm/sample-reader.cpp
+	     ./radio/src/ofdm/fib-processor.cpp
+	     ./radio/src/ofdm/fic-handler.cpp
+	     ./radio/src/backend/firecode-checker.cpp
+	     ./radio/src/backend/backend-base.cpp
+	     ./radio/src/backend/charsets.cpp
+	     ./radio/src/backend/galois.cpp
+	     ./radio/src/backend/reed-solomon.cpp
+	     ./radio/src/backend/msc-handler.cpp
+	     ./radio/src/backend/virtual-backend.cpp
+	     ./radio/src/backend/audio-backend.cpp
+	     ./radio/src/backend/data-backend.cpp
+	     ./radio/src/backend/audio/faad-decoder.cpp
+	     ./radio/src/backend/audio/mp4processor.cpp 
+	     ./radio/src/backend/audio/mp2processor.cpp 
+	     ./radio/src/backend/data/virtual-datahandler.cpp 
+	     ./radio/src/backend/data/tdc-datahandler.cpp 
+	     ./radio/src/backend/data/pad-handler.cpp 
+	     ./radio/src/backend/data/data-processor.cpp
+	     ./radio/src/backend/data/mot/mot-handler.cpp 
+	     ./radio/src/backend/data/mot/mot-dir.cpp 
+	     ./radio/src/backend/data/mot/mot-object.cpp 
+	     ./radio/src/support/viterbi_768/viterbi-768.cpp
+	     ./radio/src/support/viterbi_768/spiral-no-sse.c
+	     ./radio/src/support/protTables.cpp
+	     ./radio/src/support/protection.cpp
+	     ./radio/src/support/eep-protection.cpp
+	     ./radio/src/support/uep-protection.cpp
+	     ./radio/src/support/fft_handler.cpp
+	     ./radio/src/support/dab-params.cpp
+	     ./radio/src/support/tii_table.cpp
 	     ./devices/device-handler.cpp
 	)
 #

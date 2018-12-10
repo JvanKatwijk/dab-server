@@ -27,7 +27,7 @@ static std::string& rtrim (std::string& s) {
 	config::config (const std::string filename) {
 //std::string env	= getenv ("HOME");
 
-	this	-> fileName	= fileName;
+	this	-> fileName	= filename;
 //	this	-> fileName	= env. append (filename);
 	fprintf (stderr, "config is stored as %s\n", fileName. c_str ());
 	configMap. clear ();
@@ -64,14 +64,13 @@ std::ifstream ifstrm;
 
 	ifstrm. open (filename);
 	if (!ifstrm) {
-	   fprintf (stderr, "Opening %s lukte niet\n",  filename. c_str ());
 	   return;
 	}
 
 	fprintf (stderr, "Opening %s lukte\n", filename. c_str ());
 	for (std::string line; std::getline (ifstrm, line);) {
 //	if a comment
-	   if (!line.empty() && (line[0] == ';' || line[0] == '#')) { }
+	   if (!line. empty() && (line[0] == ';' || line[0] == '#')) { }
 // allow both ; and # comments at the start of a line
 	   else
 	   if (!line. empty ()) {
