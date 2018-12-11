@@ -95,7 +95,7 @@ bdaddr_t tmp	= (bdaddr_t) {{0, 0, 0, 0, 0, 0}};
 //	so, we need to give some info for the GUI
 	   if (theDecoder != NULL) {
 	      theDecoder -> showServices ();
-	      theDecoder -> showDeviceName ();
+	      theDecoder -> showDevicename ();
 	   }
 //	The server-loop itself is quite simple
            while (true) {

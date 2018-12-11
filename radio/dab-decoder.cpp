@@ -157,7 +157,7 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 //
 
 	dabDecoder::dabDecoder (listener_p listener):
-	               my_config (std::string (CONFIG))) {
+	               my_config (std::string (CONFIG)) {
 
 	theListener	= listener;
 	handleSettings (&my_config, &my_radioData);
@@ -383,7 +383,7 @@ void	dabDecoder::showServices	(void) {
 	}
 }
 
-void	dabDecoder::showDeviceName	(void) {
+void	dabDecoder::showDevicename	(void) {
 	string_Writer (Q_DEVICE_NAME, theDevice -> deviceName ());
 }
 
