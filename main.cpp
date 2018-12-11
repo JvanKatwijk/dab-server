@@ -271,7 +271,8 @@ int     starter = 0;
 	            delete theDecoder;
 	         }
 	         fprintf (stderr, "request to stop the RPI\n");
-	         exit (1);
+	         system ("halt");
+	         break;
 
 	      case Q_SERVICE:
 	         if (theDecoder != NULL) {
