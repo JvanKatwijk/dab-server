@@ -4,37 +4,48 @@
 
 ![android client for dab server](/android-client.png?raw=true)
 
-The RPI2 and 3 are excellent devices to use as a specialized
+The RPI2 and 3 are excellent devices for use as a specialized
 server, they are small but powerfull enough to do all kinds of 
 computations.
 
 In this project a DAB server, running on an headless RPI2/3 (under
 Stretch) is being developed.
-The server is started on the RPI (as a "service"),
-it will run without any further
-interaction from a user, i.e. the RPI can run headless.
+The server is implemented as a "service" on the RPI, i.e it is
+one of the services that on booting up the RPI will be started.
+As such, it will run without any further
+interaction from a user, i.e. the RPI can run headless, even without WiFi enabled.
 The user interacts with the server using an android client, using a bluetooth
 connection. 
 
-The server, when started, will wait for a user to connect through
+The server, after being started, will wait for a user to connect through
 a bluetooth connection. Once connected, the user can actually
 start the dab "engine" by touching the "Reset" button.
 
-The dab engine will scan to a set of preselected channels for
-DAB data, and will collect the names of the services.
+The dab "engine" will scan a set of preselected channels for
+DAB data, and will collect the names of the services found in ensembles
+in these channels.
 After the scan, the server wil send a list with service names
 to the client.
 
-The client may select a service, the server then will tune to
-the right channel, and will select the service for processing.
+The client may select a service by touching the name, the server then will tune to
+the right channel, will select the service for processing and will the dab "engine"
+instruct to process data for the selected service.
 
-Since most of the channels do not carry DAB data, the server is  instruct to "remember"
-in which channels it found an ensemble when doing a full scan.
+An "ini" file contains a list of channels that - as seen in a last scan -
+contain DAB data. Since most of the channels do not carry DAB data, the
+server is  instruct to "remember" the channels in which it found an ensemble
+when doing a full scan. 
 
-Touching the reset button again will instruct the server to scan
+Touching the reset button again will instruct
+the server to do such a scan, i.e. scan through 
 all channels in the given band - of course the results are
 recorded by the server and used the next invocation
 to scan the band.
+
+Note that the reset button behaves differently when touched for the first time
+or another time. The first time it will scan the preselected channels,
+when touched further, it will scan all channels and - apart from
+collecting Dab data - will record which channels carry this Dab data.
 
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
@@ -50,35 +61,38 @@ though for different screen formats.
 The server
 ---------------------------------------------------------------------
 
+The SDRplay devices, AIRspy devices and "dabsticks" (RTLSDR based devices)
+are supported. Although quite obvious, ensure that the corresponding
+support library is installed.
+
 The server - currently - can be configured to support one of
-the usual set (SDRplay, AIRspy, RTLSDR) devices.
-Creating the server is by
+these devices, creating the server is by
 
 	mkdir build
 	cd build
 	cmake .. -DXXX=ON (XXX is either SDRPLAY, AIRSPY or RTLSDR)
 	make
-
-Running the server is simply by executing "./dab-server"
+	
 
 The server stores some results - i.e. the channel names where DAB
 data night be found, gain setting etc - in an ini file, which
 is - by default - kept in /usr/local/src. The name can be changed
-in the include file in the _dab-decoder.h" file.
+in the include file in the "dab-decoder.h" file.
 
-The server will send its audio output to the soundcard of
-the machine it runs on.
+The server will send the audio output for a selected service
+to the soundcard of the machine it runs on.
 
 ----------------------------------------------------------------------
 Running the server as a systemd service
 ----------------------------------------------------------------------
 
-In my setting the server runs stand alone. Communication - if any-
-is using bluetooth. Obviously, one should have enabled bluetooth on the RPI,
+In my setting the server runs stand alone as a "service", instantiated
+on starting up the RPI. Communication - if any- is using bluetooth. 
+Obviously, one should have enabled bluetooth on the RPI,
 how to instal the bluez software is described in many places
-on the internet. In order to allow the server to register
-its "service", and to make the bluetooth discoverable, one should
-add "--compat" to the line
+on the internet, and the required libraries are available on the repositories for Stretch.
+In order to allow the server to register its "service", and to make the bluetooth 
+discoverable, one should add "--compat" to the line
 
 	ExecStart=/usr/lib/bluetooth/bluetoothd --compat
 
@@ -130,18 +144,22 @@ section contains an "apk" file, the package built by android studio and
 the one running on my tablet.
 
 The android remote control has a start button, touching it will instruct the client
-to look at bluetooth devices in the neighbourhood.
-After touching the name of the device in this list
+to look at bluetooth devices in the neighbourhood. The result is a list
+of devices. After touching the name of the device with the server in this list
 the client will (try to) establish the connection, assuming a
 server runs on the selected device.
 .
 As soon as a client is connected to a device running the server,
 the names of the services are
 transmitted to the client, and the server is ready to receive commands.
+This is important, since the basic idea is to have short  periods being connected
+with the server. After all, having selected a program, there is no reason whatsoever
+to remain connected.
 
 Typical commands are selecting a service or changing the
-gain setting of the device.
-The client "knows" which device is used at the server side,
+gain setting of the device. Note that different devices require
+different methods for gain setting.The client "knows" which device
+is used at the server side,
 and it adapts its GUI wrt to gain setting.
 
 For the SDRplay, the state of the lna and the gain reduction (20 .. 59)
@@ -175,22 +193,15 @@ the server will just continue. To change the
 server settings, restart the remote control, connect and instruct.
 
 ---------------------------------------------------------------------------
-Possible extension
+Shutting down the server
 ----------------------------------------------------------------------------
 
-Having used the device now for a couple of days, it seems one thing is missing:
-closing down the RPI from the remore control. Just pulling out the plug is not
-good for the health of the card.
-
-
----------------------------------------------------------------------------
-Supported devices
----------------------------------------------------------------------------
-
-
-The SDRplay devices, AIRspy devices and "dabsticks" (RTLSDR based devices)
-are supported. Although quite obvious, ensure that the corresponding
-support library is installed.
+One thing that imemediately comes to mind is that just pulling out the plug
+to disconnect the RPI from its powers source is not advisable, however,
+the server runs headless.
+The GUI therefore contains a button to completely shut down the server,
+note that this is different from the button to just quit the program,
+touching that button will leave the server running.
 
 ----------------------------------------------------------------------------
 Bluetooth
@@ -211,8 +222,8 @@ Copyrights
 	Lazy Chair Programming
 
 The dab-library software is made available under the GPL-2.0. The dab-library uses a number of GPL-ed libraries, all
-rigfhts gratefully acknowledged. The android client is a first attempt to create some application for android
-and leaves quite some room for improvement.
+rights gratefully acknowledged. The android client is a first attempt to create some application for android
+and leaves quite some room for improvement. Suggestions are welcome/
 
 
 
