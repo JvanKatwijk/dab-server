@@ -9,7 +9,9 @@ server, they are small but powerfull enough to do all kinds of
 computations.
 
 In this project a DAB server, running on an headless RPI2/3 (under
-Stretch) is being developed.
+Stretch) is being developed together with an "app" for use on an android tablet
+acting as remote control (see the picture).
+
 The server is implemented as a "service" on the RPI, i.e it is
 one of the services that on booting up the RPI will be started.
 As such, it will run without any further
@@ -62,15 +64,16 @@ The server
 ---------------------------------------------------------------------
 
 The SDRplay devices, AIRspy devices and "dabsticks" (RTLSDR based devices)
-are supported. Although quite obvious, ensure that the corresponding
-support library is installed.
+are supported. Support for hackrf devices is under construction.
+Whn building an executable, ensure that the corresponding
+support library for the selected device is installed.
 
 The server - currently - can be configured to support one of
 these devices, creating the server is by
 
 	mkdir build
 	cd build
-	cmake .. -DXXX=ON (XXX is either SDRPLAY, AIRSPY or RTLSDR)
+	cmake .. -DXXX=ON (XXX is either SDRPLAY, AIRSPY, RTLSDR or HACKRF)
 	make
 	
 
@@ -140,8 +143,8 @@ The Android remote control.
 -----------------------------------------------------------------------
 
 The android remote control is - as can be expected - under development. The releases
-section contains an "apk" file, the package built by android studio and
-the one running on my tablet.
+section contains an "apk" file, the package is built by android studio and
+is the one running on my tablet.
 
 The android remote control has a start button, touching it will instruct the client
 to look at bluetooth devices in the neighbourhood. The result is a list
@@ -159,8 +162,7 @@ to remain connected.
 Typical commands are selecting a service or changing the
 gain setting of the device. Note that different devices require
 different methods for gain setting.The client "knows" which device
-is used at the server side,
-and it adapts its GUI wrt to gain setting.
+is used at the server side, and it adapts its GUI wrt to gain setting.
 
 For the SDRplay, the state of the lna and the gain reduction (20 .. 59)
 can be set (as well as the autogain).  For the AIRspy the
@@ -168,29 +170,22 @@ gain slider is constrained to values from 1 .. 21, and both the spinner
 for the lnaState and the button for the autogain are hidden.
 For the rtlsdr based devices, the gain setting allows values from
 0 .. 100, they will be translated by the device driver software
-to appropriate gain values.
+to appropriate gain values. For the HackRF device, the lna gain can be set
+throught he spinner, and the vga gain through the gain slider.
 
 The top slider on the remote control can be used to control the sound setting of the server.
 One might have to adapt the code in the server, controlling the sound level
-is by using the "amixer" function of alsa.
+is by using the "amixer" function of alsa on the server device.
 
-The next-to-top slider can be used to control the gain setting of the device.
-As device shown on the picture is an SDRplay device, the spinner to the left
-of the slider is used to set the lna state and the slider sets
-the gain reduction. If e.g. an RTLSDR based device
-is configured, this spinner will not be visible and the
-slider will set the gain.
-
-If the user is not satisfied with the amount of services,
-there is a "reset" button on the GUI that - when touched -instructs the
-server to scan all channels again
+If the user is not satisfied with the amount of services shown on the GUI,
+and detected by the last scan, a "reset" button on the GUI can be touched that
+instructs the server to scan all channels in the old TV band III
 and record which channels carry useful data.
 
 To close down the connection, a the user can touch the "quit" button, the server
-will then be available for another client.
-If the connection is broken by stopping the remore control program, 
-the server will just continue. To change the
-server settings, restart the remote control, connect and instruct.
+will continue to do what it was doing (i.e. if the server was decoding a service, it
+will continue to do so) and is available for another client.
+To change any setting in the server, restart the remote control, connect and instruct.
 
 ---------------------------------------------------------------------------
 Shutting down the server
@@ -199,9 +194,12 @@ Shutting down the server
 One thing that imemediately comes to mind is that just pulling out the plug
 to disconnect the RPI from its powers source is not advisable, however,
 the server runs headless.
-The GUI therefore contains a button to completely shut down the server,
+Rather than having to establish a TCP connection to instruct the RPI to shut down,
+the GUI contains a button to completely shut down the server,
 note that this is different from the button to just quit the program,
 touching that button will leave the server running.
+Note furthermore, that shutting down the server just means shutting down, to
+wake up the server (or better: the RPI) one has to restart the RPI.
 
 ----------------------------------------------------------------------------
 Bluetooth
