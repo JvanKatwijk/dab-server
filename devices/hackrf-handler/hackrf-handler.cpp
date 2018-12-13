@@ -81,8 +81,8 @@ int	res;
 	                 deviceList -> usb_board_ids [0];
 	}
 
-	setLNAGain	(lnaGain);
-	setVGAGain	(vgaGain);
+	set_lnaGain	(lnaGain);
+	set_vgaGain	(vgaGain);
 	running. store (false);
 }
 
@@ -94,7 +94,7 @@ int	res;
 	hackrf_exit ();
 }
 //
-void	hackrfHandler::setLNAGain	(int16_t newGain) {
+void	hackrfHandler::set_lnaGain	(int16_t newGain) {
 int	res;
 	if ((newGain <= 40) && (newGain >= 0)) {
 	   res	= hackrf_set_lna_gain (theDevice, newGain);
@@ -106,7 +106,7 @@ int	res;
 	}
 }
 
-void	hackrfHandler::setVGAGain	(int16_t newGain) {
+void	hackrfHandler::set_vgaGain	(int16_t newGain) {
 int	res;
 	if ((newGain <= 62) && (newGain >= 0)) {
 	   res	= hackrf_set_vga_gain (theDevice, newGain);

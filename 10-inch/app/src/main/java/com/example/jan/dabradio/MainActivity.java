@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private static final int REQUEST_ENABLE_BT = 1;
 //
 //  for now we assume that we have an RSP II
-    Integer [] lnastateValues = new Integer [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    Integer [] lnastateValues = new Integer [40];
     static ArrayAdapter<Integer> lnaAdapter;
     static ArrayList<String> serviceItems;
     private static UUID my_uuid = UUID.fromString ("00001101-0000-1000-8000-00805f9b34fb");
@@ -112,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements Signals {
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         my_radioInterface = new radioInterface (the_gui);
         my_radioInterface. addServiceListener (the_gui);
+
+	for (int i = 0; i < 40; i ++) {
+	   lnaStatevalues [i] = i;
+	}
 
         lnaAdapter = new ArrayAdapter<Integer> (this,
                                         android. R. layout. simple_spinner_item, lnastateValues);
@@ -385,14 +389,6 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
             case S_HACKRF:
                 autogainButton. setVisibility (View. GONE);
-                { 
-                    Integer [] hackrf_lnaValues = new Integer [(int)(v [2])];
-	            for (int i = 0; i < (int)(v [2]); i ++)
-	                hackrf_lnaValues [i] = i;
-                    lnaAdapter = new ArrayAdapter<Integer> (this,
-                                      android. R. layout. simple_spinner_item, 
-                                      hackrf_lnaValues);
-                }
                 lnaState. setSelection ((int)(v [6]));
                 lnaState. setVisibility (View. VISIBLE);
 	        gainSlider. setMax ((int)(v [7]));

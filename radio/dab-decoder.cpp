@@ -308,19 +308,19 @@ void	dabDecoder::setGainSlider (int v) {
 #ifdef	HAVE_SDRPLAY
 	((sdrplayHandler *)theDevice)	-> set_ifgainReduction (v);
 	my_radioData. GRdB = v;
-	my_config. update ("GRdB", v);
+	my_config. update ("GRdB", std::to_string (v));
 #elif   HAVE_AIRSPY
 	((airspyHandler *)theDevice)	-> set_gain (v);
 	my_radioData. airspyGain = v;
-	my_config. update ("airspyGain", v);
+	my_config. update ("airspyGain", std::to_string (v));
 #elif	HAVE_DABSTICK
 	((rtlsdrHandler *)theDevice)	-> set_gain (v);
 	my_radioData. dabstickGain = v;
-	my_config. update ("dabstickGain", v);
+	my_config. update ("dabstickGain", std:;to_string (v));
 #elif	HAVE_HACKRF
 	((hackrfHandler *)theDevice) -> set_vgaGain (v);
         my_radioData. hackrf_lnaGain = v;
-	my_config. update ("hackrf_lnaGain", v);
+	my_config. update ("hackrf_lnaGain", std::to_string (v));
 #endif
 }
 
@@ -328,11 +328,11 @@ void	dabDecoder::setLnaState	(int v) {
 #ifdef	HAVE_SDRPLAY
 	((sdrplayHandler *)theDevice) -> set_lnaState (v);
 	my_radioData. lnaState = v;
-	my_config. update ("lnaState", v);
+	my_config. update ("lnaState", std::to_string (v));
 #elif	HAVE_HACKRF
 	((hackrfHandler *)theDevice) -> set_lnaGain (v);
         my_radioData. hackrf_vgaGain = v;  
-	my_config. update ("hackrf_vgaGain", v);
+	my_config. update ("hackrf_vgaGain", std::to_string (v));
 #endif
 }
 
