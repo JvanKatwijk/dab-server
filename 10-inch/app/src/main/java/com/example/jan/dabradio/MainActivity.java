@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements Signals {
+    private final   int     S_NOBODY        = 000;
     private final   int     S_SDRPLAY       = 001;
     private final   int     S_DABSTICK      = 002;
     private final   int     S_AIRSPY        = 003;
-    private final   int     S_NOBODY        = 000;
+    private final   int     S_HACKRF        = 004;
 
     private TextView            gainLabel;
     private TextView            audioLabel;
@@ -236,10 +237,14 @@ public class MainActivity extends AppCompatActivity implements Signals {
             public void
 
             onClick (View v) {
-                if (btSocket. isConnected ())
+                if (btSocket. isConnected ()) {
                     try {
                         btSocket. close ();
                     } catch (IOException e) {}
+                }
+                try {
+                    Thread. sleep (100);
+                } catch (Exception e) {}
                 finish ();
                 System.exit(0);
             }
@@ -248,11 +253,15 @@ public class MainActivity extends AppCompatActivity implements Signals {
 //      systemExitButton
         systemExitButton. setOnClickListener (new View. OnClickListener () {
             public void onClick (View v) {
-                if (btSocket. isConnected ())
+                if (btSocket. isConnected ()) {
                     my_radioInterface. do_systemExit ();
-
+                    try {
+	                Thread. sleep (100);
+	                btSocket. close ();
+                    } catch (Exception e) {}
+	        }
                 finish ();
-                System.exit(0);
+                System. exit(0);
             }
         });
 //
@@ -372,6 +381,22 @@ public class MainActivity extends AppCompatActivity implements Signals {
         int device = (int)(v [0]);
         switch (device) {
             case S_DABSTICK:
+                break;
+
+            case S_HACKRF:
+                autogainButton. setVisibility (View. GONE);
+                { 
+                    Integer [] hackrf_lnaValues = new Integer [(int)(v [2])];
+	            for (int i = 0; i < (int)(v [2]); i ++)
+	                hackrf_lnaValues [i] = i;
+                    lnaAdapter = new ArrayAdapter<Integer> (this,
+                                      android. R. layout. simple_spinner_item, 
+                                      hackrf_lnaValues);
+                }
+                lnaState. setSelection ((int)(v [6]));
+                lnaState. setVisibility (View. VISIBLE);
+	        gainSlider. setMax ((int)(v [7]));
+                gainLabel. setText (Integer. toString ((int)(v [7])));
                 break;
 
             case S_AIRSPY:

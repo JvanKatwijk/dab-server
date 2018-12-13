@@ -35,13 +35,13 @@ typedef struct  {
 	bool            autoGain;
 	int		airspyGain;
         int		dabstickGain;
+	int16_t		hackrf_lnaGain;
+	int16_t		hackrf_vgaGain;
 	bool		soundOut;
 	std::string     soundChannel;
 	int16_t         latency;
 	int16_t         waitingTime;
-	std::string	hostname;
-	int		basePort;
-	int		serverPort;
+	
 } radioData;
 
 #endif

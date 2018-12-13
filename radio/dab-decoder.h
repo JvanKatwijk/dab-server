@@ -48,6 +48,8 @@
 #include        "airspy-handler.h"
 #elif   defined (HAVE_RTLSDR)
 #include        "rtlsdr-handler.h"
+#elif	defined (HAVE_HACKRF)
+#include	"hackrf-handler.h"
 #endif
 //
 //	The one who is doing the work:

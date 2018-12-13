@@ -190,6 +190,14 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
                                             my_radioData. autoGain);
 	} catch (int e) {
 	}
+#elif	defined (HAVE_HACKRF)
+	try {
+	   theDevice = new hackrfHandler (frequency,
+	                                  my_radioData. ppmCorrection,
+	                                  my_radioData. hackrf_lnaGain,
+	                                  my_radioData. hackrf_vgaGain);
+	} catch (int e) {
+	}
 #endif
 
 	if (theDevice == NULL) {
@@ -265,6 +273,18 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 	      startData [7] = my_radioData. GRdB;
 	      vector_Writer (Q_INITIALS, startData, 8);
 	      break;
+
+	   case S_HACKRF:
+	      startData [0] = S_HACKRF;
+	      startData [1] = 0;	// lower bound for lna range
+	      startData [2] = 40;	// upperbound for lna range
+	      startData [3] = 0;	// false for autogain
+	      startData [4] = 0;	// lower bound for vga gain
+	      startData [5] = 62;	// upperbound for vga gain
+	      startData [6] = my_radioData. hackrf_lnaGain;
+	      startData [7] = my_radiodata. hackrf_vgaGain;
+	      vector_Writer (Q_INITIALS, startData, 8);
+	      break;
 	}
 //
 //	then send over the "known" service names
@@ -286,17 +306,33 @@ void	dabDecoder::stop (void) {
 
 void	dabDecoder::setGainSlider (int v) {
 #ifdef	HAVE_SDRPLAY
-	theDevice -> set_ifgainReduction (v);
+	((sdrplayHandler *)theDevice)	-> set_ifgainReduction (v);
+	my_radioData. GRdB = v;
+	my_config. update ("GRdB", v);
 #elif   HAVE_AIRSPY
-	theDevice -> set_gain (v);
+	((airspyHandler *)theDevice)	-> set_gain (v);
+	my_radioData. airspyGain = v;
+	my_config. update ("airspyGain", v);
+#elif	HAVE_DABSTICK
+	((rtlsdrHandler *)theDevice)	-> set_gain (v);
+	my_radioData. dabstickGain = v;
+	my_config. update ("dabstickGain", v);
+#elif	HAVE_HACKRF
+	((hackrfHandler *)theDevice) -> set_vgaGain (v);
+        my_radioData. hackrf_lnaGain = v;
+	my_config. update ("hackrf_lnaGain", v);
 #endif
 }
 
 void	dabDecoder::setLnaState	(int v) {
 #ifdef	HAVE_SDRPLAY
-	theDevice -> set_lnaState (v);
-#else
-	(void)v;
+	((sdrplayHandler *)theDevice) -> set_lnaState (v);
+	my_radioData. lnaState = v;
+	my_config. update ("lnaState", v);
+#elif	HAVE_HACKRF
+	((hackrfHandler *)theDevice) -> set_lnaGain (v);
+        my_radioData. hackrf_vgaGain = v;  
+	my_config. update ("hackrf_vgaGain", v);
 #endif
 }
 
@@ -399,6 +435,8 @@ std::string value;
 	rd	-> lnaState		= 4;
 	rd	-> airspyGain		= 19;
         rd	-> dabstickGain		= 60;
+        rd	-> hackrf_lnaGain	= 30;
+	rd	-> hackrf_vgaGain	= 40;
 	rd	-> autoGain		= false;
 	rd	-> soundChannel		= "default";
 	rd	-> latency		= 10;
@@ -431,6 +469,13 @@ std::string value;
 	value	= my_config	-> getValue ("autoGain");
 	if (value != std::string (""))
 	   rd	-> autoGain	= stoi (value) != 0;
+#elif	HAVE_HACKRF
+	value	= my_config	-> getValue ("hackrf_lnaGain");
+	if (value != std::string (""))
+	   rd -> hackrf_lnaGain	= stoi (value);
+	value	= my_config	-> getValue ("hackrf_vgaGain");
+	if (value != std::string (""))
+	   rd -> hackrf_vgaGain	= stoi (value);
 #endif
 }
 

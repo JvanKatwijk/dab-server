@@ -32,10 +32,11 @@
 #include	<thread>
 using namespace std;
 
+#define	S_NOBODY	000
 #define	S_SDRPLAY	001
 #define	S_DABSTICK	002
 #define	S_AIRSPY	003
-#define	S_NOBODY	000
+#define	S_HACKRF	004
 
 class	deviceHandler {
 public:
