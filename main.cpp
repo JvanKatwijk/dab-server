@@ -134,8 +134,10 @@ bdaddr_t tmp	= (bdaddr_t) {{0, 0, 0, 0, 0, 0}};
 //	after the client restarts itself, we might end up here,
 //	so, we need to give some info for the GUI
 	   if (theDecoder != NULL) {
+	      theDecoder -> show_settings ();
 	      theDecoder -> showServices ();
 	      theDecoder -> showDevicename ();
+	
 	   }
 //	The server-loop itself is quite simple
            while (true) {

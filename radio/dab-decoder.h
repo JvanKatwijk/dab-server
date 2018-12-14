@@ -74,6 +74,7 @@ public:
 	void	stop		(void);
 	void	showServices	(void);
 	void	showDevicename	(void);
+	void	showSettings	(void);
 
         std::string		ensembleName;
 	std::atomic<bool>	ensembleRecognized;

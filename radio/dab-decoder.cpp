@@ -239,7 +239,12 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 //
 //	pass on the initial data
 	string_Writer (Q_DEVICE_NAME, theDevice -> deviceName ());
-	uint8_t startData [128];
+	showSettings ();
+	showServices ();
+}
+
+void	dabServer::showSettings (void) {
+uint8_t startData [128];
 	switch (theDevice -> whoamI ()) {
 	   case S_DABSTICK:
 	      startData [0] = S_DABSTICK;
@@ -286,15 +291,8 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 	      vector_Writer (Q_INITIALS, startData, 8);
 	      break;
 	}
-//
-//	then send over the "known" service names
-	for (std::map<std::string, std::string>
-	                              ::iterator it = serviceMap. begin ();
-	             it != serviceMap. end(); ++it) {
-	   string_Writer (Q_SERVICE_NAME, it -> first);
-	   usleep (100);
-	}
-	string_Writer (Q_TEXT_MESSAGE, std::string ("All known stations are listed"));
+}
+
 
 }
 
@@ -417,6 +415,7 @@ void	dabDecoder::showServices	(void) {
 	   string_Writer (Q_SERVICE_NAME, it -> first);
 	   usleep (100);
 	}
+	string_Writer (Q_TEXT_MESSAGE, std::string ("All known stations are listed"));
 }
 
 void	dabDecoder::showDevicename	(void) {
