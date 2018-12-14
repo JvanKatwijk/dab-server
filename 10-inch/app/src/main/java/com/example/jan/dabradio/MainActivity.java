@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements Signals {
             public void onProgressChanged (SeekBar seekBar,
                                            int progressValue,
                                            boolean fromUser) {
-                my_radioInterface. set_gainLevel (progressValue);
+                my_radioInterface. set_soundLevel (progressValue);
                 audioLabel. setText (String. valueOf (progressValue));
             }
 
