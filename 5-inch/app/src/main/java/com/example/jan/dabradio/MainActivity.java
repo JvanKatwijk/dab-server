@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements Signals {
+    private final   int     S_NOBODY        = 000;
     private final   int     S_SDRPLAY       = 001;
     private final   int     S_DABSTICK      = 002;
     private final   int     S_AIRSPY        = 003;
-    private final   int     S_NOBODY        = 000;
+    private final   int     S_HACKRF        = 004;
 
     private TextView            gainLabel;
     private TextView            audioLabel;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private Button              systemExitButton;
     private SeekBar             gainSlider;
     private SeekBar             audioGain;
-    private Spinner             lnaState;
+    private Spinner             lnaControl;
+    private Integer []          lnaStateValues;
     private ListView            services;
     private ArrayList<String>   theServices;
     static ArrayAdapter<String> serviceAdapter;
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private static final int REQUEST_ENABLE_BT = 1;
 //
 //  for now we assume that we have an RSP II
-    Integer [] lnastateValues = new Integer [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     static ArrayAdapter<Integer> lnaAdapter;
     static ArrayList<String> serviceItems;
     private static UUID my_uuid = UUID.fromString ("00001101-0000-1000-8000-00805f9b34fb");
@@ -76,44 +77,42 @@ public class MainActivity extends AppCompatActivity implements Signals {
 //
 // just save the context
         the_gui         = this;
-        gainLabel       = findViewById (R. id. gainLabel);
-        syncLabel       = findViewById (R. id. syncLabel);
-        stereoLabel     = findViewById (R. id. stereoLabel);
-        dynamicLabel    = findViewById (R. id. dynamicLabel);
-        tStatus         = findViewById (R. id. statusLabel);
+        gainLabel       = (TextView)findViewById (R. id. gainLabel);
+        syncLabel       = (TextView)findViewById (R. id. syncLabel);
+        stereoLabel     = (TextView)findViewById (R. id. stereoLabel);
+        dynamicLabel    = (TextView)findViewById (R. id. dynamicLabel);
+        tStatus         = (TextView)findViewById (R. id. statusLabel);
         tStatus.    setBackgroundColor (Color. YELLOW);
         tStatus.    setTextColor (Color. BLACK);
-        snrLabel        = findViewById (R. id. snrLabel);
-        startButton     = findViewById (R. id. startButton);
+        snrLabel        = (TextView)findViewById (R. id. snrLabel);
+        startButton     = (Button)  findViewById (R. id. startButton);
         startButton. setBackgroundColor (Color. GREEN);
-        quitButton      = findViewById (R. id. quitButton);
+        quitButton      = (Button)  findViewById (R. id. quitButton);
         quitButton.  setBackgroundColor (Color. RED);
-        autogainButton  = findViewById (R. id. autogainButton);
+        autogainButton  = (Button)  findViewById (R. id. autogainButton);
         autogainButton. setEnabled (false);
-        resetButton     = findViewById (R. id. resetButton);
+        resetButton     = (Button)  findViewById (R. id. resetButton);
         resetButton. setBackgroundColor (Color.  YELLOW);
         autogainButton. setBackgroundColor (Color. GREEN);
         resetButton.    setEnabled (false);
         systemExitButton= findViewById (R. id. systemExitButton);
-        gainSlider      = findViewById (R. id. gainSlider);
+        gainSlider      = (SeekBar) findViewById (R. id. gainSlider);
         gainSlider.  setEnabled (false);
-        lnaState        = findViewById (R. id. lnaState);
-        lnaState.       setEnabled (false);
-        audioGain       = findViewById (R. id. audioGain);
+        lnaControl      = (Spinner) findViewById (R. id. lnaState);
+        lnaControl.       setEnabled (false);
+        audioGain       = (SeekBar) findViewById (R. id. audioGain);
         audioGain.      setEnabled (false);
-        audioLabel      = findViewById (R. id. audioLabel);
-        services        = findViewById (R. id. services);
-        lResult         = findViewById(R. id. lResult);
-        ensembleLabel   = findViewById (R. id. ensembleLabel);
-        deviceLabel     = findViewById (R. id. deviceLabel);
-        serviceLabel    = findViewById (R. id. serviceLabel);
+        audioLabel      = (TextView)findViewById (R. id. audioLabel);
+        services        = (ListView)findViewById (R. id. services);
+        lResult         = (ListView) findViewById(R. id. lResult);
+        ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
+        deviceLabel     = (TextView)findViewById (R. id. deviceLabel);
+        serviceLabel    = (TextView)findViewById (R. id. serviceLabel);
 
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         my_radioInterface = new radioInterface (the_gui);
         my_radioInterface. addServiceListener (the_gui);
 
-        lnaAdapter = new ArrayAdapter<Integer> (this,
-                                        android. R. layout. simple_spinner_item, lnastateValues);
         serviceItems    = new ArrayList<String> ();
         serviceAdapter  = new ArrayAdapter<String> (this,
                                          android.R.layout. simple_list_item_1,
@@ -123,35 +122,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
         gainSlider. setMax (59);
         gainSlider. setProgress (33);
         gainLabel.  setText (Integer. toString (33));
-        lnaState.   setAdapter (lnaAdapter);
         audioGain.  setMax (100);
         audioGain.  setProgress (50);
         audioLabel. setText (Integer. toString (50));
 
         services.   setAdapter (serviceAdapter);
 
-//	touching the spinner
-        lnaState. setOnItemSelectedListener(new AdapterView.
-                                            OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView,
-                                       View selectedItemView,
-                                       int position, long id) {
-                try {
-                    serviceAdapter.notifyDataSetChanged();
-                    String text = lnaState. getSelectedItem().toString();
-                    my_radioInterface. setLnaState (Integer. parseInt(text));
-                } catch (Exception e) {
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                try {
-                } catch (Exception e) {}
-            }
-        });
-//
         lResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick (AdapterView<?> parent, View v,
@@ -195,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 resetButton.       setEnabled (true);
                 gainSlider.        setEnabled (true);
                 autogainButton.    setEnabled (true);
-                lnaState.          setEnabled (true);
                 audioGain.         setEnabled (true);
             }
         });
@@ -207,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements Signals {
             public void onItemClick(AdapterView<?> parentView, View view,
                                     int position, long id) {
                 try {
-	            my_radioInterface.
-	                      setService (theServices. get (position));
+                    my_radioInterface.
+                              setService (theServices. get (position));
                     serviceLabel. setText (theServices. get (position));
                 } catch (Exception e) {
                 }
@@ -235,35 +210,44 @@ public class MainActivity extends AppCompatActivity implements Signals {
             public void
 
             onClick (View v) {
-                if (btSocket. isConnected ())
+                if (btSocket. isConnected ()) {
                     try {
                         btSocket. close ();
                     } catch (IOException e) {}
+                }
+                try {
+                    Thread. sleep (100);
+                } catch (Exception e) {}
                 finish ();
                 System.exit(0);
             }
         });
 //
-//	systemExitButton
+//      systemExitButton
         systemExitButton. setOnClickListener (new View. OnClickListener () {
             public void onClick (View v) {
-                if (btSocket. isConnected ())
+                if (btSocket. isConnected ()) {
                     my_radioInterface. do_systemExit ();
-
+                    try {
+                        Thread. sleep (100);
+                        btSocket. close ();
+                    } catch (Exception e) {}
+                }
                 finish ();
-                System.exit(0);
+                System. exit(0);
             }
         });
 //
+
 //	Touching the gainSlider
-	gainSlider. setOnSeekBarChangeListener (
+        gainSlider. setOnSeekBarChangeListener (
                                      new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged (SeekBar seekBar,
                                            int progressValue,
                                            boolean fromUser) {
                 my_radioInterface. set_gainLevel (progressValue);
-	        gainLabel. setText (String. valueOf (progressValue));
+                gainLabel. setText (String. valueOf (progressValue));
             }
 
             @Override
@@ -275,14 +259,14 @@ public class MainActivity extends AppCompatActivity implements Signals {
         });
 //
 //	Touching the audioGain
-	audioGain. setOnSeekBarChangeListener (
+        audioGain. setOnSeekBarChangeListener (
                                      new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged (SeekBar seekBar,
                                            int progressValue,
                                            boolean fromUser) {
                 my_radioInterface. set_gainLevel (progressValue);
-	        audioLabel. setText (String. valueOf (progressValue));
+                audioLabel. setText (String. valueOf (progressValue));
             }
 
             @Override
@@ -372,8 +356,24 @@ public class MainActivity extends AppCompatActivity implements Signals {
             case S_DABSTICK:
                 break;
 
+            case S_HACKRF:
+                lnaStateValues = new Integer [(int)(v [2])];
+                for (int i = 0; i < (int)(v [2]); i ++)
+                    lnaStateValues [i] = i;
+                lnaAdapter = new ArrayAdapter<Integer> (this,
+                                        android. R. layout. simple_spinner_item, lnaStateValues);
+                autogainButton. setVisibility (View. GONE);
+                lnaControl. setAdapter (lnaAdapter);
+                lnaControl. setVisibility (View. VISIBLE);
+                lnaControl. setSelection ((int)(v [6]));
+                lnaControl. setEnabled (true);
+                connect_lnaControl ();
+                gainSlider. setMax ((int)(v [7]));
+                gainLabel. setText (Integer. toString ((int)(v [7])));
+                break;
+
             case S_AIRSPY:
-                lnaState. setVisibility (View. GONE);
+                lnaControl. setVisibility (View. GONE);
                 autogainButton. setVisibility (View. GONE);
                 gainSlider. setMax (21);
                 gainSlider. setProgress ((int)(v [5]));
@@ -381,13 +381,22 @@ public class MainActivity extends AppCompatActivity implements Signals {
                 break;
 
             case S_SDRPLAY:
-                lnaState. setVisibility (View. VISIBLE);
+                lnaStateValues = new Integer [(int)(v [5])];
+                for (int i = 0; i < (int)(v [5]); i ++)
+                    lnaStateValues [i] = i;
+                lnaAdapter = new ArrayAdapter<Integer> (this,
+                                        android. R. layout. simple_spinner_item, lnaStateValues);
+                lnaControl. setAdapter (lnaAdapter);
+                lnaControl. setVisibility (View. VISIBLE);
+                lnaControl. setSelection ((int)(v [6]));
+                lnaControl. setEnabled (true);
+                connect_lnaControl ();
+                toaster ("nu zou lnacontrol moeten werken");
                 autogainButton. setVisibility (View. VISIBLE);
                 gainSlider. setVisibility (View. VISIBLE);
                 gainSlider. setMax (59);
                 gainSlider. setProgress ((int)(v [7]));
                 gainLabel. setText (Integer. toString ((int)v [7]));
-                lnaState. setSelection ((int)(v [6]));
                 break;
           
             default:
@@ -437,5 +446,28 @@ public class MainActivity extends AppCompatActivity implements Signals {
         System.exit(0);
     }
 
-}
+//	touching the spinner
+    public void  connect_lnaControl () {
+        lnaControl. setOnItemSelectedListener(new AdapterView.
+                                            OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView,
+                                       View selectedItemView,
+                                       int position, long id) {
+                try {
+                    serviceAdapter.notifyDataSetChanged();
+                    String text = lnaControl. getSelectedItem().toString();
+                    my_radioInterface. setLnaState (Integer. parseInt(text));
+                } catch (Exception e) {
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                try {
+                    ;
+                } catch (Exception e) {}
+            }
+        });
+    }
+};

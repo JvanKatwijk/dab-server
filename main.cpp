@@ -259,8 +259,8 @@ char	command [255];
 	   return;
 //
 //	change this for your configuration
-	sprintf (command, "amixer set Master -- %d%%", offset);
-//	sprintf (command, "amixer set PCM -- %d%%", (offset + 10) * 5);
+//	sprintf (command, "amixer set Master -- %d%%", offset);
+	sprintf (command, "amixer set PCM -- %d%%", offset + 10);
 	system (command);
 }
 

@@ -1,11 +1,8 @@
 
 		Java Client
 
-This Java Client interfaces - using a bluetooth connection - to the
-"example 7" server.
 
-Bluetooth is a new area for me, so there are - most likely - lost
-of improvements possible.
+ NOTE THAT THIS JAVA SOFTWARE IS OLD, NOT WORKING AND NOT SUPPORTED
 
 The communication protocol is described in the file protocol.h
 in the example-7 directory. While it is reasonable stable, changes

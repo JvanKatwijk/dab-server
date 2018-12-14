@@ -26,7 +26,7 @@ public class radioInterface extends Thread {
         private	final int	Q_AUTOGAIN		= 0104;
         private	final int	Q_SERVICE		= 0106;
         private	final int	Q_RESET			= 0107;
-        private final int	Q_SYSTEM_EXIT           = 0110;
+        private final int       Q_SYSTEM_EXIT           = 0110;
 //
 //      keys for incoming messages
         private final int       Q_INITIALS              = 0100;
@@ -97,8 +97,8 @@ public class radioInterface extends Thread {
                     for (int i = 0; i < 3; i ++)
                         header [i] = inputter. readByte ();
 
-                    length = ((header [1] & 0xFF) << 8) |
-                            header [2] & 0xFF;
+                    length = (int)(((header [1] & 0xFF) << 8) |
+                                           (int)(header [2] & 0xFF));
          //           toaster ("Gelezen " + amount + " lengte is " + length);
                     for (int i = 0; i < length; i ++)
                         inBuffer [i] = (char) inputter. readByte ();
@@ -230,8 +230,8 @@ public class radioInterface extends Thread {
                 }
                 break;
 
-                default:
-            }
+                default:;
+           }
         }
 
 
@@ -248,7 +248,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. show_deviceName (Name);
-            }
+            };
         }
 
         public  void    set_initialValues (byte [] v) {
@@ -256,7 +256,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler.  set_initialValues (v);
-           }
+           };
         }
 
         public  void show_ensembleName (String Name, int Sid) {
@@ -264,7 +264,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. show_ensembleName (Name, Sid);
-            }
+            };
         }
 
         public void show_serviceName (String s) {
@@ -272,7 +272,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. show_serviceName (s);
-            }
+            };
         }
 
         public	void	show_dynamicLabel (String s) {
@@ -280,7 +280,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. show_dynamicLabel (s);
-            }
+            };
         }
 
         public  void    show_state (byte [] v) {
@@ -296,7 +296,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. clearScreen ();
-            }
+            };
         }
 
         public	void	set_stereoIndicator	(boolean b) {
@@ -304,7 +304,7 @@ public class radioInterface extends Thread {
             for (i = 0; i < listener. size (); i ++) {
                 Signals handler = listener. get (i);
                 handler. set_stereoIndicator (b);
-            }
+            };
         }
 
         public  void  toaster (String s) {
@@ -417,8 +417,8 @@ public class radioInterface extends Thread {
             }
         }
 
-	public void    do_systemExit  () {
-            byte data [] = new byte[4];
+        public void    do_systemExit     () {
+            byte data[] = new byte[4];
             data[0] = Q_SYSTEM_EXIT;
             data[1] = 0;
             data[2] = (char) (1);
@@ -429,5 +429,4 @@ public class radioInterface extends Thread {
             } catch (Exception e) {
             }
         }
-
-}
+};
