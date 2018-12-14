@@ -243,7 +243,7 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 	showServices ();
 }
 
-void	dabServer::showSettings (void) {
+void	dabDecoder::showSettings (void) {
 uint8_t startData [128];
 	switch (theDevice -> whoamI ()) {
 	   case S_DABSTICK:
@@ -287,13 +287,10 @@ uint8_t startData [128];
 	      startData [4] = 0;	// lower bound for vga gain
 	      startData [5] = 62;	// upperbound for vga gain
 	      startData [6] = my_radioData. hackrf_lnaGain;
-	      startData [7] = my_radiodata. hackrf_vgaGain;
+	      startData [7] = my_radioData. hackrf_vgaGain;
 	      vector_Writer (Q_INITIALS, startData, 8);
 	      break;
 	}
-}
-
-
 }
 
 	dabDecoder::~dabDecoder	(void) {
