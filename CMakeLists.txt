@@ -238,7 +238,6 @@ set(objectName dab-server)
 	           ./radio/includes/backend/data/mot
 	           ./radio/includes/backend/data/journaline
 	           ./radio/includes/support
-	           ./radio/includes/support/viterbi_768
 	           /usr/include/
 	)
 
@@ -281,7 +280,7 @@ set(objectName dab-server)
 	     ./radio/includes/backend/data/mot/mot-handler.h 
 	     ./radio/includes/backend/data/mot/mot-dir.h 
 	     ./radio/includes/backend/data/mot/mot-object.h 
-	     ./radio/includes/support/viterbi_768/viterbi-768.h
+	     ./radio/includes/support/viterbi-handler.h
 	     ./radio/includes/support/protTables.h
 	     ./radio/includes/support/protection.h
 	     ./radio/includes/support/uep-protection.h
@@ -329,8 +328,7 @@ set(objectName dab-server)
 	     ./radio/src/backend/data/mot/mot-handler.cpp 
 	     ./radio/src/backend/data/mot/mot-dir.cpp 
 	     ./radio/src/backend/data/mot/mot-object.cpp 
-	     ./radio/src/support/viterbi_768/viterbi-768.cpp
-	     ./radio/src/support/viterbi_768/spiral-no-sse.c
+	     ./radio/src/support/viterbi-handler.cpp
 	     ./radio/src/support/protTables.cpp
 	     ./radio/src/support/protection.cpp
 	     ./radio/src/support/eep-protection.cpp

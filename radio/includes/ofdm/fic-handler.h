@@ -4,19 +4,19 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the DAB-library
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB-server
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-library; if not, write to the Free Software
+ *    along with DAB-server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #
@@ -29,14 +29,14 @@
 #include	<stdio.h>
 #include	<stdint.h>
 #include	<vector>
-#include	"viterbi-768.h"
+#include	"viterbi-handler.h"
 #include	"fib-processor.h"
 #include	<mutex>
 #include	<string>
 #include	"dab-constants.h"
 #include	"dab-params.h"
 
-class ficHandler: public viterbi_768 {
+class ficHandler: public viterbiHandler {
 public:
 		ficHandler		(uint8_t,	// dabMode
 	                                 ensemblename_t,
@@ -55,13 +55,7 @@ public:
 	void	dataforAudioService	(std::string &, audiodata *, int);
 	std::complex<float>
 		get_coordinates		(int16_t, int16_t, bool *);
-	std::complex<float>
-		get_coordinates		(int16_t, int16_t, bool *,
-                                         int16_t *pMainId, int16_t *,
-	                                 int16_t *pTD);
 	void	reset			(void);
-	uint8_t getECC			(bool *);
-	uint8_t getInterTabId		(bool *);
 private:
 	fib_processor	fibProcessor;
 	dabParams	params;

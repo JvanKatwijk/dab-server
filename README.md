@@ -16,8 +16,6 @@ The server is implemented as a "service" on the RPI, i.e it is
 one of the services that on booting up the RPI will be started.
 As such, it will run without any further
 interaction from a user, i.e. the RPI can run headless, even without WiFi enabled.
-The user interacts with the server using an android client, using a bluetooth
-connection. 
 
 The server, after being started, will wait for a user to connect through
 a bluetooth connection. Once connected, the user can actually
@@ -29,18 +27,23 @@ in these channels.
 After the scan, the server wil send a list with service names
 to the client.
 
-The client may select a service by touching the name, the server then will tune to
-the right channel, will select the service for processing and will the dab "engine"
-instruct to process data for the selected service.
+The user may select a service by touching the name,
+the server then will tune to
+the right channel, will select the service for processing and will
+instruct the dab "engine"
+to process data for the selected service.
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
 
 An "ini" file contains a list of channels that - as seen in a last scan -
 contain DAB data. Since most of the channels do not carry DAB data, the
 server is  instruct to "remember" the channels in which it found an ensemble
-when doing a full scan. 
+when doing a full scan, so a next scan will be short in time.
 
-Touching the reset button again will instruct
-the server to do such a scan, i.e. scan through 
-all channels in the given band - of course the results are
+Touching the reset button during operation, i.e. after the DAB server
+is "operational"  will instruct the server to do the extended scan,
+i.e. scan over all channels in the given band - of course the results are
 recorded by the server and used the next invocation
 to scan the band.
 
@@ -49,23 +52,37 @@ or another time. The first time it will scan the preselected channels,
 when touched further, it will scan all channels and - apart from
 collecting Dab data - will record which channels carry this Dab data.
 
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
 We use bluetooth as communication medium between
 client and server, the server announces its service with a fancy UUID.
 
+-----------------------------------------------------------------------------
+Android clients
+-----------------------------------------------------------------------------
+
 A simple android client is being exercised on my tablet.
-The client is still pretty simple, and android is subject
+This client is still pretty simple, and android is subject
 to further study, but it is working pretty well.
 
-To experiment a little with anroid, there are two versions, identical
+The picture above shows the client. 
+To experiment a little with android, there are two versions, identical
 though for different screen formats.
+
+Note that one the user has selected the service of choice, there is
+no real need for the app to remain connected.
+If the use want to change the selection, just connect, the server
+is - operating and not connected - always listening.
+
 
 ---------------------------------------------------------------------
 The server
 ---------------------------------------------------------------------
 
 The SDRplay devices, AIRspy devices and "dabsticks" (RTLSDR based devices)
-are supported. Support for hackrf devices is under construction.
-Whn building an executable, ensure that the corresponding
+and  Hackrf devices are supported.
+When building an executable, ensure that the corresponding
 support library for the selected device is installed.
 
 The server - currently - can be configured to support one of
@@ -76,7 +93,6 @@ these devices, creating the server is by
 	cmake .. -DXXX=ON (XXX is either SDRPLAY, AIRSPY, RTLSDR or HACKRF)
 	make
 	
-
 The server stores some results - i.e. the channel names where DAB
 data night be found, gain setting etc - in an ini file, which
 is - by default - kept in /usr/local/src. The name can be changed

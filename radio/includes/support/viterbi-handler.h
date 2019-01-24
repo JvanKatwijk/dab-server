@@ -4,43 +4,44 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of DAB-server
+ *    This file is part of qt-dab
  *
- *    DAB-server is free software; you can redistribute it and/or modify
+ *    qt-dab is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-server is distributed in the hope that it will be useful,
+ *    qt-dab is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-server; if not, write to the Free Software
+ *    along with qt-dab; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef	__TIMESYNCER__
-#define	__TIMESYNCER__
+#ifndef	__VITERBI_HANDLER__
+#define	__VITERBI_HANDLER__
 
-#include	"dab-constants.h"
+#include	<stdint.h>
 
-#define	TIMESYNC_ESTABLISHED	0100
-#define	NO_DIP_FOUND		0101
-#define	NO_END_OF_DIP_FOUND	0102
+class	viterbiHandler {
 
-class	sampleReader;
-
-class	timeSyncer {
 public:
-	timeSyncer	(sampleReader *mr);
-	~timeSyncer	(void);
-int	sync		(int, int);
+		viterbiHandler	(int);
+		~viterbiHandler	(void);
+	void	deconvolve	(int16_t *, uint8_t *);
 private:
-	sampleReader	*myReader;
-	int32_t         syncBufferIndex = 0;
-const	int32_t         syncBufferSize  = 4096;
+	int     costTable [16];
+	void	computeCostTable (int16_t,  int16_t, int16_t, int16_t);
+	uint8_t	bitFor		(int, int, int);
+	int	blockLength;
+	int	*stateSequence;
+	int	**transCosts;
+	int	**history;
 };
+
 #endif
 
+	

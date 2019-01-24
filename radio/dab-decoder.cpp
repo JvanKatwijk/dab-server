@@ -56,7 +56,7 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 }
 //
 //	This function is called whenever the dab engine has taken
-//	some time to gather information from the FIC bloks
+//	some time to gather information from the FIC blocks.
 //	the Boolean b tells whether or not an ensemble has been
 //	recognized, the names of the programs are in the 
 //	ensemble
