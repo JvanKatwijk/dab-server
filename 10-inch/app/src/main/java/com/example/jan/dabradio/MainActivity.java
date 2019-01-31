@@ -354,6 +354,10 @@ public class MainActivity extends AppCompatActivity implements Signals {
         int device = (int)(v [0]);
         switch (device) {
             case S_DABSTICK:
+                lnaControl. setVisibility (View. GONE);
+                gainSlider. setMax (100);
+                gainSlider. setProgress ((int)(v [5]));
+                gainLabel. setText (Integer. toString ((int)(v [5])));
                 break;
 
             case S_HACKRF:
