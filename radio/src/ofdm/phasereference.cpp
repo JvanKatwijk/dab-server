@@ -4,19 +4,19 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the DAB-library
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB-server
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-library; if not, write to the Free Software
+ *    along with DAB-server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include	"phasereference.h" 
@@ -78,12 +78,12 @@ float	sum		= 0;
 float	Max		= -10000;
 
 	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
-	my_fftHandler. do_FFT (fft_handler::fftForward);
+	my_fftHandler. do_FFT ();
 //	 into the frequency domain, now correlate
 	for (i = 0; i < T_u; i ++) 
 	   fft_buffer [i] *= conj (refTable [i]);
 //	and, again, back into the time domain
-	my_fftHandler. do_FFT (fft_handler::fftBackwards);
+	my_fftHandler. do_iFFT ();
 /**
   *	We compute the average signal value ...
   */
@@ -126,7 +126,7 @@ int16_t i, j, index = 100;
 float   computedDiffs [SEARCH_RANGE + diff_length + 1];
 
 	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
-	my_fftHandler. do_FFT (fft_handler::fftForward);
+	my_fftHandler. do_FFT ();
 
 	for (i = T_u - SEARCH_RANGE / 2;
 	     i < T_u + SEARCH_RANGE / 2 + diff_length; i ++)

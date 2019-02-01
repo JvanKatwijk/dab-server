@@ -4,19 +4,19 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the DAB-library
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB-server
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-library; if not, write to the Free Software
+ *    along with DAB-server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * 	fib and fig processor
@@ -630,15 +630,6 @@ int16_t	offset	= 16;
 	                     getBits_4 (d, offset + 3);
 	dateTime [7] = (getBits_1 (d, offset + 7) == 1)? 30 : 0;
         uint16_t ecc = getBits (d, offset + 8, 8);
-
-        uint16_t internationalTabId = getBits (d, offset + 16, 8);
-        interTabId = internationalTabId & 0xFF;
-        interTab_Present = true;
-
-        if (!ecc_Present) {
-                ecc_byte = ecc & 0xFF;
-                ecc_Present = true;
-        }
 }
 
 //
@@ -1514,32 +1505,9 @@ std::complex<float>	fib_processor::get_coordinates (int16_t mainId,
 	return coordinates. get_coordinates (mainId, subId, success);
 }
 
-// mainId < 0 (-1) => don't check mainId
-// subId == -1 => deliver first available offset
-// subId == -2 => deliver coarse coordinates
-std::complex<float>
-	fib_processor::get_coordinates (int16_t mainId,
-	                                int16_t subId, bool *success,
-	                                int16_t *pMainId,
-	                                int16_t *pSubId, int16_t *pTD) {
-//coordinates. print_coordinates ();
-	return coordinates. get_coordinates (mainId, subId, success, pMainId, pSubId, pTD);
-}
-
-uint8_t	fib_processor::getECC	(bool *success) {
-	*success = ecc_Present;
-	return ecc_byte;
-}
-
-uint8_t	fib_processor::getInterTabId	(bool *success) {
-	*success = interTab_Present;
-	return interTabId;
-}
 
 void	fib_processor::reset	(void) {
 	dateFlag		= false;
-	ecc_Present             = false;
-        interTab_Present        = false;
 	clearEnsemble	();
 }
 

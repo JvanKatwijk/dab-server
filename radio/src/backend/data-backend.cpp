@@ -2,21 +2,21 @@
 /*
  *    Copyright (C) 2015
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
- *    This file is part of the DAB library
- *    DAB library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB server
+ *    DAB server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB library is distributed in the hope that it will be useful,
+ *    DAB server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with dab library; if not, write to the Free Software
+ *    along with DAB server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #
@@ -70,8 +70,6 @@ int32_t i, j;
 	   protectionHandler	= new eep_protection (bitRate,
 	                                              protLevel);
 //
-//	any reasonable (i.e. large) size will do here,
-//	as long as the parameter is a power of 2
 	uint8_t shiftRegister [9];
 	disperseVector. resize (24 * bitRate);
 	memset (shiftRegister, 1, 9);

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="177dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="16dp"
+        android:text="Start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="177dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="16dp"
+        android:text="Reset"
+        app:layout_constraintStart_toEndOf="@+id/startButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="177dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="16dp"
+        android:text="Quit"
+        app:layout_constraintStart_toEndOf="@+id/button2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/systemExitButton"
+        android:layout_width="177dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="stopServer"
+        app:layout_constraintStart_toEndOf="@+id/quitButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startButton" />
+
+    <EditText
+        android:id="@+id/statusLabel"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/startButton" />
+
+    <EditText
+        android:id="@+id/snrLabel"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toEndOf="@+id/tStatus"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+    <EditText
+        android:id="@+id/syncLabel"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toEndOf="@+id/snrLabel"
+        app:layout_constraintTop_toBottomOf="@+id/quitButton" />
+
+    <EditText
+        android:id="@+id/stereoLabel"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/syncLabel"
+        app:layout_constraintTop_toBottomOf="@+id/systemExitButton" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <SeekBar
+        android:id="@+id/gainSlider"
+        android:layout_width="431dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="29dp"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <SeekBar
+        android:id="@+id/audioGain"
+        android:layout_width="612dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/deviceGain" />
+
+    <EditText
+        android:id="@+id/gainLabel"
+        android:layout_width="118dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stereoLabel" />
+
+    <EditText
+        android:id="@+id/audioLabel"
+        android:layout_width="118dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/devicegainLabel" />
+
+    <EditText
+        android:id="@+id/ensembleLabel"
+        android:layout_width="368dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/audioGain" />
+
+    <EditText
+        android:id="@+id/serviceName"
+        android:layout_width="368dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audioGain" />
+
+    <EditText
+        android:id="@+id/dynamicLabel"
+        android:layout_width="759dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/ensembleLabel" />
+
+    <Button
+        android:id="@+id/autogainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginRight="17dp"
+        android:text="AGC"
+        app:layout_constraintEnd_toStartOf="@+id/devicegainLabel"
+        app:layout_constraintTop_toBottomOf="@+id/syncLabel" />
+
+    <Spinner
+        android:id="@+id/lnaState"
+        android:layout_width="83dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="lnaState"
+        app:layout_constraintEnd_toStartOf="@+id/autogainButton"
+        app:layout_constraintTop_toBottomOf="@+id/syncLabel" />
+
+    <ListView
+        android:id="@+id/services"
+        android:layout_width="763dp"
+        android:layout_height="650dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/dynamicLabel" />
+
+</android.support.constraint.ConstraintLayout>

@@ -4,20 +4,20 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the dab library
+ *    This file is part of the DAB server
  *
- *    dab library is free software; you can redistribute it and/or modify
+ *    DAB server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    dab library is distributed in the hope that it will be useful,
+ *    DAB server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with dab library; if not, write to the Free Software
+ *    along with DAB server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include	"fft_handler.h"
@@ -45,17 +45,19 @@ complex<float>	*fft_handler::getVector () {
 	return vector;
 }
 //
+void	fft_handler::do_FFT (void) {
+	fftwf_execute (plan);
+}
+
 //	Note that we do not scale in case of backwards fft,
 //	not needed for our applications
-void	fft_handler::do_FFT (fftDirection direction) {
+void	fft_handler::do_iFFT (void) {
 int16_t i;
 
-	if (direction == fftBackwards)
-	   for (i = 0; i < fftSize; i ++)
-	      vector [i] = conj (vector [i]);
+	for (i = 0; i < fftSize; i ++)
+	   vector [i] = conj (vector [i]);
 	fftwf_execute (plan);
-	if (direction == fftBackwards)
-	   for (i = 0; i < fftSize; i ++)
-	      vector [i] = conj (vector [i]);
+	for (i = 0; i < fftSize; i ++)
+	   vector [i] = conj (vector [i]);
 }
 

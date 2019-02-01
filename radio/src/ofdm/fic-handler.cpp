@@ -4,17 +4,19 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the DAB-library
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB-server
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
+ *    You should have received a copy of the GNU General Public License
+ *    along with DAB-server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -42,7 +44,7 @@
 	                                programname_t  programnameHandler,
 	                                fib_quality_t fib_qualityHandler,
 	                                void		*userData):
-	                                      viterbi_768 (768, true),
+	                                      viterbiHandler (768),
 	                                      fibProcessor (ensemblenameHandler,
 	                                                    programnameHandler,
 	                                                    userData),
@@ -239,41 +241,6 @@ std::complex<float> result;
         return result;
 }
 //
-//	Alternative function (extended), contributed by Hayati Ayguen
-// mainId < 0 (-1) => don't check mainId
-// subId == -1 => deliver first available offset
-// subId == -2 => deliver coarse coordinates
-std::complex<float>
-	ficHandler::get_coordinates	(int16_t mainId,
-	                                 int16_t subId, bool *success,
-	                                 int16_t *pMainId, int16_t *pSubId,
-	                                 int16_t *pTD) {
-std::complex<float> result;
-
-        fibProtector. lock ();
-        result = fibProcessor. get_coordinates (mainId, subId, success,
-	                                        pMainId, pSubId, pTD);
-        fibProtector. unlock ();
-        return result;
-}
-
-uint8_t ficHandler::getECC	(bool *success) {
-uint8_t result;
-
-	fibProtector. lock ();
-	result = fibProcessor. getECC (success);
-	fibProtector. unlock ();
-	return result;
-}
-
-uint8_t ficHandler::getInterTabId	(bool *success) {
-uint8_t result;
-
-	fibProtector. lock ();
-	result = fibProcessor.getInterTabId(success);
-	fibProtector. unlock ();
-	return result;
-}
 
 int16_t	ficHandler::get_ficRatio (void) {
 	return ficRatio;

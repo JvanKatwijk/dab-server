@@ -4,19 +4,19 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the DAB-library
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    This file is part of the DAB-server
+ *    DAB-server is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    DAB-server is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-library; if not, write to the Free Software
+ *    along with DAB-server; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *	Once the bits are "in", interpretation and manipulation
@@ -38,9 +38,9 @@
   *	carriers and map them on (soft) bits
   */
 	ofdmDecoder::ofdmDecoder	(uint8_t	dabMode):
-	                                     params (dabMode),
+	                                     params        (dabMode),
 	                                     my_fftHandler (dabMode),
-	                                     myMapper    (dabMode) {
+	                                     myMapper      (dabMode) {
 
 	this	-> T_s			= params. get_T_s ();
 	this	-> T_u			= params. get_T_u ();
@@ -49,9 +49,6 @@
 	this	-> T_g			= T_s - T_u;
 	fft_buffer			= my_fftHandler. getVector ();
 	phaseReference. resize (T_u);
-//
-	current_snr			= 0;	
-	cnt				= 0;
 }
 
 	ofdmDecoder::~ofdmDecoder	(void) {
@@ -61,13 +58,7 @@ void	ofdmDecoder::processBlock_0 (std::complex<float> *buffer) {
 	memcpy (fft_buffer, buffer,
 	                      T_u * sizeof (std::complex<float>));
 
-	my_fftHandler. do_FFT (fft_handler::fftForward);
-/**
-  *	The SNR is determined by looking at a segment of bins
-  *	within the signal region and bits outside.
-  *	It is just an indication
-  */
-	current_snr	= 0.7 * current_snr + 0.3 * get_snr (fft_buffer);
+	my_fftHandler. do_FFT ();
 /**
   *	we are now in the frequency domain, and we keep the carriers
   *	as coming from the FFT as phase reference.
@@ -87,7 +78,7 @@ fftlabel:
 /**
   *	first step: do the FFT
   */
-	my_fftHandler. do_FFT (fft_handler::fftForward);
+	my_fftHandler. do_FFT ();
 /**
   *	a little optimization: we do not interchange the
   *	positive/negative frequencies to their right positions.
@@ -120,33 +111,3 @@ toBitsLabel:
 	memcpy (phaseReference. data (),
 	          fft_buffer, T_u * sizeof (std::complex<float>));
 }
-//
-/**
-  *	for the snr we have a full T_u wide vector, with in the middle
-  *	K carriers.
-  *	Just get the strength from the selected carriers compared
-  *	to the strength of the carriers outside that region
-  */
-int16_t	ofdmDecoder::get_snr (std::complex<float> *v) {
-int16_t	i;
-float	noise 	= 0;
-float	signal	= 0;
-int16_t	low	= T_u / 2 -  carriers / 2;
-int16_t	high	= low + carriers;
-
-	for (i = 10; i < low - 20; i ++)
-	   noise += abs (v [(T_u / 2 + i) % T_u]);
-
-	for (i = high + 20; i < T_u - 10; i ++)
-	   noise += abs (v [(T_u / 2 + i) % T_u]);
-
-	noise	/= (low - 30 + T_u - high - 30);
-	for (i = T_u / 2 - carriers / 4;  i < T_u / 2 + carriers / 4; i ++)
-	   signal += abs (v [(T_u / 2 + i) % T_u]);
-	return get_db (signal / (carriers / 2)) - get_db (noise);
-}
-
-int16_t	ofdmDecoder::get_snr	(void) {
-	return (int16_t)current_snr;
-}
-
