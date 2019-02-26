@@ -177,12 +177,13 @@ void	mscHandler::set_audioChannel (audiodata *d) {
 	mutexer. lock ();
 //
 //	we could assert here that theBackend == nullptr
-	theBackends. push_back (new audioBackend (d,
-	                                    soundOut,
-	                                    dataOut,
-	                                    programQuality,
-	                                    motdata_Handler,
-	                                    userData));
+	theBackends.
+	   push_back (new audioBackend (d,
+	                                soundOut,
+	                                dataOut,
+	                                programQuality,
+	                                motdata_Handler,
+	                                userData));
 	work_to_do. store (true);
 	mutexer. unlock ();
 }
@@ -190,10 +191,11 @@ void	mscHandler::set_audioChannel (audiodata *d) {
 
 void	mscHandler::set_dataChannel (packetdata *d) {
 	mutexer. lock ();
-	theBackends. push_back (new dataBackend (d,
-	                                   bytesOut,
-	                                   motdata_Handler,
-	                                   userData));
+	theBackends.
+	   push_back (new dataBackend (d,
+	                               bytesOut,
+	                               motdata_Handler,
+	                               userData));
 	work_to_do. store (true);
 	mutexer. unlock ();
 }

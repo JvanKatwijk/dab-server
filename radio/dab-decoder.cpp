@@ -438,6 +438,12 @@ std::string value;
 	rd	-> latency		= 10;
 	rd	-> waitingTime		= 10;
 
+	value	= my_config -> getValue ("soundChannel");
+	if (value != std::string (""))
+	   rd	-> soundChannel	= value;
+	value	= my_config -> getValue ("latency");
+	if (value != std::string (""))
+	   rd	-> latency	= stoi (value);
 	value	= my_config -> getValue ("Mode");
 	if (value != std::string (""))
 	   rd	-> theMode	= stoi (value);

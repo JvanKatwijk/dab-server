@@ -38,10 +38,9 @@
   *	carriers and map them on (soft) bits
   */
 	ofdmDecoder::ofdmDecoder	(uint8_t	dabMode):
-	                                     params        (dabMode),
-	                                     my_fftHandler (dabMode),
-	                                     myMapper      (dabMode) {
-
+	                                    params        (dabMode),
+	                                    my_fftHandler (dabMode),
+	                                    myMapper      (dabMode) {
 	this	-> T_s			= params. get_T_s ();
 	this	-> T_u			= params. get_T_u ();
 	this	-> nrBlocks		= params. get_L ();

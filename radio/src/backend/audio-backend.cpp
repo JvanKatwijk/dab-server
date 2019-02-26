@@ -74,17 +74,17 @@ int32_t i, j;
 	                        shortForm ? "uep_protection" : "eep_protection");
 	if (dabModus == DAB) 
 	   our_backendBase = new mp2Processor (bitRate,
-	                                        soundOut,
-	                                        dataOut,
-	                                        mscQuality,
-	                                        motdata_Handler, ctx);
+	                                       soundOut,
+	                                       dataOut,
+	                                       mscQuality,
+	                                       motdata_Handler, ctx);
 	else
 	if (dabModus == DAB_PLUS) 
 	   our_backendBase = new mp4Processor (bitRate,
-	                                        soundOut,
-	                                        dataOut,
-	                                        mscQuality,
-	                                        motdata_Handler, ctx);
+	                                       soundOut,
+	                                       dataOut,
+	                                       mscQuality,
+	                                       motdata_Handler, ctx);
 	else		// cannot happen
 	   our_backendBase = new backendBase ();
 
@@ -102,7 +102,7 @@ int32_t i, j;
            uint8_t b = shiftRegister [8] ^ shiftRegister [4];
            for (j = 8; j > 0; j--)
               shiftRegister [j] = shiftRegister [j - 1];
-           shiftRegister [0] = b;
+           shiftRegister  [0] = b;
            disperseVector [i] = b;
 	}
 
@@ -123,7 +123,6 @@ int16_t	i;
 
 	for (i = 0; i < 20; i ++)
 	   delete [] theData [i];
-
 }
 
 void	audioBackend::start		(void) {
@@ -163,7 +162,7 @@ int16_t i;
 
 	protectionHandler -> deconvolve (tempX. data (),
 	                                 fragmentSize,
-	                                  outV. data ());
+	                                 outV. data ());
 //
 //      and the energy dispersal
 	for (i = 0; i < bitRate * 24; i ++)
