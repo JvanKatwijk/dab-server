@@ -236,7 +236,8 @@ dabDecoder *ctx = static_cast<dabDecoder *>(userData);
 	scanning. store (true);
 	buildServiceList (false);
 	scanning. store (false);
-//
+	signalStereo	= false;
+	
 //	pass on the initial data
 	string_Writer (Q_DEVICE_NAME, theDevice -> deviceName ());
 	showSettings ();
@@ -360,6 +361,7 @@ void	dabDecoder::selectService (std::string serviceName) {
 	   theDevice	-> restartReader (frequency);
 	   timesyncSet.         store (false);
 	   timeSynced.          store (false);
+	   signalStereo		    = false;
 	   int timeSyncTime         = 5;
 	   ensembleRecognized.       store (false);
 	   theRadio		-> start ();
@@ -401,6 +403,8 @@ void	dabDecoder::reset	(void) {
 	vector_Writer (Q_NEW_ENSEMBLE, NULL, 0);
 	scanning. store (true);
 	buildServiceList (true);
+	signalStereo	= false;
+
 	showServices ();
 	scanning. store (false);
 }

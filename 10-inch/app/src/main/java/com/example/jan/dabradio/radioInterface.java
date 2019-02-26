@@ -50,7 +50,6 @@ public class radioInterface extends Thread {
 //      for changing values in the GUI we need
         private AppCompatActivity the_gui;
 //
-        private	boolean autoGain	= false;
 //	for signaling, we need
         private final List<Signals> listener = new ArrayList<>();
         public  void    addServiceListener (Signals service) {
@@ -391,13 +390,12 @@ public class radioInterface extends Thread {
            } catch (Exception e) {}
         }
 
-        public	void	set_autoGain	() {
+        public	void	set_autoGain	(Boolean b) {
            byte data [] = new byte [3 + 2];
            data [0] = (byte)Q_AUTOGAIN;
            data [1] = (byte)0;
            data [2] = (byte)2;
-           autoGain	= !autoGain;
-           data [3] = (byte)(autoGain ? 1 : 0);
+           data [3] = (byte)(b ? 1 : 0);
            try {
               outputter. write (data, 0, 5);
               outputter. flush ();

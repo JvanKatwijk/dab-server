@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private TextView            ensembleLabel;
     private TextView            tStatus;
     private TextView            snrLabel;
-    private TextView            deviceLabel;
     private TextView            serviceLabel;
     private ArrayAdapter<String> BTArrayAdapter;
     private ArrayList<Object>   BTResultMac;
@@ -48,16 +47,17 @@ public class MainActivity extends AppCompatActivity implements Signals {
     private Button              startButton;
     private Button              resetButton;
     private Button              autogainButton;
+    private Boolean             autogain        = false;
     private Button              quitButton;
     private Button              systemExitButton;
     private SeekBar             gainSlider;
     private SeekBar             audioGain;
     private Spinner             lnaControl;
     private Integer []          lnaStateValues;
+    private ListView            lResult;
     private ListView            services;
     private ArrayList<String>   theServices;
     static ArrayAdapter<String> serviceAdapter;
-    private ListView            lResult;
     private BluetoothAdapter    myBluetoothAdapter;
     private BluetoothDevice     device;
     private BluetoothSocket     btSocket;
@@ -79,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
         the_gui         = this;
         gainLabel       = (TextView)findViewById (R. id. gainLabel);
         syncLabel       = (TextView)findViewById (R. id. syncLabel);
+        syncLabel.setBackgroundColor (Color.RED);
         stereoLabel     = (TextView)findViewById (R. id. stereoLabel);
+        stereoLabel. setBackgroundColor (Color. RED);
         dynamicLabel    = (TextView)findViewById (R. id. dynamicLabel);
         tStatus         = (TextView)findViewById (R. id. statusLabel);
         tStatus.    setBackgroundColor (Color. YELLOW);
@@ -91,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
         quitButton.  setBackgroundColor (Color. RED);
         autogainButton  = (Button)  findViewById (R. id. autogainButton);
         autogainButton. setEnabled (false);
+        autogainButton. setBackgroundColor (Color. RED);
         resetButton     = (Button)  findViewById (R. id. resetButton);
         resetButton. setBackgroundColor (Color.  YELLOW);
-        autogainButton. setBackgroundColor (Color. GREEN);
         resetButton.    setEnabled (false);
         systemExitButton= findViewById (R. id. systemExitButton);
         gainSlider      = (SeekBar) findViewById (R. id. gainSlider);
@@ -104,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements Signals {
         audioGain.      setEnabled (false);
         audioLabel      = (TextView)findViewById (R. id. audioLabel);
         services        = (ListView)findViewById (R. id. services);
-        lResult         = (ListView) findViewById(R. id. lResult);
+	lResult		= (ListView)findViewById (R. id. lResult);
         ensembleLabel   = (TextView)findViewById (R. id. ensembleLabel);
-        deviceLabel     = (TextView)findViewById (R. id. deviceLabel);
+
         serviceLabel    = (TextView)findViewById (R. id. serviceLabel);
 
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -238,7 +240,22 @@ public class MainActivity extends AppCompatActivity implements Signals {
             }
         });
 //
-
+//      autogainButton
+        autogainButton. setOnClickListener (new View. OnClickListener () {
+            public void onClick (View v) {
+	      if (autogain) {
+	         autogain = false;
+                 autogainButton. setBackgroundColor (Color. RED);
+                 autogainButton. setText ("agc off");
+	      }
+	      else {
+	          autogain = true;
+                  autogainButton. setBackgroundColor (Color. GREEN);
+                  autogainButton. setText ("agc on");
+	      }
+	      set_autogain (autogain);
+            }
+        });
 //	Touching the gainSlider
         gainSlider. setOnSeekBarChangeListener (
                                      new SeekBar.OnSeekBarChangeListener() {
@@ -303,10 +320,10 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
         myBluetoothAdapter.startDiscovery();
         registerReceiver (bReceiver,
-                      new IntentFilter(BluetoothDevice.ACTION_FOUND));
+                          new IntentFilter(BluetoothDevice.ACTION_FOUND));
         tStatus.setText ("Status: Discovering...");
 
-        scanTimer = new CountDownTimer(15000,1000){
+        scanTimer = new CountDownTimer (15000,1000){
             @Override
             public void onTick (long millisUntilFinished) {}
             @Override
@@ -347,16 +364,17 @@ public class MainActivity extends AppCompatActivity implements Signals {
     }
 
     public  void    show_deviceName         (String s1) {
-        deviceLabel. setText (s1);
+
     }
 
     public  void    set_initialValues       (byte [] v) {
         int device = (int)(v [0]);
         switch (device) {
             case S_DABSTICK:
-	        lnaControl  .setVisibility (View. GONE);
-                gainSlider  .setMax ((int)(v [3]));
-                gainLabel   .setText (Integer. toString ((int)(v [5])));
+                lnaControl. setVisibility (View. GONE);
+                gainSlider. setMax (100);
+                gainSlider. setProgress ((int)(v [5]));
+                gainLabel. setText (Integer. toString ((int)(v [5])));
                 break;
 
             case S_HACKRF:
@@ -447,6 +465,12 @@ public class MainActivity extends AppCompatActivity implements Signals {
 
         finish ();
         System.exit(0);
+    }
+
+    public void    set_autogain		(Boolean b) {
+        if (btSocket. isConnected ()) {
+            my_radioInterface. set_autoGain (b);
+        }
     }
 
 //	touching the spinner
