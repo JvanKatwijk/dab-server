@@ -101,6 +101,22 @@ in the include file in the "dab-decoder.h" file.
 The server will send the audio output for a selected service
 to the soundcard of the machine it runs on.
 
+The default setting is to select the "default" output channel on
+the RPI. Selecting another can be done by setting the variable
+"soundChannel" to the name of the channel in the "ini" file.
+
+	soundChannel=default
+
+-----------------------------------------------------------------------
+bluetooth on the rpi
+-------------------------------------------------------------------------
+
+For compiling the dab-server, one needs to have intalled libbluetooth
+
+	sudo apt-get install libbluetooth-dev
+	sudo apt-get install bluez
+
+
 ----------------------------------------------------------------------
 Running the server as a systemd service
 ----------------------------------------------------------------------
@@ -110,6 +126,7 @@ on starting up the RPI. Communication - if any- is using bluetooth.
 Obviously, one should have enabled bluetooth on the RPI,
 how to instal the bluez software is described in many places
 on the internet, and the required libraries are available on the repositories for Stretch.
+
 In order to allow the server to register its "service", and to make the bluetooth 
 discoverable, one should add "--compat" to the line
 
@@ -150,7 +167,6 @@ in the directory /home/pi.
 
 The command file just contains a 2 line shell script to instantiate
 the dab server.
-
 
 Note that these files are still subject to further development
 
