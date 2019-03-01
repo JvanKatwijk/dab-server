@@ -80,19 +80,32 @@ is - operating and not connected - always listening.
 The server
 ---------------------------------------------------------------------
 
-The SDRplay devices, AIRspy devices and "dabsticks" (RTLSDR based devices)
+A number of libraries has to be installed. For stretch on the RPI
+one might want to execute the lines
+
+	sudo apt-get update
+	sudo apt-get install build-essential g++
+	sudo apt-get install libsndfile1-dev libfftw3-dev portaudio19-dev
+	sudo apt-get install libfaad-dev zlib1g-dev libusb-1.0-0-dev mesa-common-dev
+	sudo apt-get install libgl1-mesa-dev libsamplerate-dev
+	sudo apt-get install libbluetooth-dev bluez
+	sudo apt-get install cmake
+
+The SDRplay devices, AIRspy devices, "dabsticks" (RTLSDR based devices)
 and  Hackrf devices are supported.
 When building an executable, ensure that the corresponding
 support library for the selected device is installed.
 
 The server - currently - can be configured to support one of
-these devices, creating the server is by
+these devices, creating the server - assuming all required libraries are
+installed - is by
 
 	mkdir build
 	cd build
 	cmake .. -DXXX=ON (XXX is either SDRPLAY, AIRSPY, RTLSDR or HACKRF)
 	make
-	
+
+
 The server stores some results - i.e. the channel names where DAB
 data night be found, gain setting etc - in an ini file, which
 is - by default - kept in /usr/local/src. The name can be changed
@@ -101,32 +114,15 @@ in the include file in the "dab-decoder.h" file.
 The server will send the audio output for a selected service
 to the soundcard of the machine it runs on.
 
-The default setting is to select the "default" output channel on
-the RPI. Selecting another can be done by setting the variable
-"soundChannel" to the name of the channel in the "ini" file.
-
-	soundChannel=default
-
------------------------------------------------------------------------
-bluetooth on the rpi
--------------------------------------------------------------------------
-
-For compiling the dab-server, one needs to have intalled libbluetooth
-
-	sudo apt-get install libbluetooth-dev
-	sudo apt-get install bluez
-
-
 ----------------------------------------------------------------------
 Running the server as a systemd service
 ----------------------------------------------------------------------
 
 In my setting the server runs stand alone as a "service", instantiated
-on starting up the RPI. Communication - if any- is using bluetooth. 
+on starting up the RPI. Communication - if any - is using bluetooth. 
 Obviously, one should have enabled bluetooth on the RPI,
 how to instal the bluez software is described in many places
 on the internet, and the required libraries are available on the repositories for Stretch.
-
 In order to allow the server to register its "service", and to make the bluetooth 
 discoverable, one should add "--compat" to the line
 
@@ -167,6 +163,7 @@ in the directory /home/pi.
 
 The command file just contains a 2 line shell script to instantiate
 the dab server.
+
 
 Note that these files are still subject to further development
 
