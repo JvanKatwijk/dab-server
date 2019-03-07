@@ -107,12 +107,18 @@ installed - is by
 
 
 The server stores some results - i.e. the channel names where DAB
-data night be found, gain setting etc - in an ini file, which
+data might be found, gain setting etc - in an ini file, which
 is - by default - kept in /usr/local/src. The name can be changed
 in the include file in the "dab-decoder.h" file.
 
 The server will send the audio output for a selected service
 to the soundcard of the machine it runs on.
+The default setting is "default", another channel might be selected
+by setting 
+	
+	soundChannel=XXX
+
+(where XXX is the name of the channel) in the ".ini" file.
 
 ----------------------------------------------------------------------
 Running the server as a systemd service

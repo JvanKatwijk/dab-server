@@ -107,7 +107,6 @@ int		dip_attempts		= 0;
 int		index_attempts		= 0;
 int		count		= 0;
 float		nullLevel	= 0;
-float		signalLevel	= 0;
 bool		isSynced	= false;
 
 	signalStrength	= 0;
@@ -178,7 +177,6 @@ SyncOnPhase:
 	                  coarseOffset + fineOffset);
 	   my_ofdmDecoder. processBlock_0 (ofdmBuffer. data ());
 	   my_mscHandler.  process_mscBlock (ofdmBuffer. data (), 0);
-	   signalLevel	= compute_signalLevel (ofdmBuffer. data (), T_u);
 //
 //	if correction is needed (known by the fic handler)
 //	we compute the coarse offset in the phaseSynchronizer
@@ -239,7 +237,7 @@ SyncOnPhase:
 	   }
 	   if ((systemdataHandler != nullptr) && (++count > 10)) {
 	      count = 0;
-	      signalStrength	= 20 * log10 (signalLevel / nullLevel);
+	      signalStrength	= 20 * log10 (myReader. get_sLevel () / nullLevel);
 	      systemdataHandler (isSynced,
 	                         signalStrength,
 	                         fineOffset + coarseOffset, userData);
