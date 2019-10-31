@@ -31,7 +31,6 @@
   *	The class inherits from the phaseTable.
   */
 	phaseReference::phaseReference (uint8_t	dabMode,
-	                                int16_t	threshold,	
 	                                int16_t	diff_length):
 	                                     phaseTable (dabMode),
 	                                     params (dabMode),
@@ -39,7 +38,6 @@
 int32_t	i;
 float	Phi_k;
         this    -> T_u          = params. get_T_u ();
-        this    -> threshold    = threshold;
         this    -> diff_length  = diff_length;
         refTable.               resize (T_u);
         phaseDifferences.       resize (diff_length);
@@ -53,25 +51,16 @@ float	Phi_k;
         }
 //
 //      prepare a table for the coarse frequency synchronization
+	shiftFactor	= this -> diff_length / 4;
         for (i = 1; i <= diff_length; i ++)
            phaseDifferences [i - 1] = abs (arg (refTable [(T_u + i) % T_u] *
                                          conj (refTable [(T_u + i + 1) % T_u])));
-
 }
 
 	phaseReference::~phaseReference (void) {
 }
 
-/**
-  *	\brief findIndex
-  *	the vector v contains "T_u" samples that are believed to
-  *	belong to the first non-null block of a DAB frame.
-  *	We correlate the data in this verctor with the predefined
-  *	data, and if the maximum exceeds a threshold value,
-  *	we believe that that indicates the first sample we were
-  *	looking for.
-  */
-int32_t	phaseReference::findIndex (std::complex<float> *v) {
+int32_t	phaseReference::findIndex (std::complex<float> *v, int threshold) {
 int32_t	i;
 int32_t	maxIndex	= -1;
 float	sum		= 0;
@@ -105,44 +94,48 @@ float	Max		= -10000;
 	   return maxIndex;	
 }
 
-//      We investigate a sequence of phaseDifferences that
-//      are known starting at real carrier 0.
-//      Phase of the carriers of the "real" block 0 may be
-//      quite different than the phase of the carriers of the "reference"
-//      block, plain correlation (i.e. sum (x, y, i) does not work well.
-//      What is a good measure though is looking at the phase differences
-//      between successive carriers in both the "real" block and the
-//      reference block. These should be more or less the same.
-//      So we just compute the phasedifference between phasedifferences
-//      as measured and as they should be.
-//      To keep things simple, we just look at the locations where
-//      the phasedifference with the successor should be 0
-//      In previous versions we looked
-//      at the "weight" of the positive and negative carriers in the
-//      fft, but that did not work too well.
+
 #define SEARCH_RANGE    (2 * 35)
 int16_t phaseReference::estimateOffset (std::complex<float> *v) {
-int16_t i, j, index = 100;
+int16_t i, j, index_1 = 100, index_2 = 100;
 float   computedDiffs [SEARCH_RANGE + diff_length + 1];
 
-	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
+	for (i = 0; i < T_u; i ++)
+	   fft_buffer [i] = v [i];
+
 	my_fftHandler. do_FFT ();
 
 	for (i = T_u - SEARCH_RANGE / 2;
-	     i < T_u + SEARCH_RANGE / 2 + diff_length; i ++)
+	     i < T_u + SEARCH_RANGE / 2 + diff_length; i ++) 
 	   computedDiffs [i - (T_u - SEARCH_RANGE / 2)] =
-	      abs (arg (fft_buffer [i % T_u] * conj (fft_buffer [(i + 1) % T_u])));
-	float   Mmin = 1000;
-	for (i = T_u - SEARCH_RANGE / 2; i < T_u + SEARCH_RANGE / 2; i ++) {
-	   float sum = 0;
-	   for (j = 1; j < diff_length; j ++)
-	      if (phaseDifferences [j - 1] < 0.1)
-	         sum += computedDiffs [i - (T_u - SEARCH_RANGE / 2) + j];
-	   if (sum < Mmin) {
-	      Mmin = sum;
-	      index = i;
-	   }
-	}
-        return index - T_u;
-}
+	      arg (fft_buffer [(i - shiftFactor) % T_u] *
+	           conj (fft_buffer [(i - shiftFactor + 1) % T_u]));
 
+	for (i = 0; i < SEARCH_RANGE + diff_length; i ++)
+	   computedDiffs [i] *= computedDiffs [i];
+
+        float   Mmin_1 = 10000;
+        float   Mmin_2 = 10000;
+
+	for (i = T_u - SEARCH_RANGE / 2;
+             i < T_u + SEARCH_RANGE / 2; i ++) {
+           int sum_1 = 0;
+           int sum_2 = 0;
+           for (j = 0; j < diff_length; j ++) {
+              if (phaseDifferences [j] < 0.05)
+                 sum_1 += computedDiffs [i - (T_u - SEARCH_RANGE / 2) + j];
+              sum_2 += abs (computedDiffs [i - (T_u - SEARCH_RANGE / 2) + j] -
+                                                   phaseDifferences [j]);
+           }
+           if (sum_1 < Mmin_1) {
+              Mmin_1 = sum_1;
+              index_1 = i;
+           }
+           if (sum_2 < Mmin_2) {
+              Mmin_2 = sum_2;
+              index_2 = i;
+           }
+        }
+
+        return index_1 == index_2 ? index_1 - T_u : 100;
+}

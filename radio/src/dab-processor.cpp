@@ -47,7 +47,6 @@
 	                                    myReader (this,
 	                                              inputDevice),
 	                                    phaseSynchronizer (dabMode,
-	                                                       THRESHOLD,
 	                                                       DIFF_LENGTH),
 	                                    my_ofdmDecoder (dabMode),
 	                                    my_ficHandler (dabMode,
@@ -108,6 +107,7 @@ int		index_attempts		= 0;
 int		count		= 0;
 float		nullLevel	= 0;
 bool		isSynced	= false;
+int		startIndex;
 
 	signalStrength	= 0;
 	running. store (true);
@@ -136,28 +136,48 @@ notSynced:
               case NO_END_OF_DIP_FOUND:
                  goto notSynced;
            }
-SyncOnPhase:
-//	We arrive here when - it seems we are time synchronized,
-//	either from above
-//	or after having processed a frame
-//	Now read in Tu samples. The precise number is not really important
-//	as long as we can be sure that the first sample to be identified
-//	is part of the samples read.
+
 	   myReader. getSamples (ofdmBuffer. data (),
-	                         T_u, coarseOffset + fineOffset);
-	   int startIndex = phaseSynchronizer. findIndex (ofdmBuffer. data ());
-	   if (startIndex < 0) { // no sync, try again
-	      isSynced	= false;
-	      if (++index_attempts > 5) {
-	         syncsignalHandler (false, userData);
-	         index_attempts	= 0;
-	      }
-	      goto notSynced;
-	   }
+                                 T_u, coarseOffset + fineOffset);
+
+           startIndex = phaseSynchronizer.
+                                findIndex (ofdmBuffer. data (), THRESHOLD);
+           if (startIndex < 0) { // no sync, try again
+              isSynced  = false;
+              if (++index_attempts > 5) {
+                 syncsignalHandler (false, userData);
+                 index_attempts = 0;
+              }
+//            fprintf (stderr, "startIndex %d\n", startIndex);
+              goto notSynced;
+           }
+           index_attempts       = 0;
+           goto SyncOnPhase;
+
+Check_endofNull:
+//      when we are here, we had a (more or less) decent frame,
+//      and we are ready for the new one.
+//      we just check that we are around the end of the null period
+
+           myReader. getSamples (ofdmBuffer. data (),
+                              T_u, coarseOffset + fineOffset);
+           startIndex =
+                        phaseSynchronizer.
+                                 findIndex (ofdmBuffer. data (), 4 * THRESHOLD);
+           if (startIndex < 0) { // no sync, try again
+              isSynced  = false;
+              if (++index_attempts > 5) {
+                 syncsignalHandler (false, userData);
+                 index_attempts = 0;
+              }
+//            fprintf (stderr, "startIndex %d\n", startIndex);
+              goto notSynced;
+           }
+
+SyncOnPhase:
 
 	   index_attempts	= 0;
 	   dip_attempts		= 0;
-	   isSynced		= true;
 	   syncsignalHandler (isSynced, userData);
 
 //	Once here, we are synchronized, we need to copy the data we
@@ -242,7 +262,7 @@ SyncOnPhase:
 	                         signalStrength,
 	                         fineOffset + coarseOffset, userData);
 	   }
-	   goto SyncOnPhase;
+	   goto Check_endofNull;
 	}
 	
 	catch (int e) {
